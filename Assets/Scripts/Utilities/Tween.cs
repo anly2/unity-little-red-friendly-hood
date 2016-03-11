@@ -4,16 +4,16 @@ using System;
 
 public delegate void Setter(float percent);
 
-public class Animation : IEnumerator {
+public class Tween : IEnumerator {
     private IEnumerator kernel;
 
 
-    public Animation (Setter setter, float duration)
+    public Tween (Setter setter, float duration)
     {
         kernel = GetEnumeration(setter, duration);
     }
 
-    public Animation(float duration, Setter setter) : this(setter, duration) {}
+    public Tween(float duration, Setter setter) : this(setter, duration) {}
 
     
     public static IEnumerator Empty { get { yield break; } }

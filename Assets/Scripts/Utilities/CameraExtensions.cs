@@ -14,7 +14,7 @@ public static class CameraExtensions
         Vector3 start = camera.transform.position;
         float distance = Vector3.Distance(start, target);
 
-        return new Animation(delegate (float p) {
+        return new Tween(delegate (float p) {
             camera.transform.position = Vector3.MoveTowards(start, target, p * distance);
         }, duration);
     }

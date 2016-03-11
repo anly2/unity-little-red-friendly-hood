@@ -45,7 +45,7 @@ public static class FadeExtensions
         float end = 0;
         float diff = end - start;
 
-        return new Animation(duration,
+        return new Tween(duration,
             p => gameObject.SetOpacity(start + p * diff))
             .Then(() => gameObject.SetOpacity(end));
     }
@@ -62,7 +62,7 @@ public static class FadeExtensions
         float end = 1;
         float diff = end - start;
 
-        return new Animation(duration,
+        return new Tween(duration,
             p => gameObject.SetOpacity(start + p * diff))
             .Then(() => gameObject.SetOpacity(end));
     }

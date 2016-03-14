@@ -3,33 +3,51 @@ using System.Collections;
 
 public static class SpeechExtensions {
 
-    public static GameObject speechBubblePrefab;
+    public static GameObject speechBubblePrefab = Resources.Load("Speech Bubble") as GameObject;
 
-    public static void Say(this MonoBehaviour speaker, string text)
+    public static void Say(this Speaker speaker, string text)
     {
-        speaker.gameObject.Say(text);
+        Say(speaker.gameObject, text);
     }
 
     public static void Say(this GameObject speaker, string text)
     {
-        SpeechBubble speechBubble = (Object.Instantiate(Resources.Load("Speech Bubble")) as GameObject).GetComponent<SpeechBubble>();
+        // Initialise the Speech Bubble
+        SpeechBubble speechBubble = Object.Instantiate(speechBubblePrefab).GetComponent<SpeechBubble>();
         speechBubble.SetText(text);
-        speechBubble.SetTip(0f, SpeechBubble.Side.Right);
 
-        GameObject canvas = GameObject.FindWithTag("Canvas");
+        // Add to a Canvas (the UI canvas in this case)
+        RectTransform canvasTransform = (GameObject.FindWithTag("Canvas").transform as RectTransform);
+        speechBubble.transform.SetParent(canvasTransform, false);
 
-        Vector3 sp = Camera.main.WorldToScreenPoint(speaker.transform.position);
-        sp.y -= (canvas.transform as RectTransform).sizeDelta.y;
+        // Position the Speech Bubble appropriately
+        Vector3 speechPosition;
+
+        //  Try to use the point defined on the Speaker script component
+        try
+        {
+            Vector3 speechPivot = speaker.GetComponent<Speaker>().speechPivot;
+            Vector3 extents = speaker.GetComponent<Renderer>().bounds.extents;
+
+            speechPivot.x *= extents.x;
+            speechPivot.y *= extents.y;
+
+            speechPosition = speaker.transform.position + speechPivot;
+        }
+        catch (System.NullReferenceException) //if not 'Speaker'
+        {
+            speechPosition = speaker.transform.position;
+        }
         
-        (speechBubble.transform as RectTransform).anchoredPosition = sp;
+        // Position the Speech Bubble on the UI canvas
+        Vector3 screenPosition = Camera.main.WorldToScreenPoint(speechPosition);
+        screenPosition.y -= canvasTransform.sizeDelta.y;
         
-        speechBubble.transform.SetParent(GameObject.FindWithTag("Canvas").transform, false);
+        (speechBubble.transform as RectTransform).anchoredPosition = screenPosition;
     }
 
     /*todo
-    speech bubble pivot point at tip
-    set tip (percent, bool axis)
-    Say tries to get renderer.bounds.max
+    -(unnecessary) create an in-world canvas, rather than using the UI one 
     */
 
     /*

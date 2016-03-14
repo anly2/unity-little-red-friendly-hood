@@ -12,6 +12,8 @@ public class SpeechBubble : MonoBehaviour {
         this.got_Background  = GetComponent<RectTransform>();
         this.goc_Text = transform.Find("Text").GetComponent<Text>();
         this.got_Tip = transform.Find("Tip") as RectTransform;
+
+        tip = new Tip(0.5f, Side.Left);
     }
 
 
@@ -27,6 +29,8 @@ public class SpeechBubble : MonoBehaviour {
         h += r.offsetMin.y;
 
         got_Background.sizeDelta = new Vector2(got_Background.rect.width, h);
+        
+        SetTip(tip); //re-set it
     }
 
     public string GetText()
@@ -47,15 +51,19 @@ public class SpeechBubble : MonoBehaviour {
 
         public Tip(float position, Side side)
         {
-            this.position = position;
+            this.position = Mathf.Clamp01(position);
             this.side = side;
         }
     }
     
     public void SetTip(float position, Side side)
     {
-        position = Mathf.Clamp01(position);
-        tip = new Tip(position, side);
+        SetTip(new Tip(position, side));
+    }
+
+    public void SetTip(Tip tip)
+    {
+        this.tip = tip;
 
         //Constant?
         Vector2 insets = new Vector2(1.5f, 1.5f); //the insets of the background sprite
@@ -69,18 +77,18 @@ public class SpeechBubble : MonoBehaviour {
         //derivable values depending on tip side
         float x, y, a, px, py; //x y coords, z rot angle, pivot x% y%
 
-        switch (side) //ugly, but works
+        switch (tip.side) //ugly, but works
         { 
             case Side.Left:
                 x = -insets.x;
-                y = textOffsetMax.y + (position * (size.y - textOffsetMin.y - textOffsetMax.y - tipSize.y)) + tipSize.y/2;
+                y = textOffsetMax.y + (tip.position * (size.y - textOffsetMin.y - textOffsetMax.y - tipSize.y)) + tipSize.y/2;
                 a = -90;
                 px = (x - tipSize.x/4) / size.x;
                 py = (y) / size.y;
                 break;
 
             case Side.Top:
-                x = textOffsetMax.x + (position * (size.x - textOffsetMin.x - textOffsetMax.x - tipSize.x)) + tipSize.x / 2;
+                x = textOffsetMax.x + (tip.position * (size.x - textOffsetMin.x - textOffsetMax.x - tipSize.x)) + tipSize.x / 2;
                 y = size.y + insets.y;
                 a = 180;
                 px = (x) / size.x;
@@ -89,14 +97,14 @@ public class SpeechBubble : MonoBehaviour {
 
             case Side.Right:
                 x = size.x + insets.x;
-                y = textOffsetMax.y + (position * (size.y - textOffsetMin.y - textOffsetMax.y - tipSize.y)) + tipSize.y / 2;
+                y = textOffsetMax.y + (tip.position * (size.y - textOffsetMin.y - textOffsetMax.y - tipSize.y)) + tipSize.y / 2;
                 a = +90;
                 px = (x + tipSize.x / 4) / size.x;
                 py = (y) / size.y;
                 break;
 
             case Side.Bottom:
-                x = textOffsetMax.x + (position * (size.x - textOffsetMin.x - textOffsetMax.x - tipSize.x)) + tipSize.x / 2;
+                x = textOffsetMax.x + (tip.position * (size.x - textOffsetMin.x - textOffsetMax.x - tipSize.x)) + tipSize.x / 2;
                 y = -insets.y;
                 a = 0;
                 px = (x) / size.x;

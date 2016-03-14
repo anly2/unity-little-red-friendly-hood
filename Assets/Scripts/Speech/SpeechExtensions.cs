@@ -5,12 +5,12 @@ public static class SpeechExtensions {
 
     public static GameObject speechBubblePrefab = Resources.Load("Speech Bubble") as GameObject;
 
-    public static void Say(this Speaker speaker, string text)
+    public static SpeechBubble Say(this Speaker speaker, string text)
     {
-        Say(speaker.gameObject, text);
+        return Say(speaker.gameObject, text);
     }
 
-    public static void Say(this GameObject speaker, string text)
+    public static SpeechBubble Say(this GameObject speaker, string text)
     {
         // Initialise the Speech Bubble
         SpeechBubble speechBubble = Object.Instantiate(speechBubblePrefab).GetComponent<SpeechBubble>();
@@ -41,15 +41,12 @@ public static class SpeechExtensions {
         // Position the Speech Bubble on the UI canvas
         Vector3 screenPosition = Camera.main.WorldToScreenPoint(speechPosition);
         (speechBubble.transform as RectTransform).anchoredPosition = screenPosition;
+
+        return speechBubble;
     }
 
     /*todo
+    reason about Side (quadrant of speech pivot? quadrant of object on screen? explicit param?)
     -(unnecessary) create an in-world canvas, rather than using the UI one 
     */
-
-    /*
-        SetText("Something terribly long and long and long which would fit on no less than three lines");
-        SetBackgroundColor(Color.blue);
-        SetTextColor(Color.red);
-    //*/
 }

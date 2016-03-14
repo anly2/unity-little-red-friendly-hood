@@ -54,7 +54,7 @@ public class SpeechBubble : MonoBehaviour {
         tip = new Tip(position, side);
 
         //Constant?
-        Vector2 insets = new Vector2(2, 2); //the insets of the background sprite
+        Vector2 insets = new Vector2(1.5f, 1.5f); //the insets of the background sprite
 
         //shorthands
         Vector2 size = got_Background.sizeDelta;
@@ -68,27 +68,35 @@ public class SpeechBubble : MonoBehaviour {
         switch (side)
         {
             case Side.Left:
-                x = insets.x;
-                y = textOffsetMax.y + (position * tipSize.y) + ((1 - position) * (size.y - textOffsetMin.y - textOffsetMax.y));
+                x = -insets.x;
+                y = textOffsetMax.y + (position * (size.y - textOffsetMin.y - textOffsetMax.y - tipSize.y)) + tipSize.y/2;
                 a = -90;
-                px = (x - tipSize.x/2) / size.x;
-                py = (y - tipSize.y/2) / size.y;
+                px = (x - tipSize.x/4) / size.x;
+                py = (y) / size.y;
                 break;
 
             case Side.Top:
-                return;
+                x = textOffsetMax.x + (position * (size.x - textOffsetMin.x - textOffsetMax.x - tipSize.x)) + tipSize.x / 2;
+                y = size.y + insets.y;
+                a = 180;
+                px = (x) / size.x;
+                py = (y + tipSize.y / 4) / size.y;
                 break;
 
             case Side.Right:
-                x = size.x - insets.x;
-                y = textOffsetMax.y + (position * tipSize.y) + ((1 - position) * (size.y - textOffsetMin.y - textOffsetMax.y));
-                a = -90;
-                px = (x + tipSize.x / 2) / size.x;
-                py = (y - tipSize.y / 2) / size.y;
+                x = size.x + insets.x;
+                y = textOffsetMax.y + (position * (size.y - textOffsetMin.y - textOffsetMax.y - tipSize.y)) + tipSize.y / 2;
+                a = +90;
+                px = (x + tipSize.x / 4) / size.x;
+                py = (y) / size.y;
                 break;
 
             case Side.Bottom:
-                return;
+                x = textOffsetMax.x + (position * (size.x - textOffsetMin.x - textOffsetMax.x - tipSize.x)) + tipSize.x / 2;
+                y = -insets.y;
+                a = 0;
+                px = (x) / size.x;
+                py = (y - tipSize.y / 4) / size.y;
                 break;
 
             default:

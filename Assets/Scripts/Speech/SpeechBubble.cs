@@ -50,11 +50,13 @@ public class SpeechBubble : MonoBehaviour {
     public struct Tip {
         public readonly float position;
         public readonly Side side;
+        internal float prevAngle;
 
         public Tip(float position, Side side)
         {
             this.position = Mathf.Clamp01(position);
             this.side = side;
+            this.prevAngle = 0;
         }
     }
     
@@ -65,8 +67,6 @@ public class SpeechBubble : MonoBehaviour {
 
     public void SetTip(Tip tip)
     {
-        this.tip = tip;
-
         //Constant?
         Vector2 insets = new Vector2(1.5f, 1.5f); //the insets of the background sprite
 
@@ -119,8 +119,11 @@ public class SpeechBubble : MonoBehaviour {
 
         //set the proper things
         got_Tip.anchoredPosition = new Vector2(x, y);
-        got_Tip.Rotate(Vector3.forward, a);
+        got_Tip.Rotate(Vector3.forward, a - this.tip.prevAngle);
         got_Background.pivot = new Vector2(px, py);
+
+        tip.prevAngle = a;
+        this.tip = tip;
     }
 
     public Tip GetTip()

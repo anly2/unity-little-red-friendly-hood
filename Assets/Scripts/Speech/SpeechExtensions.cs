@@ -10,31 +10,48 @@ public static class SpeechExtensions {
 
     public static SpeechBubble Say(this GameObject speaker, string text)
     {
-        // Initialise the Speech Bubble
-        SpeechBubble speechBubble = Object.Instantiate(SpeechBubble.prefab).GetComponent<SpeechBubble>();
-        speechBubble.SetText(text);
-
-        // Add to a Canvas (the UI canvas in this case)
-        speechBubble.transform.SetParent(GameObject.FindWithTag("Canvas").transform, false);
-
-        // Position the Speech Bubble appropriately
-        Vector3 speechPosition;
-
-        //  Try to use the point defined on the Speaker script component
+        // Try to use the Speaker script component
         try
         {
             Vector3 speechPivot = speaker.GetComponent<Speaker>().speechPivot;
+
+            SpeechBubble.Side side = (speechPivot.x < 0f) ? SpeechBubble.Side.Right : SpeechBubble.Side.Left;
+            float positionOnSide = Mathf.Lerp(0f, 1f, speechPivot.y / 2 + 0.5f);
+
             Vector3 extents = speaker.GetComponent<Renderer>().bounds.extents;
 
             speechPivot.x *= extents.x;
             speechPivot.y *= extents.y;
 
-            speechPosition = speaker.transform.position + speechPivot;
+            Vector3 speechPosition = speaker.transform.position + speechPivot;
+
+            return Say(speaker, text, speechPosition, side, positionOnSide);
         }
         catch (System.NullReferenceException) //if not 'Speaker'
         {
-            speechPosition = speaker.transform.position;
+            return Say(speaker, text, speaker.transform.position);
         }
+    }
+
+    public static SpeechBubble Say(this GameObject speaker, string text, Vector3 speechPosition)
+    {
+        return Say(speaker, text, speechPosition, SpeechBubble.Side.Left, 0f);
+    }
+
+    public static SpeechBubble Say(this GameObject speaker, string text, Vector3 speechPosition, SpeechBubble.Side tipSide, float tipPositionOnSide)
+    {
+        return Say(speaker, text, speechPosition, new SpeechBubble.Tip(tipPositionOnSide, tipSide));
+    }
+
+    public static SpeechBubble Say(this GameObject speaker, string text, Vector3 speechPosition, SpeechBubble.Tip tip)
+    {
+        // Initialise the Speech Bubble
+        SpeechBubble speechBubble = Object.Instantiate(SpeechBubble.prefab).GetComponent<SpeechBubble>();
+        speechBubble.SetText(text);
+        speechBubble.SetTip(tip);
+
+        // Add to a Canvas (the UI canvas in this case)
+        speechBubble.transform.SetParent(GameObject.FindWithTag("Canvas").transform, false);
         
         // Position the Speech Bubble on the UI canvas
         Vector3 screenPosition = Camera.main.WorldToScreenPoint(speechPosition);
@@ -44,7 +61,6 @@ public static class SpeechExtensions {
     }
 
     /*todo
-    reason about Side (quadrant of speech pivot? quadrant of object on screen? explicit param?)
     -(unnecessary) create an in-world canvas, rather than using the UI one 
     */
 }

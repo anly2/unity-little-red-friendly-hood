@@ -17,8 +17,7 @@ public static class SpeechExtensions {
         speechBubble.SetText(text);
 
         // Add to a Canvas (the UI canvas in this case)
-        RectTransform canvasTransform = (GameObject.FindWithTag("Canvas").transform as RectTransform);
-        speechBubble.transform.SetParent(canvasTransform, false);
+        speechBubble.transform.SetParent(GameObject.FindWithTag("Canvas").transform, false);
 
         // Position the Speech Bubble appropriately
         Vector3 speechPosition;
@@ -41,8 +40,6 @@ public static class SpeechExtensions {
         
         // Position the Speech Bubble on the UI canvas
         Vector3 screenPosition = Camera.main.WorldToScreenPoint(speechPosition);
-        screenPosition.y -= canvasTransform.sizeDelta.y;
-        
         (speechBubble.transform as RectTransform).anchoredPosition = screenPosition;
     }
 

@@ -224,9 +224,9 @@ RectTransform:
   m_RootOrder: 1
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 10, y: 2}
+  m_AnchoredPosition: {x: 12, y: -2}
   m_SizeDelta: {x: 15, y: 16}
-  m_Pivot: {x: 0, y: 1}
+  m_Pivot: {x: 0.5, y: 0.5}
 --- !u!224 &22470712
 RectTransform:
   m_ObjectHideFlags: 1
@@ -241,8 +241,8 @@ RectTransform:
   - {fileID: 22467354}
   m_Father: {fileID: 0}
   m_RootOrder: 0
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 32, y: 0}
   m_SizeDelta: {x: 160, y: 55}
   m_Pivot: {x: 0.1, y: -0.1}

@@ -4,6 +4,8 @@ using System.Collections;
 
 public class SpeechBubble : MonoBehaviour {
 
+    public static GameObject prefab = Resources.Load("Speech Bubble") as GameObject;
+
     private RectTransform got_Background; //GameObject Transform
     private Text goc_Text; //GameObject Component
     private RectTransform got_Tip; //GameObject Transform

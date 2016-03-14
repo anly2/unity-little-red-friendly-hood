@@ -3,8 +3,6 @@ using System.Collections;
 
 public static class SpeechExtensions {
 
-    public static GameObject speechBubblePrefab = Resources.Load("Speech Bubble") as GameObject;
-
     public static SpeechBubble Say(this Speaker speaker, string text)
     {
         return Say(speaker.gameObject, text);
@@ -13,7 +11,7 @@ public static class SpeechExtensions {
     public static SpeechBubble Say(this GameObject speaker, string text)
     {
         // Initialise the Speech Bubble
-        SpeechBubble speechBubble = Object.Instantiate(speechBubblePrefab).GetComponent<SpeechBubble>();
+        SpeechBubble speechBubble = Object.Instantiate(SpeechBubble.prefab).GetComponent<SpeechBubble>();
         speechBubble.SetText(text);
 
         // Add to a Canvas (the UI canvas in this case)

@@ -8,9 +8,4 @@ public class Speaker : MonoBehaviour {
 
     [Tooltip("The pivot point at which the speech bubble tip will appear.\nThe values are interpreted as fractions of the game object's extents (half the size). In other words (assuming pivot==center), (0,0) is the center, (1,1) is the top right corner, (-1,-1) is the bottom left corner.")]
     public Vector2 speechPivot;
-
-
-	void Start () {
-        this.Say("I am delicious!");
-	}
 }

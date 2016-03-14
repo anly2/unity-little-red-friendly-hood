@@ -15,6 +15,8 @@ public class SpeechBubble : MonoBehaviour {
     }
 
 
+    /* Managing the speech Text */
+
     public void SetText(string text)
     {
         this.goc_Text.text = text;
@@ -34,6 +36,8 @@ public class SpeechBubble : MonoBehaviour {
 
     public string text { get { return GetText(); } set { SetText(value); } }
 
+
+    /* Managing the SpeechBubble Tip position */
 
     public enum Side { Top, Right, Bottom, Left }
 
@@ -65,8 +69,8 @@ public class SpeechBubble : MonoBehaviour {
         //derivable values depending on tip side
         float x, y, a, px, py; //x y coords, z rot angle, pivot x% y%
 
-        switch (side)
-        {
+        switch (side) //ugly, but works
+        { 
             case Side.Left:
                 x = -insets.x;
                 y = textOffsetMax.y + (position * (size.y - textOffsetMin.y - textOffsetMax.y - tipSize.y)) + tipSize.y/2;
@@ -103,14 +107,21 @@ public class SpeechBubble : MonoBehaviour {
                 return;
         }
 
+        //set the proper things
         got_Tip.anchoredPosition = new Vector2(x, y);
         got_Tip.Rotate(Vector3.forward, a);
         got_Background.pivot = new Vector2(px, py);
     }
 
+    public Tip GetTip()
+    {
+        return tip;
+    }
+
     public Tip tip { get; private set; }
 
-
+    
+    /* Managing the SpeechBubble Background Color */
 
     public void SetBackgroundColor(Color color)
     {
@@ -125,6 +136,8 @@ public class SpeechBubble : MonoBehaviour {
     
     public Color backgroundColor { get { return GetBackgroundColor(); } set { SetBackgroundColor(value); } }
 
+
+    /* Managing the SpeechBubble Text/Foreground Color */
 
     public void SetTextColor(Color color)
     {

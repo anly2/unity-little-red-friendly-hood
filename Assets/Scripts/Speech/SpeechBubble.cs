@@ -59,8 +59,18 @@ public class SpeechBubble : MonoBehaviour {
             this.prevAngle = 0;
         }
     }
-    
+
+    public void SetTip(Side side)
+    {
+        SetTip(side, 0f);
+    }
+
     public void SetTip(float position, Side side)
+    {
+        SetTip(side, position);
+    }
+
+    public void SetTip(Side side, float position)
     {
         SetTip(new Tip(position, side));
     }

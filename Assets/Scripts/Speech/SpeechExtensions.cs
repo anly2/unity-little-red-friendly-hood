@@ -14,6 +14,7 @@ public static class SpeechExtensions {
     {
         SpeechBubble speechBubble = (Object.Instantiate(Resources.Load("Speech Bubble")) as GameObject).GetComponent<SpeechBubble>();
         speechBubble.SetText(text);
+        speechBubble.SetTip(0f, SpeechBubble.Side.Right);
 
         GameObject canvas = GameObject.FindWithTag("Canvas");
 

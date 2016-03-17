@@ -1,0 +1,505 @@
+fileFormatVersion: 2
+guid: e2a869d123268a34b869ad47fef9a964
+timeCreated: 1458247993
+licenseType: Free
+TextureImporter:
+  fileIDToRecycleName:
+    21300000: flower-prpl_0
+    21300002: flower-prpl_1
+    21300004: flower-prpl_2
+    21300006: flower-prpl_3
+    21300008: flower-prpl_4
+    21300010: flower-prpl_5
+    21300012: flower-prpl_6
+    21300014: flower-prpl_7
+    21300016: flower-prpl_8
+    21300018: flower-prpl_9
+    21300020: flower-prpl_10
+    21300022: flower-prpl_11
+    21300024: flower-prpl_12
+    21300026: flower-prpl_13
+    21300028: flower-prpl_14
+    21300030: flower-prpl_15
+    21300032: flower-prpl_16
+    21300034: flower-prpl_17
+    21300036: flower-prpl_18
+    21300038: flower-prpl_19
+    21300040: flower-prpl_20
+  serializedVersion: 2
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 1
+    linearTexture: 0
+    correctGamma: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+  isReadable: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 0
+  cubemapConvolution: 0
+  cubemapConvolutionSteps: 7
+  cubemapConvolutionExponent: 1.5
+  seamlessCubemap: 0
+  textureFormat: -1
+  maxTextureSize: 2048
+  textureSettings:
+    filterMode: -1
+    aniso: 16
+    mipBias: -1
+    wrapMode: 1
+  nPOTScale: 0
+  lightmap: 0
+  rGBM: 0
+  compressionQuality: 50
+  allowsAlphaSplitting: 0
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spritePixelsToUnits: 50
+  alphaIsTransparency: 1
+  textureType: 8
+  buildTargetSettings: []
+  spriteSheet:
+    sprites:
+    - name: flower-prpl_0
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 0
+        width: 50
+        height: 50
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -15, y: -22}
+        - {x: -13, y: -23}
+        - {x: 10, y: -23}
+        - {x: 16, y: -21}
+        - {x: 16, y: 15}
+        - {x: 15, y: 19}
+        - {x: -17, y: 19}
+        - {x: -17, y: -18}
+    - name: flower-prpl_1
+      rect:
+        serializedVersion: 2
+        x: 50
+        y: 0
+        width: 50
+        height: 50
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: 8, y: 19}
+        - {x: -10, y: 19}
+        - {x: -17, y: 14}
+        - {x: -17, y: -16}
+        - {x: -16, y: -20}
+        - {x: -4, y: -23}
+        - {x: 3, y: -23}
+        - {x: 14, y: -17}
+        - {x: 16, y: -4}
+        - {x: 16, y: 13}
+    - name: flower-prpl_2
+      rect:
+        serializedVersion: 2
+        x: 100
+        y: 0
+        width: 50
+        height: 50
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: 14, y: 20}
+        - {x: -10, y: 20}
+        - {x: -16, y: 18}
+        - {x: -16, y: -21}
+        - {x: -7, y: -23}
+        - {x: 7, y: -23}
+        - {x: 15, y: -17}
+        - {x: 17, y: -3}
+        - {x: 17, y: 16}
+    - name: flower-prpl_3
+      rect:
+        serializedVersion: 2
+        x: 150
+        y: 0
+        width: 50
+        height: 50
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -15, y: 20}
+        - {x: -16, y: 19}
+        - {x: -16, y: -21}
+        - {x: -12, y: -23}
+        - {x: 4, y: -23}
+        - {x: 16, y: -18}
+        - {x: 17, y: -15}
+        - {x: 17, y: 18}
+        - {x: 10, y: 20}
+    - name: flower-prpl_4
+      rect:
+        serializedVersion: 2
+        x: 200
+        y: 0
+        width: 50
+        height: 50
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: 19, y: 6}
+        - {x: 18, y: 12}
+        - {x: 10, y: 20}
+        - {x: -7, y: 20}
+        - {x: -14, y: 16}
+        - {x: -14, y: -21}
+        - {x: -5, y: -23}
+        - {x: 6, y: -23}
+        - {x: 12, y: -16}
+        - {x: 12, y: -14}
+        - {x: 19, y: -3}
+    - name: flower-prpl_5
+      rect:
+        serializedVersion: 2
+        x: 250
+        y: 0
+        width: 50
+        height: 50
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: 11, y: 19}
+        - {x: -5, y: 19}
+        - {x: -13, y: 11}
+        - {x: -13, y: -22}
+        - {x: -10, y: -23}
+        - {x: 8, y: -23}
+        - {x: 20, y: -9}
+        - {x: 20, y: 11}
+    - name: flower-prpl_6
+      rect:
+        serializedVersion: 2
+        x: 300
+        y: 0
+        width: 50
+        height: 50
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -5, y: 19}
+        - {x: -13, y: 10}
+        - {x: -13, y: -18}
+        - {x: -9, y: -23}
+        - {x: 13, y: -23}
+        - {x: 18, y: -22}
+        - {x: 20, y: -9}
+        - {x: 20, y: 14}
+        - {x: 12, y: 19}
+    - name: flower-prpl_7
+      rect:
+        serializedVersion: 2
+        x: 350
+        y: 0
+        width: 50
+        height: 50
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: 10, y: 20}
+        - {x: -7, y: 20}
+        - {x: -14, y: 15}
+        - {x: -14, y: -19}
+        - {x: -6, y: -23}
+        - {x: 7, y: -23}
+        - {x: 19, y: -6}
+        - {x: 19, y: 12}
+    - name: flower-prpl_8
+      rect:
+        serializedVersion: 2
+        x: 400
+        y: 0
+        width: 50
+        height: 50
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: 19, y: 6}
+        - {x: 18, y: 12}
+        - {x: 10, y: 20}
+        - {x: -7, y: 20}
+        - {x: -14, y: 16}
+        - {x: -14, y: -21}
+        - {x: -5, y: -23}
+        - {x: 6, y: -23}
+        - {x: 12, y: -16}
+        - {x: 12, y: -14}
+        - {x: 19, y: -3}
+    - name: flower-prpl_9
+      rect:
+        serializedVersion: 2
+        x: 450
+        y: 0
+        width: 50
+        height: 50
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -15, y: 20}
+        - {x: -16, y: 19}
+        - {x: -16, y: -21}
+        - {x: -12, y: -23}
+        - {x: 4, y: -23}
+        - {x: 16, y: -18}
+        - {x: 17, y: -15}
+        - {x: 17, y: 18}
+        - {x: 10, y: 20}
+    - name: flower-prpl_10
+      rect:
+        serializedVersion: 2
+        x: 500
+        y: 0
+        width: 50
+        height: 50
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -15, y: -22}
+        - {x: -13, y: -23}
+        - {x: 10, y: -23}
+        - {x: 16, y: -21}
+        - {x: 16, y: 15}
+        - {x: 15, y: 19}
+        - {x: -17, y: 19}
+        - {x: -17, y: -18}
+    - name: flower-prpl_11
+      rect:
+        serializedVersion: 2
+        x: 550
+        y: 0
+        width: 50
+        height: 50
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: 8, y: 19}
+        - {x: -10, y: 19}
+        - {x: -17, y: 14}
+        - {x: -17, y: -16}
+        - {x: -16, y: -20}
+        - {x: -4, y: -23}
+        - {x: 3, y: -23}
+        - {x: 14, y: -17}
+        - {x: 16, y: -4}
+        - {x: 16, y: 13}
+    - name: flower-prpl_12
+      rect:
+        serializedVersion: 2
+        x: 600
+        y: 0
+        width: 50
+        height: 50
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: 14, y: 20}
+        - {x: -10, y: 20}
+        - {x: -16, y: 18}
+        - {x: -16, y: -21}
+        - {x: -7, y: -23}
+        - {x: 7, y: -23}
+        - {x: 15, y: -17}
+        - {x: 17, y: -3}
+        - {x: 17, y: 16}
+    - name: flower-prpl_13
+      rect:
+        serializedVersion: 2
+        x: 650
+        y: 0
+        width: 50
+        height: 50
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -15, y: 20}
+        - {x: -16, y: 19}
+        - {x: -16, y: -21}
+        - {x: -12, y: -23}
+        - {x: 4, y: -23}
+        - {x: 16, y: -18}
+        - {x: 17, y: -15}
+        - {x: 17, y: 18}
+        - {x: 10, y: 20}
+    - name: flower-prpl_14
+      rect:
+        serializedVersion: 2
+        x: 700
+        y: 0
+        width: 50
+        height: 50
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: 19, y: 6}
+        - {x: 18, y: 12}
+        - {x: 10, y: 20}
+        - {x: -7, y: 20}
+        - {x: -14, y: 16}
+        - {x: -14, y: -21}
+        - {x: -5, y: -23}
+        - {x: 6, y: -23}
+        - {x: 12, y: -16}
+        - {x: 12, y: -14}
+        - {x: 19, y: -3}
+    - name: flower-prpl_15
+      rect:
+        serializedVersion: 2
+        x: 750
+        y: 0
+        width: 50
+        height: 50
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: 19, y: 6}
+        - {x: 18, y: 12}
+        - {x: 10, y: 20}
+        - {x: -7, y: 20}
+        - {x: -14, y: 16}
+        - {x: -14, y: -21}
+        - {x: -5, y: -23}
+        - {x: 6, y: -23}
+        - {x: 12, y: -16}
+        - {x: 12, y: -14}
+        - {x: 19, y: -3}
+    - name: flower-prpl_16
+      rect:
+        serializedVersion: 2
+        x: 800
+        y: 0
+        width: 50
+        height: 50
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -5, y: 19}
+        - {x: -13, y: 10}
+        - {x: -13, y: -18}
+        - {x: -9, y: -23}
+        - {x: 13, y: -23}
+        - {x: 18, y: -22}
+        - {x: 20, y: -9}
+        - {x: 20, y: 14}
+        - {x: 12, y: 19}
+    - name: flower-prpl_17
+      rect:
+        serializedVersion: 2
+        x: 850
+        y: 0
+        width: 50
+        height: 50
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -5, y: 19}
+        - {x: -13, y: 10}
+        - {x: -13, y: -18}
+        - {x: -9, y: -23}
+        - {x: 13, y: -23}
+        - {x: 18, y: -22}
+        - {x: 20, y: -9}
+        - {x: 20, y: 14}
+        - {x: 12, y: 19}
+    - name: flower-prpl_18
+      rect:
+        serializedVersion: 2
+        x: 900
+        y: 0
+        width: 50
+        height: 50
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: 10, y: 20}
+        - {x: -7, y: 20}
+        - {x: -14, y: 15}
+        - {x: -14, y: -19}
+        - {x: -6, y: -23}
+        - {x: 7, y: -23}
+        - {x: 19, y: -6}
+        - {x: 19, y: 12}
+    - name: flower-prpl_19
+      rect:
+        serializedVersion: 2
+        x: 950
+        y: 0
+        width: 50
+        height: 50
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: 19, y: 6}
+        - {x: 18, y: 12}
+        - {x: 10, y: 20}
+        - {x: -7, y: 20}
+        - {x: -14, y: 16}
+        - {x: -14, y: -21}
+        - {x: -5, y: -23}
+        - {x: 6, y: -23}
+        - {x: 12, y: -16}
+        - {x: 12, y: -14}
+        - {x: 19, y: -3}
+    - name: flower-prpl_20
+      rect:
+        serializedVersion: 2
+        x: 1000
+        y: 0
+        width: 50
+        height: 50
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -15, y: 20}
+        - {x: -16, y: 19}
+        - {x: -16, y: -21}
+        - {x: -12, y: -23}
+        - {x: 4, y: -23}
+        - {x: 16, y: -18}
+        - {x: 17, y: -15}
+        - {x: 17, y: 18}
+        - {x: 10, y: 20}
+    outline: []
+  spritePackingTag: 
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

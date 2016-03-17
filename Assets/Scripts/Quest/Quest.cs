@@ -888,7 +888,20 @@ public class Quest : MonoBehaviour {
                         return parent.participant2();
                     }
 
-                    ///#!
+                    public virtual ActorQuery participant1(string speech)
+                    {
+                        return parent.participant1(speech);
+                    }
+
+                    public virtual ActorQuery participant2(string speech)
+                    {
+                        return parent.participant2(speech);
+                    }
+
+                    public virtual Choice choice()
+                    {
+                        return parent.choice();
+                    }
                 }
             }
         }

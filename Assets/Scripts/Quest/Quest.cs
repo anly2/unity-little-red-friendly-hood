@@ -29,6 +29,26 @@ public class Quest : MonoBehaviour {
     }
 
 
+    /* Accessors */
+
+    public State getState(string name)
+    {
+        return states[name];
+    }
+
+    public Quest enter(string stateName)
+    {
+        getState(stateName).enter();
+        return this;
+    }
+
+    public Quest enter(State state)
+    {
+        state.enter();
+        return this;
+    }
+
+
     /* Chainable Accessors */
 
     public new Quest name(string name)
@@ -528,17 +548,15 @@ public class Quest : MonoBehaviour {
                     return parent.participant2();
                 }
 
-                /*
-                public virtual PlayerQuery player()
+                public virtual ActorQuery participant1(string speech)
                 {
-                    return parent.player();
+                    return parent.participant1(speech);
                 }
 
-                public virtual ActorQuery they()
+                public virtual ActorQuery participant2(string speech)
                 {
-                    return parent.they();
+                    return parent.participant2(speech);
                 }
-                */
             }
         }
 
@@ -554,6 +572,28 @@ public class Quest : MonoBehaviour {
 
                 return new ActorQuery(this, actor);
             }
+
+
+            public new virtual ActorQuery participant1()
+            {
+                return base.participant1() as ActorQuery;
+            }
+
+            public new virtual ActorQuery participant2()
+            {
+                return base.participant2() as ActorQuery;
+            }
+
+            public new virtual ActorQuery participant1(string speech)
+            {
+                return base.participant1(speech) as ActorQuery;
+            }
+
+            public new virtual ActorQuery participant2(string speech)
+            {
+                return base.participant2(speech) as ActorQuery;
+            }
+
 
 
             public PlayerQuery player()
@@ -586,7 +626,7 @@ public class Quest : MonoBehaviour {
                     : base(conversation, actor) { }
 
 
-                /* Chainable Accessors */
+                /* Override Chainable Accessors */
 
                 public new ActorQuery say(string text)
                 {
@@ -635,6 +675,27 @@ public class Quest : MonoBehaviour {
                 }
 
 
+                public new ActorQuery participant1()
+                {
+                    return getConversation().participant1();
+                }
+
+                public new ActorQuery participant2()
+                {
+                    return getConversation().participant2();
+                }
+
+                public new ActorQuery participant1(string speech)
+                {
+                    return getConversation().participant1(speech);
+                }
+
+                public new ActorQuery participant2(string speech)
+                {
+                    return getConversation().participant2(speech);
+                }
+
+
                 public virtual PlayerQuery player()
                 {
                     return getConversation().player();
@@ -662,6 +723,8 @@ public class Quest : MonoBehaviour {
                 internal PlayerQuery(Conversation conversation, GameObject actor)
                     : base(conversation, actor) { }
 
+
+                /* Override Chainable Accessors */
 
                 public new PlayerQuery say(string text)
                 {
@@ -702,6 +765,131 @@ public class Quest : MonoBehaviour {
                 }
 
 
+                /* Sub-Queries */
+
+                public Choice choice()
+                {
+                    return new Choice(this);
+                }
+
+
+                /* Choice Inner Class */
+
+                public class Choice
+                {
+                    public delegate void Fragment(Choice choice);
+                    public delegate void Action();
+
+                    private PlayerQuery parent;
+                    private List<Option> options = new List<Option>();
+
+
+                    /* Constructors */
+
+                    internal Choice(PlayerQuery playerQuery)
+                    {
+                        this.parent = playerQuery;
+                    }
+
+
+                    /* Chainable Accessors */
+
+                    public Choice option(string text, Fragment action)
+                    {
+                        options.Add(new Option(text, () => action(this)));
+                        return this;
+                    }
+
+                    public Choice option(string text, string nextStateName)
+                    {
+                        return option(text, getQuest().getState(nextStateName));
+                    }
+
+                    public Choice option(string text, State nextState)
+                    {
+                        options.Add(new Option(text, () => nextState.enter()));
+                        return this;
+                    }
+
+
+                    public struct Option
+                    {
+                        public readonly string text;
+                        public readonly Action action;
+
+                        public Option(string text, Action action)
+                        {
+                            this.text = text;
+                            this.action = action;
+                        }
+                    }
+
+
+                    /* Upwards chainability */
+
+                    public PlayerQuery up()
+                    {
+                        return parent;
+                    }
+
+                    public PlayerQuery getPlayerQuery()
+                    {
+                        return up();
+                    }
+
+                    public Conversation getConversation()
+                    {
+                        return up().up();
+                    }
+
+                    public State getState()
+                    {
+                        return up().up().up();
+                    }
+
+                    public Quest getQuest()
+                    {
+                        return up().up().up().up();
+                    }
+
+
+                    public virtual State state()
+                    {
+                        return parent.state();
+                    }
+
+                    public virtual State state(string name)
+                    {
+                        return parent.state(name);
+                    }
+
+                    public virtual UnspecifiedConversation conversation()
+                    {
+                        return parent.conversation();
+                    }
+
+                    public virtual PlayerConversation conversation(GameObject actor)
+                    {
+                        return parent.conversation(actor);
+                    }
+
+                    public virtual Conversation conversation(GameObject actor1, GameObject actor2)
+                    {
+                        return parent.conversation(actor1, actor2);
+                    }
+
+                    public virtual ActorQuery participant1()
+                    {
+                        return parent.participant1();
+                    }
+
+                    public virtual ActorQuery participant2()
+                    {
+                        return parent.participant2();
+                    }
+
+                    ///#!
+                }
             }
         }
     }

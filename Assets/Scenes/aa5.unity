@@ -242,7 +242,7 @@ GameObject:
   - 4: {fileID: 1235566950}
   - 33: {fileID: 1235566949}
   - 23: {fileID: 1235566948}
-  - 114: {fileID: 1235566947}
+  - 114: {fileID: 1235566951}
   m_Layer: 0
   m_Name: Cake
   m_TagString: Untagged
@@ -250,19 +250,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &1235566947
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1235566946}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 88fcdf1caa28d9e4e918c3e905f56e54, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  speakerName: Cake
-  speechPivot: {x: 0, y: 0}
 --- !u!23 &1235566948
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -308,6 +295,18 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 1
+--- !u!114 &1235566951
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1235566946}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 82913fdbae9d48640bc14f4519c673c5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  speech: I am delicious!
 --- !u!1 &1718905882
 GameObject:
   m_ObjectHideFlags: 0

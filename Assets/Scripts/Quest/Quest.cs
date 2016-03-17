@@ -336,7 +336,18 @@ public class Quest : MonoBehaviour {
                 return actorQuery2;
             }
 
+
+            public virtual ActorQuery participant1(string speech)
+            {
+                return participant1().say(speech);
+            }
+
+            public virtual ActorQuery participant2(string speech)
+            {
+                return participant2().say(speech);
+            }
             
+
             /* Upwards chainability */
 
             public State up()
@@ -536,12 +547,12 @@ public class Quest : MonoBehaviour {
             internal PlayerConversation(State state, GameObject actor)
                 : base(state, GameObject.FindWithTag("Player"), actor) { }
 
-            protected override ActorQuery actorQuery(GameObject actor)
+            protected override Conversation.ActorQuery actorQuery(GameObject actor)
             {
                 if (actor.tag == "Player")
                     return new PlayerQuery(this, actor);
 
-                return base.actorQuery(actor);
+                return new ActorQuery(this, actor);
             }
 
 
@@ -552,16 +563,145 @@ public class Quest : MonoBehaviour {
 
             public ActorQuery they()
             {
-                return participant2();
+                return participant2() as ActorQuery;
             }
 
 
-            /* PlayerQuery Inner Class */
+            public PlayerQuery player(string speech)
+            {
+                return player().say(speech);
+            }
+
+            public ActorQuery they(string speech)
+            {
+                return they().say(speech);
+            }
+
+
+            /* Inner Classes */
+
+            public new class ActorQuery : Conversation.ActorQuery
+            {
+                internal ActorQuery(Conversation conversation, GameObject actor)
+                    : base(conversation, actor) { }
+
+
+                /* Chainable Accessors */
+
+                public new ActorQuery say(string text)
+                {
+                    base.say(text);
+                    return this;
+                }
+
+                public new ActorQuery say(string text, float duration)
+                {
+                    base.say(text, duration);
+                    return this;
+                }
+
+
+                public new ActorQuery delay(float duration)
+                {
+                    base.delay(duration);
+                    return this;
+                }
+
+                public new ActorQuery act(Fragment action)
+                {
+                    base.act(action);
+                    return this;
+                }
+
+
+                public new ActorQuery delay(float delay, Fragment action)
+                {
+                    base.delay(delay, action);
+                    return this;
+                }
+
+                public new ActorQuery act(Fragment action, float duration)
+                {
+                    base.act(action, duration);
+                    return this;
+                }
+
+
+                /* Upwards chainability */
+
+                public new PlayerConversation getConversation()
+                {
+                    return getConversation() as PlayerConversation;
+                }
+
+
+                public virtual PlayerQuery player()
+                {
+                    return getConversation().player();
+                }
+
+                public virtual PlayerQuery player(string text)
+                {
+                    return getConversation().player(text);
+                }
+
+
+                public virtual ActorQuery they()
+                {
+                    return getConversation().they();
+                }
+
+                public virtual ActorQuery they(string text)
+                {
+                    return getConversation().they(text);
+                }
+            }
 
             public class PlayerQuery : ActorQuery
             {
                 internal PlayerQuery(Conversation conversation, GameObject actor)
                     : base(conversation, actor) { }
+
+
+                public new PlayerQuery say(string text)
+                {
+                    base.say(text);
+                    return this;
+                }
+
+                public new PlayerQuery say(string text, float duration)
+                {
+                    base.say(text, duration);
+                    return this;
+                }
+
+
+                public new PlayerQuery delay(float duration)
+                {
+                    base.delay(duration);
+                    return this;
+                }
+
+                public new PlayerQuery act(Fragment action)
+                {
+                    base.act(action);
+                    return this;
+                }
+
+
+                public new PlayerQuery delay(float delay, Fragment action)
+                {
+                    base.delay(delay, action);
+                    return this;
+                }
+
+                public new PlayerQuery act(Fragment action, float duration)
+                {
+                    base.act(action, duration);
+                    return this;
+                }
+
+
             }
         }
     }

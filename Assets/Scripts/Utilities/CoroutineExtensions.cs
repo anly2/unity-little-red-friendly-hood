@@ -87,14 +87,31 @@ public static class CoroutineExtensions
         yield return then();
     }
 
-    
-    public static Coroutine Start(this IEnumerator coroutine, MonoBehaviour script)
+
+    public struct AttachedCoroutine
     {
-        return script.StartCoroutine(coroutine);
+        public readonly Coroutine coroutine;
+        public readonly MonoBehaviour script;
+
+        public AttachedCoroutine(Coroutine coroutine, MonoBehaviour script)
+        {
+            this.coroutine = coroutine;
+            this.script = script;
+        }
+    }
+    
+    public static AttachedCoroutine Start(this IEnumerator coroutine, MonoBehaviour script)
+    {
+        return new AttachedCoroutine(script.StartCoroutine(coroutine), script);
     }
 
     public static void Stop(this Coroutine coroutine, MonoBehaviour script)
     {
         script.StopCoroutine(coroutine);
+    }
+
+    public static void Stop(this AttachedCoroutine coroutine)
+    {
+        coroutine.script.StopCoroutine(coroutine.coroutine);
     }
 }

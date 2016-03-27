@@ -86,19 +86,7 @@ public static class CoroutineExtensions
         yield return self;
         yield return then();
     }
-
-
-    public struct AttachedCoroutine
-    {
-        public readonly Coroutine coroutine;
-        public readonly MonoBehaviour script;
-
-        public AttachedCoroutine(Coroutine coroutine, MonoBehaviour script)
-        {
-            this.coroutine = coroutine;
-            this.script = script;
-        }
-    }
+    
     
     public static AttachedCoroutine Start(this IEnumerator coroutine, MonoBehaviour script)
     {
@@ -113,5 +101,17 @@ public static class CoroutineExtensions
     public static void Stop(this AttachedCoroutine coroutine)
     {
         coroutine.script.StopCoroutine(coroutine.coroutine);
+    }
+}
+
+public struct AttachedCoroutine
+{
+    public readonly Coroutine coroutine;
+    public readonly MonoBehaviour script;
+
+    public AttachedCoroutine(Coroutine coroutine, MonoBehaviour script)
+    {
+        this.coroutine = coroutine;
+        this.script = script;
     }
 }

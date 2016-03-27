@@ -20,7 +20,7 @@ public class MainQuest : Quest {
             .they("It smells delicious.")
             .player().choice()
                 .option("Thank you.", "S2")
-                .option("Thank you! Would you like some",
+                .option("Thank you! Would you like some?",
                         (c)=>{ friendship++; c.getQuest().enter("S2"); });
 
         //defaults:

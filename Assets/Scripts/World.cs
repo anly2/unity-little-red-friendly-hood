@@ -37,7 +37,7 @@ public class World : MonoBehaviour {
         if (instance != this)
             return;
 
-        Save(); //#!PRODUCTION
+        //Save(); //#!PRODUCTION
     }
 
 

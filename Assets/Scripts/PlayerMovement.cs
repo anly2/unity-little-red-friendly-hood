@@ -5,11 +5,11 @@ public class PlayerMovement : MonoBehaviour {
 
     public float speed;
     
-    private Rigidbody rb;
+    private Rigidbody2D rb;
 
     void Start()
     {
-        rb = GetComponent<Rigidbody>();
+        rb = GetComponent<Rigidbody2D>();
     }
 
 

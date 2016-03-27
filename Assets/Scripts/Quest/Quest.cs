@@ -31,6 +31,17 @@ public class Quest : MonoBehaviour {
 
     /* Accessors */
 
+    public string getName()
+    {
+        return this._name;
+    }
+
+    public string getDescription()
+    {
+        return this._description;
+    }
+
+
     public State getState(string name)
     {
         return states[name];

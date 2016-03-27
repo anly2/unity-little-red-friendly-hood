@@ -100,6 +100,8 @@ public class Quest : MonoBehaviour {
     }
 
 
+    /** Inner Classes **/
+
     /* State Inner Class */
 
     public class State
@@ -112,7 +114,7 @@ public class Quest : MonoBehaviour {
         private Fragment _before;
         private Fragment _after;
         private Activator activator;
-        private List<Conversation> conversations = new List<Conversation>(); //managed by the inner class Conversation
+        internal List<AbstractScene> scenes = new List<AbstractScene>(); //managed by the inner class Scene
 
 
         /* Constructors */
@@ -186,6 +188,11 @@ public class Quest : MonoBehaviour {
 
         /* Sub-Queries */
 
+        public virtual Scene scene()
+        {
+            return new Scene(this);
+        }
+
         public virtual UnspecifiedConversation conversation()
         {
             return new UnspecifiedConversation(this);
@@ -224,292 +231,877 @@ public class Quest : MonoBehaviour {
         {
             return parent.state(name);
         }
+    }
 
 
-        /* Conversation Inner Class */
+    /* Abstract Scene Inner Class */
 
-        public class UnspecifiedConversation
+    public class AbstractScene
+    {
+        public delegate void Fragment(AbstractScene conversation);
+        public delegate void ContinueCallback();
+        public delegate float Action(AbstractScene conversation, ContinueCallback continueCB);
+
+        private State parent;
+        private Fragment _before;
+        private Fragment _after;
+        private Activator activator;
+        internal List<Action> actions = new List<Action>(); //managed by the ActorQueries
+
+
+        /* Constructors */
+
+        internal AbstractScene(State state)
         {
-            private State parent;
-            
-            public UnspecifiedConversation(State state)
-            {
-                this.parent = state;
-            }
+            this.parent = state;
+            parent.scenes.Add(this);
+        }
+        
 
-            public PlayerConversation with(GameObject actor)
-            {
-                return new PlayerConversation(parent, actor);
-            }
+        /* Chainable Accessors */
 
-            public Conversation between(GameObject actor1, GameObject actor2)
+        public AbstractScene onEnter(Fragment action)
+        {
+            this._before = action;
+            return this;
+        }
+
+        public AbstractScene onLeave(Fragment action)
+        {
+            this._after = action;
+            return this;
+        }
+
+        public AbstractScene activatedBy(Activator activator)
+        {
+            this.activator = activator;
+            activator(() => this.enter());
+            return this;
+        }
+
+
+        public AbstractScene enter()
+        {
+            if (_before != null)
+                _before(this);
+
+            getQuest().StartCoroutine(ExecuteActions());
+            return this;
+        }
+
+        IEnumerator ExecuteActions()
+        {
+            foreach (Action action in actions)
             {
-                return new Conversation(parent, actor1, actor2);
+                bool completed = false;
+                float actionDuration = action(this, () => completed = true);
+
+                if (actionDuration < 0)
+                {
+                    while (!completed)
+                        yield return null;
+                }
+
+                if (actionDuration > Mathf.Epsilon)
+                {
+                    float completionTime = Time.time + actionDuration;
+                    while (!completed && completionTime > Time.time)
+                        yield return null;
+
+                    //// Same as:
+                    //yield return new WaitForSeconds(actionDuration)
+                    //// This way, though, the 'completeCB' is able to interrupt the wait
+                }
             }
         }
 
-        public class Conversation
+        public AbstractScene leave()
         {
-            public delegate void Fragment(Conversation conversation);
-            public delegate void ContinueCallback();
-            public delegate float Action(Conversation conversation, ContinueCallback continueCB);
+            if (_after != null)
+                _after(this);
 
-            private State parent;
-            private ActorQuery actorQuery1;
-            private ActorQuery actorQuery2;
-            private Fragment _before;
-            private Fragment _after;
-            private List<Action> actions = new List<Action>();
-            private Activator activator;
+            return this;
+        }
 
 
+        /* Upwards chainability */
+
+        public State up()
+        {
+            return parent;
+        }
+
+        public Quest getQuest()
+        {
+            return up().up();
+        }
+
+        public State getState()
+        {
+            return up();
+        }
+
+
+        public virtual State state()
+        {
+            return parent.state();
+        }
+
+        public virtual State state(string name)
+        {
+            return parent.state(name);
+        }
+
+        public virtual Scene scene()
+        {
+            return parent.scene();
+        }
+
+        public virtual UnspecifiedConversation conversation()
+        {
+            return parent.conversation();
+        }
+
+        public virtual PlayerConversation conversation(GameObject actor)
+        {
+            return parent.conversation(actor);
+        }
+
+        public virtual Conversation conversation(GameObject actor1, GameObject actor2)
+        {
+            return parent.conversation(actor1, actor2);
+        }
+    }
+
+
+    /* ActorQuery Inner Class */
+
+    public class ActorQuery
+    {
+        public delegate void Fragment(ActorQuery actorQuery);
+
+        private AbstractScene parent;
+        private GameObject _actor;
+
+
+        /* Constructors */
+
+        internal ActorQuery(AbstractScene scene, GameObject actor)
+        {
+            this.parent = scene;
+            this._actor = actor;
+        }
+
+
+        /* Chainable Accessors */
+
+        public ActorQuery say(string text)
+        {
+            float duration = calculateSpeechDuration(text);
+            return say(text, duration);
+        }
+
+        public ActorQuery say(string text, float duration)
+        {
+            parent.actions.Add((conversation, continueCB) =>
+            {
+                _actor.Say(text);
+                //#! after duration, clear Say
+                return duration;
+            });
+            return this;
+        }
+
+
+        public ActorQuery delay(float duration)
+        {
+            parent.actions.Add((conversation, continueCB) =>
+            {
+                return duration;
+            });
+            return this;
+        }
+
+        public ActorQuery act(Fragment action)
+        {
+            parent.actions.Add((conversation, continueCB) =>
+            {
+                action(this);
+                return 0;
+            });
+            return this;
+        }
+
+
+        public ActorQuery delay(float delay, Fragment action)
+        {
+            return this.delay(delay).act(action);
+        }
+
+        public ActorQuery act(Fragment action, float duration)
+        {
+            return act(action).delay(duration);
+        }
+
+
+        private static float timePerChar = 0.1f;
+
+        public static float calculateSpeechDuration(string text)
+        {
+            return text.Length * timePerChar;
+        }
+
+
+        /* Upwards chainability */
+
+        public AbstractScene up()
+        {
+            return parent;
+        }
+        
+        public State getState()
+        {
+            return up().up();
+        }
+
+        public Quest getQuest()
+        {
+            return up().up().up();
+        }
+
+
+        public virtual State state()
+        {
+            return parent.state();
+        }
+
+        public virtual State state(string name)
+        {
+            return parent.state(name);
+        }
+
+        public virtual Scene scene()
+        {
+            return parent.scene();
+        }
+
+        public virtual UnspecifiedConversation conversation()
+        {
+            return parent.conversation();
+        }
+
+        public virtual PlayerConversation conversation(GameObject actor)
+        {
+            return parent.conversation(actor);
+        }
+
+        public virtual Conversation conversation(GameObject actor1, GameObject actor2)
+        {
+            return parent.conversation(actor1, actor2);
+        }
+    }
+
+
+    /* Scene Inner Class */
+
+    public class Scene : AbstractScene
+    {
+        internal Scene(State state) : base(state) { }
+
+
+        /* Override Chainable Accessors */
+
+        public new Scene onEnter(Fragment action)
+        {
+            base.onEnter(action);
+            return this;
+        }
+
+        public new Scene onLeave(Fragment action)
+        {
+            base.onLeave(action);
+            return this;
+        }
+
+        public new Scene activatedBy(Activator activator)
+        {
+            base.activatedBy(activator);
+            return this;
+        }
+
+
+        public new Scene enter()
+        {
+            base.enter();
+            return this;
+        }
+
+        public new Scene leave()
+        {
+            base.leave();
+            return this;
+        }
+        
+
+        /* Sub-Queries */
+
+        public virtual ActorQuery actor(GameObject actor)
+        {
+            return new ActorQuery(this, actor);
+        }
+
+
+        /* ActorQuery Inner Class */
+
+        public class ActorQuery : Quest.ActorQuery
+        {
             /* Constructors */
 
-            internal Conversation(State state, GameObject actor1, GameObject actor2)
+            internal ActorQuery(Scene scene, GameObject actor)
+                : base(scene, actor) {}
+
+
+            /* Override Chainable Accessors */
+
+            public new ActorQuery say(string text)
             {
-                this.parent = state;
-                parent.conversations.Add(this);
-
-                this.actorQuery1 = actorQuery(actor1);
-                this.actorQuery2 = actorQuery(actor2);
-            }
-
-            protected virtual ActorQuery actorQuery(GameObject actor)
-            {
-                return new ActorQuery(this, actor);
-            }
-
-
-            /* Chainable Accessors */
-
-            public Conversation onEnter(Fragment action)
-            {
-                this._before = action;
+                base.say(text);
                 return this;
             }
 
-            public Conversation onLeave(Fragment action)
+            public new ActorQuery say(string text, float duration)
             {
-                this._after = action;
-                return this;
-            }
-
-            public Conversation activatedBy(Activator activator)
-            {
-                this.activator = activator;
-                activator(() => this.enter());
+                base.say(text, duration);
                 return this;
             }
 
 
-            public Conversation enter()
+            public new ActorQuery delay(float duration)
             {
-                if (_before != null)
-                    _before(this);
-
-                getQuest().StartCoroutine(ExecuteActions());
+                base.delay(duration);
                 return this;
             }
 
-            IEnumerator ExecuteActions()
+            public new ActorQuery act(Fragment action)
             {
-                foreach (Action action in actions)
-                {
-                    bool completed = false;
-                    float actionDuration = action(this, () => completed = true);
-
-                    if (actionDuration < 0) {
-                        while (!completed)
-                            yield return null;
-                    }
-
-                    if (actionDuration > Mathf.Epsilon) {
-                        float completionTime = Time.time + actionDuration;
-                        while (!completed && completionTime > Time.time)
-                            yield return null;
-
-                        //// Same as:
-                        //yield return new WaitForSeconds(actionDuration)
-                        //// This way, though, the 'completeCB' is able to interrupt the wait
-                    }
-                }
+                base.act(action);
+                return this;
             }
 
-            public Conversation leave()
-            {
-                if (_after != null)
-                    _after(this);
 
+            public new ActorQuery delay(float delay, Fragment action)
+            {
+                base.delay(delay, action);
+                return this;
+            }
+
+            public new ActorQuery act(Fragment action, float duration)
+            {
+                base.act(action, duration);
+                return this;
+            }
+
+            
+            /* Upwards chainability */
+
+            public new virtual Scene up()
+            {
+                return base.up() as Scene;
+            }
+
+            public virtual Scene getScene()
+            {
+                return up();
+            }
+
+
+            public virtual ActorQuery actor(GameObject actor)
+            {
+                return getScene().actor(actor);
+            }
+        }
+    }
+
+
+    /* Conversation Inner Classes */
+    
+    public class UnspecifiedConversation
+    {
+        private State parent;
+
+        internal UnspecifiedConversation(State state)
+        {
+            this.parent = state;
+        }
+
+        public PlayerConversation with(GameObject actor)
+        {
+            return new PlayerConversation(parent, actor);
+        }
+
+        public Conversation between(GameObject actor1, GameObject actor2)
+        {
+            return new Conversation(parent, actor1, actor2);
+        }
+    }
+
+    public class Conversation : AbstractScene
+    {
+        private ActorQuery actorQuery1;
+        private ActorQuery actorQuery2;
+
+        internal Conversation(State state, GameObject actor1, GameObject actor2)
+            : base(state)
+        {
+
+            this.actorQuery1 = actorQuery(actor1);
+            this.actorQuery2 = actorQuery(actor2);
+        }
+
+        protected virtual ActorQuery actorQuery(GameObject actor)
+        {
+            return new ActorQuery(this, actor);
+        }
+
+
+        /* Override Chainable Accessors */
+
+        public new Conversation onEnter(Fragment action)
+        {
+            base.onEnter(action);
+            return this;
+        }
+
+        public new Conversation onLeave(Fragment action)
+        {
+            base.onLeave(action);
+            return this;
+        }
+
+        public new Conversation activatedBy(Activator activator)
+        {
+            base.activatedBy(activator);
+            return this;
+        }
+
+
+        public new Conversation enter()
+        {
+            base.enter();
+            return this;
+        }
+        
+        public new Conversation leave()
+        {
+            base.leave();
+            return this;
+        }
+
+
+        /* Sub-Queries */
+
+        public virtual ActorQuery participant1()
+        {
+            return this.actorQuery1;
+        }
+
+        public virtual ActorQuery participant2()
+        {
+            return this.actorQuery2;
+        }
+
+        public virtual ActorQuery participant1(string speech)
+        {
+            return participant1().say(speech);
+        }
+
+        public virtual ActorQuery participant2(string speech)
+        {
+            return participant2().say(speech);
+        }
+
+
+        /* Inner Classes */
+
+        public class ActorQuery : Quest.ActorQuery
+        {
+            internal ActorQuery(AbstractScene conversation, GameObject actor)
+                : base(conversation, actor)
+            { }
+
+
+            /* Override Chainable Accessors */
+
+            public new ActorQuery say(string text)
+            {
+                base.say(text);
+                return this;
+            }
+
+            public new ActorQuery say(string text, float duration)
+            {
+                base.say(text, duration);
+                return this;
+            }
+
+
+            public new ActorQuery delay(float duration)
+            {
+                base.delay(duration);
+                return this;
+            }
+
+            public new ActorQuery act(Fragment action)
+            {
+                base.act(action);
+                return this;
+            }
+
+
+            public new ActorQuery delay(float delay, Fragment action)
+            {
+                base.delay(delay, action);
+                return this;
+            }
+
+            public new ActorQuery act(Fragment action, float duration)
+            {
+                base.act(action, duration);
+                return this;
+            }
+
+
+            /* Upwards chainability */
+
+            public new Conversation up()
+            {
+                return base.up() as Conversation;
+            }
+
+            public Conversation getConversation()
+            {
+                return up();
+            }
+
+
+            public virtual ActorQuery participant1()
+            {
+                return getConversation().participant1();
+            }
+
+            public virtual ActorQuery participant2()
+            {
+                return getConversation().participant2();
+            }
+
+            public virtual ActorQuery participant1(string speech)
+            {
+                return getConversation().participant1(speech);
+            }
+
+            public virtual ActorQuery participant2(string speech)
+            {
+                return getConversation().participant2(speech);
+            }
+        }
+    }
+
+    public class PlayerConversation : Conversation
+    {
+        internal PlayerConversation(State state, GameObject actor)
+            : base(state, GameObject.FindWithTag("Player"), actor)
+        { }
+
+        protected override Conversation.ActorQuery actorQuery(GameObject actor)
+        {
+            if (actor.tag == "Player")
+                return new PlayerQuery(this, actor);
+
+            return new ActorQuery(this, actor);
+        }
+
+
+        /* Override Superclass Sub-Queries */
+
+        public new virtual ActorQuery participant1()
+        {
+            return base.participant1() as ActorQuery;
+        }
+
+        public new virtual ActorQuery participant2()
+        {
+            return base.participant2() as ActorQuery;
+        }
+
+        public new virtual ActorQuery participant1(string speech)
+        {
+            return base.participant1(speech) as ActorQuery;
+        }
+
+        public new virtual ActorQuery participant2(string speech)
+        {
+            return base.participant2(speech) as ActorQuery;
+        }
+
+
+        /* Sub-Queries */
+
+        public PlayerQuery player()
+        {
+            return participant1() as PlayerQuery;
+        }
+
+        public ActorQuery they()
+        {
+            return participant2() as ActorQuery;
+        }
+
+
+        public PlayerQuery player(string speech)
+        {
+            return player().say(speech);
+        }
+
+        public ActorQuery they(string speech)
+        {
+            return they().say(speech);
+        }
+
+
+        /* Inner Classes */
+
+        public new class ActorQuery : Conversation.ActorQuery
+        {
+            internal ActorQuery(AbstractScene conversation, GameObject actor)
+                : base(conversation, actor)
+            { }
+
+
+            /* Override Chainable Accessors */
+
+            public new ActorQuery say(string text)
+            {
+                base.say(text);
+                return this;
+            }
+
+            public new ActorQuery say(string text, float duration)
+            {
+                base.say(text, duration);
+                return this;
+            }
+
+
+            public new ActorQuery delay(float duration)
+            {
+                base.delay(duration);
+                return this;
+            }
+
+            public new ActorQuery act(Fragment action)
+            {
+                base.act(action);
+                return this;
+            }
+
+
+            public new ActorQuery delay(float delay, Fragment action)
+            {
+                base.delay(delay, action);
+                return this;
+            }
+
+            public new ActorQuery act(Fragment action, float duration)
+            {
+                base.act(action, duration);
+                return this;
+            }
+
+
+            /* Upwards chainability */
+
+            public new PlayerConversation getConversation()
+            {
+                return getConversation() as PlayerConversation;
+            }
+
+
+            public new ActorQuery participant1()
+            {
+                return getConversation().participant1();
+            }
+
+            public new ActorQuery participant2()
+            {
+                return getConversation().participant2();
+            }
+
+            public new ActorQuery participant1(string speech)
+            {
+                return getConversation().participant1(speech);
+            }
+
+            public new ActorQuery participant2(string speech)
+            {
+                return getConversation().participant2(speech);
+            }
+
+
+            public virtual PlayerQuery player()
+            {
+                return getConversation().player();
+            }
+
+            public virtual PlayerQuery player(string text)
+            {
+                return getConversation().player(text);
+            }
+
+
+            public virtual ActorQuery they()
+            {
+                return getConversation().they();
+            }
+
+            public virtual ActorQuery they(string text)
+            {
+                return getConversation().they(text);
+            }
+        }
+
+        public class PlayerQuery : ActorQuery
+        {
+            internal PlayerQuery(AbstractScene conversation, GameObject actor)
+                : base(conversation, actor)
+            { }
+
+
+            /* Override Chainable Accessors */
+
+            public new PlayerQuery say(string text)
+            {
+                base.say(text);
+                return this;
+            }
+
+            public new PlayerQuery say(string text, float duration)
+            {
+                base.say(text, duration);
+                return this;
+            }
+
+
+            public new PlayerQuery delay(float duration)
+            {
+                base.delay(duration);
+                return this;
+            }
+
+            public new PlayerQuery act(Fragment action)
+            {
+                base.act(action);
+                return this;
+            }
+
+
+            public new PlayerQuery delay(float delay, Fragment action)
+            {
+                base.delay(delay, action);
+                return this;
+            }
+
+            public new PlayerQuery act(Fragment action, float duration)
+            {
+                base.act(action, duration);
                 return this;
             }
 
 
             /* Sub-Queries */
 
-            public virtual ActorQuery participant1()
+            public Choice choice()
             {
-                return actorQuery1;
-            }
-
-            public virtual ActorQuery participant2()
-            {
-                return actorQuery2;
+                return new Choice(this);
             }
 
 
-            public virtual ActorQuery participant1(string speech)
+            /* Choice Inner Class */
+
+            public class Choice
             {
-                return participant1().say(speech);
-            }
+                public delegate void Fragment(Choice choice);
+                public delegate void Action();
 
-            public virtual ActorQuery participant2(string speech)
-            {
-                return participant2().say(speech);
-            }
-            
-
-            /* Upwards chainability */
-
-            public State up()
-            {
-                return parent;
-            }
-
-            public Quest getQuest()
-            {
-                return up().up();
-            }
-
-            public State getState()
-            {
-                return up();
-            }
-
-
-            public virtual State state()
-            {
-                return parent.state();
-            }
-
-            public virtual State state(string name)
-            {
-                return parent.state(name);
-            }
-
-            public virtual UnspecifiedConversation conversation()
-            {
-                return parent.conversation();
-            }
-
-            public virtual PlayerConversation conversation(GameObject actor)
-            {
-                return parent.conversation(actor);
-            }
-
-            public virtual Conversation conversation(GameObject actor1, GameObject actor2)
-            {
-                return parent.conversation(actor1, actor2);
-            }
-
-
-            /* ActorQuery Inner Class */
-
-            public class ActorQuery
-            {
-                public delegate void Fragment(ActorQuery actorQuery);
-
-                private Conversation parent;
-                private GameObject actor;
+                private PlayerQuery parent;
+                private List<Option> options = new List<Option>();
 
 
                 /* Constructors */
 
-                internal ActorQuery(Conversation conversation, GameObject actor)
+                internal Choice(PlayerQuery playerQuery)
                 {
-                    this.parent = conversation;
-                    this.actor = actor;
+                    this.parent = playerQuery;
                 }
 
 
                 /* Chainable Accessors */
 
-                public ActorQuery say(string text)
+                public Choice option(string text, Fragment action)
                 {
-                    float duration = calculateSpeechDuration(text);
-                    return say(text, duration);
+                    options.Add(new Option(text, () => action(this)));
+                    return this;
                 }
 
-                public ActorQuery say(string text, float duration)
+                public Choice option(string text, string nextStateName)
                 {
-                    parent.actions.Add((conversation, continueCB) =>
-                    {
-                        actor.Say(text);
-                        //#! after duration, clear Say
-                        return duration;
-                    });
+                    return option(text, getQuest().getState(nextStateName));
+                }
+
+                public Choice option(string text, State nextState)
+                {
+                    options.Add(new Option(text, () => nextState.enter()));
                     return this;
                 }
 
 
-                public ActorQuery delay(float duration)
+                public struct Option
                 {
-                    parent.actions.Add((conversation, continueCB) =>
+                    public readonly string text;
+                    public readonly Action action;
+
+                    internal Option(string text, Action action)
                     {
-                        return duration;
-                    });
-                    return this;
-                }
-
-                public ActorQuery act(Fragment action)
-                {
-                    parent.actions.Add((conversation, continueCB) =>
-                    {
-                        action(this);
-                        return 0;
-                    });
-                    return this;
-                }
-
-
-                public ActorQuery delay(float delay, Fragment action)
-                {
-                    return this.delay(delay).act(action);
-                }
-
-                public ActorQuery act(Fragment action, float duration)
-                {
-                    return act(action).delay(duration);
-                }
-
-
-                private static float timePerChar = 0.1f;
-
-                public static float calculateSpeechDuration(string text)
-                {
-                    return text.Length * timePerChar;
+                        this.text = text;
+                        this.action = action;
+                    }
                 }
 
 
                 /* Upwards chainability */
 
-                public Conversation up()
+                public PlayerQuery up()
                 {
                     return parent;
                 }
 
-                public Conversation getConversation()
+                public PlayerQuery getPlayerQuery()
                 {
                     return up();
                 }
 
-                public State getState()
+                public AbstractScene getConversation()
                 {
                     return up().up();
                 }
 
-                public Quest getQuest()
+                public State getState()
                 {
                     return up().up().up();
+                }
+
+                public Quest getQuest()
+                {
+                    return up().up().up().up();
                 }
 
 
@@ -533,7 +1125,7 @@ public class Quest : MonoBehaviour {
                     return parent.conversation(actor);
                 }
 
-                public virtual Conversation conversation(GameObject actor1, GameObject actor2)
+                public virtual AbstractScene conversation(GameObject actor1, GameObject actor2)
                 {
                     return parent.conversation(actor1, actor2);
                 }
@@ -557,356 +1149,19 @@ public class Quest : MonoBehaviour {
                 {
                     return parent.participant2(speech);
                 }
-            }
-        }
 
-        public class PlayerConversation : Conversation
-        {
-            internal PlayerConversation(State state, GameObject actor)
-                : base(state, GameObject.FindWithTag("Player"), actor) { }
-
-            protected override Conversation.ActorQuery actorQuery(GameObject actor)
-            {
-                if (actor.tag == "Player")
-                    return new PlayerQuery(this, actor);
-
-                return new ActorQuery(this, actor);
-            }
-
-
-            public new virtual ActorQuery participant1()
-            {
-                return base.participant1() as ActorQuery;
-            }
-
-            public new virtual ActorQuery participant2()
-            {
-                return base.participant2() as ActorQuery;
-            }
-
-            public new virtual ActorQuery participant1(string speech)
-            {
-                return base.participant1(speech) as ActorQuery;
-            }
-
-            public new virtual ActorQuery participant2(string speech)
-            {
-                return base.participant2(speech) as ActorQuery;
-            }
-
-
-
-            public PlayerQuery player()
-            {
-                return participant1() as PlayerQuery;
-            }
-
-            public ActorQuery they()
-            {
-                return participant2() as ActorQuery;
-            }
-
-
-            public PlayerQuery player(string speech)
-            {
-                return player().say(speech);
-            }
-
-            public ActorQuery they(string speech)
-            {
-                return they().say(speech);
-            }
-
-
-            /* Inner Classes */
-
-            public new class ActorQuery : Conversation.ActorQuery
-            {
-                internal ActorQuery(Conversation conversation, GameObject actor)
-                    : base(conversation, actor) { }
-
-
-                /* Override Chainable Accessors */
-
-                public new ActorQuery say(string text)
+                public virtual Choice choice()
                 {
-                    base.say(text);
-                    return this;
-                }
-
-                public new ActorQuery say(string text, float duration)
-                {
-                    base.say(text, duration);
-                    return this;
-                }
-
-
-                public new ActorQuery delay(float duration)
-                {
-                    base.delay(duration);
-                    return this;
-                }
-
-                public new ActorQuery act(Fragment action)
-                {
-                    base.act(action);
-                    return this;
-                }
-
-
-                public new ActorQuery delay(float delay, Fragment action)
-                {
-                    base.delay(delay, action);
-                    return this;
-                }
-
-                public new ActorQuery act(Fragment action, float duration)
-                {
-                    base.act(action, duration);
-                    return this;
-                }
-
-
-                /* Upwards chainability */
-
-                public new PlayerConversation getConversation()
-                {
-                    return getConversation() as PlayerConversation;
-                }
-
-
-                public new ActorQuery participant1()
-                {
-                    return getConversation().participant1();
-                }
-
-                public new ActorQuery participant2()
-                {
-                    return getConversation().participant2();
-                }
-
-                public new ActorQuery participant1(string speech)
-                {
-                    return getConversation().participant1(speech);
-                }
-
-                public new ActorQuery participant2(string speech)
-                {
-                    return getConversation().participant2(speech);
-                }
-
-
-                public virtual PlayerQuery player()
-                {
-                    return getConversation().player();
-                }
-
-                public virtual PlayerQuery player(string text)
-                {
-                    return getConversation().player(text);
-                }
-
-
-                public virtual ActorQuery they()
-                {
-                    return getConversation().they();
-                }
-
-                public virtual ActorQuery they(string text)
-                {
-                    return getConversation().they(text);
-                }
-            }
-
-            public class PlayerQuery : ActorQuery
-            {
-                internal PlayerQuery(Conversation conversation, GameObject actor)
-                    : base(conversation, actor) { }
-
-
-                /* Override Chainable Accessors */
-
-                public new PlayerQuery say(string text)
-                {
-                    base.say(text);
-                    return this;
-                }
-
-                public new PlayerQuery say(string text, float duration)
-                {
-                    base.say(text, duration);
-                    return this;
-                }
-
-
-                public new PlayerQuery delay(float duration)
-                {
-                    base.delay(duration);
-                    return this;
-                }
-
-                public new PlayerQuery act(Fragment action)
-                {
-                    base.act(action);
-                    return this;
-                }
-
-
-                public new PlayerQuery delay(float delay, Fragment action)
-                {
-                    base.delay(delay, action);
-                    return this;
-                }
-
-                public new PlayerQuery act(Fragment action, float duration)
-                {
-                    base.act(action, duration);
-                    return this;
-                }
-
-
-                /* Sub-Queries */
-
-                public Choice choice()
-                {
-                    return new Choice(this);
-                }
-
-
-                /* Choice Inner Class */
-
-                public class Choice
-                {
-                    public delegate void Fragment(Choice choice);
-                    public delegate void Action();
-
-                    private PlayerQuery parent;
-                    private List<Option> options = new List<Option>();
-
-
-                    /* Constructors */
-
-                    internal Choice(PlayerQuery playerQuery)
-                    {
-                        this.parent = playerQuery;
-                    }
-
-
-                    /* Chainable Accessors */
-
-                    public Choice option(string text, Fragment action)
-                    {
-                        options.Add(new Option(text, () => action(this)));
-                        return this;
-                    }
-
-                    public Choice option(string text, string nextStateName)
-                    {
-                        return option(text, getQuest().getState(nextStateName));
-                    }
-
-                    public Choice option(string text, State nextState)
-                    {
-                        options.Add(new Option(text, () => nextState.enter()));
-                        return this;
-                    }
-
-
-                    public struct Option
-                    {
-                        public readonly string text;
-                        public readonly Action action;
-
-                        public Option(string text, Action action)
-                        {
-                            this.text = text;
-                            this.action = action;
-                        }
-                    }
-
-
-                    /* Upwards chainability */
-
-                    public PlayerQuery up()
-                    {
-                        return parent;
-                    }
-
-                    public PlayerQuery getPlayerQuery()
-                    {
-                        return up();
-                    }
-
-                    public Conversation getConversation()
-                    {
-                        return up().up();
-                    }
-
-                    public State getState()
-                    {
-                        return up().up().up();
-                    }
-
-                    public Quest getQuest()
-                    {
-                        return up().up().up().up();
-                    }
-
-
-                    public virtual State state()
-                    {
-                        return parent.state();
-                    }
-
-                    public virtual State state(string name)
-                    {
-                        return parent.state(name);
-                    }
-
-                    public virtual UnspecifiedConversation conversation()
-                    {
-                        return parent.conversation();
-                    }
-
-                    public virtual PlayerConversation conversation(GameObject actor)
-                    {
-                        return parent.conversation(actor);
-                    }
-
-                    public virtual Conversation conversation(GameObject actor1, GameObject actor2)
-                    {
-                        return parent.conversation(actor1, actor2);
-                    }
-
-                    public virtual ActorQuery participant1()
-                    {
-                        return parent.participant1();
-                    }
-
-                    public virtual ActorQuery participant2()
-                    {
-                        return parent.participant2();
-                    }
-
-                    public virtual ActorQuery participant1(string speech)
-                    {
-                        return parent.participant1(speech);
-                    }
-
-                    public virtual ActorQuery participant2(string speech)
-                    {
-                        return parent.participant2(speech);
-                    }
-
-                    public virtual Choice choice()
-                    {
-                        return parent.choice();
-                    }
+                    return parent.choice();
                 }
             }
         }
     }
 
+    
+    /** Activators **/
+
+    /* Activators - Common */
 
     public static class Activators
     {

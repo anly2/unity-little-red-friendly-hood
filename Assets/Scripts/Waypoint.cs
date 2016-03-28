@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class Checkpoint : MonoBehaviour {
+public class Waypoint : MonoBehaviour {
 
     void OnTriggerEnter2D(Collider2D other)
     {

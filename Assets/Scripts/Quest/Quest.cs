@@ -8,7 +8,7 @@ public delegate void Activator(ActivationDelegate activateCB);
 public class Quest : MonoBehaviour {
     private string _name;
     private string _description;
-    private Activator activator;
+    //private Activator activator;
     private State activeState;
     private State initialState; //the first State with no Activator; managed by the inner class State
     private Dictionary<string, State> states; //managed by the inner class State
@@ -92,7 +92,7 @@ public class Quest : MonoBehaviour {
 
     public Quest activatedBy(Activator activator)
     {
-        this.activator = activator;
+        //this.activator = activator;
         activator(() => this.activate());
         return this;
     }
@@ -247,11 +247,10 @@ public class Quest : MonoBehaviour {
 
     /* Abstract Scene Inner Class */
 
-    public class AbstractScene
+    public abstract class AbstractScene
     {
         public delegate void Fragment(AbstractScene conversation);
-        public delegate void ContinueCallback();
-        public delegate float Action(AbstractScene conversation, ContinueCallback continueCB);
+        public delegate IEnumerator Action();
 
         private State parent;
         private Fragment _before;
@@ -304,25 +303,10 @@ public class Quest : MonoBehaviour {
         {
             foreach (Action action in actions)
             {
-                bool completed = false;
-                float actionDuration = action(this, () => completed = true);
+                IEnumerator act = action();
 
-                if (actionDuration < 0)
-                {
-                    while (!completed)
-                        yield return null;
-                }
-
-                if (actionDuration > Mathf.Epsilon)
-                {
-                    float completionTime = Time.time + actionDuration;
-                    while (!completed && completionTime > Time.time)
-                        yield return null;
-
-                    //// Same as:
-                    //yield return new WaitForSeconds(actionDuration)
-                    //// This way, though, the 'completeCB' is able to interrupt the wait
-                }
+                while (act.MoveNext())
+                    yield return act.Current;
             }
         }
 
@@ -408,39 +392,45 @@ public class Quest : MonoBehaviour {
 
         public ActorQuery say(string text)
         {
-            float duration = calculateSpeechDuration(text);
+            float duration = text.EstimateReadTime();
             return say(text, duration);
         }
 
         public ActorQuery say(string text, float duration)
         {
-            parent.actions.Add((conversation, continueCB) =>
-            {
-                _actor.Say(text);
-                //#! after duration, clear Say
-                return duration;
-            });
+            parent.actions.Add(() => _say(text, duration));
             return this;
+        }
+
+        private IEnumerator _say(string text, float duration)
+        { //## wish this could be anonymous...
+            SpeechBubble speechBubble = _actor.Say(text);
+            yield break;
         }
 
 
         public ActorQuery delay(float duration)
         {
-            parent.actions.Add((conversation, continueCB) =>
-            {
-                return duration;
-            });
+            parent.actions.Add(() => _delay(duration));
             return this;
         }
 
+        private IEnumerator _delay(float duration)
+        {
+            yield return new WaitForSeconds(duration);
+        }
+
+
         public ActorQuery act(Fragment action)
         {
-            parent.actions.Add((conversation, continueCB) =>
-            {
-                action(this);
-                return 0;
-            });
+            parent.actions.Add(() => _act(action));
             return this;
+        }
+
+        private IEnumerator _act(Fragment action)
+        {
+            action(this);
+            yield break;
         }
 
 
@@ -453,15 +443,7 @@ public class Quest : MonoBehaviour {
         {
             return act(action).delay(duration);
         }
-
-
-        private static float timePerChar = 0.1f;
-
-        public static float calculateSpeechDuration(string text)
-        {
-            return text.Length * timePerChar;
-        }
-
+        
 
         /* Upwards chainability */
 

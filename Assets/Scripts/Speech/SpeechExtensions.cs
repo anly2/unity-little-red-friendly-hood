@@ -1,64 +1,95 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System;
 
 public static class SpeechExtensions {
 
-    public static SpeechBubble Say(this Speaker speaker, string text)
+    public static SpeechBubble Say(this Speaker speaker, string text,
+        float? timeShown = null,
+        Vector3? speechPosition = null,
+        SpeechBubble.Side? tipSide = null,
+        float? tipPositionOnSide = null)
     {
-        return Say(speaker.gameObject, text);
+        useSpeechPivot(speaker, ref speechPosition, ref tipSide, ref tipPositionOnSide);
+
+        return speaker.gameObject.Say(text, timeShown, speechPosition, tipSide.Value, tipPositionOnSide.Value);
     }
 
-    public static SpeechBubble Say(this GameObject speaker, string text)
+    private static void useSpeechPivot(Speaker speaker, ref Vector3? position, ref SpeechBubble.Side? side, ref float? positionOnSide)
     {
-        // Try to use the Speaker script component
-        try
-        {
-            Vector3 speechPivot = speaker.GetComponent<Speaker>().speechPivot;
+        Vector3 speechPivot = speaker.speechPivot;
 
-            SpeechBubble.Side side = (speechPivot.x < 0f) ? SpeechBubble.Side.Right : SpeechBubble.Side.Left;
-            float positionOnSide = Mathf.Lerp(0f, 1f, speechPivot.y / 2 + 0.5f);
+        if (!side.HasValue)
+            side = (speechPivot.x < 0f) ? SpeechBubble.Side.Right : SpeechBubble.Side.Left;
 
-            Vector3 extents = speaker.GetComponent<Renderer>().bounds.extents;
+        if (!positionOnSide.HasValue)
+            positionOnSide = Mathf.Lerp(0f, 1f, speechPivot.y / 2 + 0.5f);
 
-            speechPivot.x *= extents.x;
-            speechPivot.y *= extents.y;
+        Vector3 extents = speaker.GetComponent<Renderer>().bounds.extents;
 
-            Vector3 speechPosition = speaker.transform.position + speechPivot;
+        speechPivot.x *= extents.x;
+        speechPivot.y *= extents.y;
 
-            return Say(speaker, text, speechPosition, side, positionOnSide);
+        if (!position.HasValue)
+            position = speaker.transform.position + speechPivot;
+    }
+
+    private static void useSpeechPivot(Speaker speaker, ref Vector3? position)
+    {
+        SpeechBubble.Side? __s = SpeechBubble.Side.Left; //ignored
+        float? __t = 1; //ignored
+        useSpeechPivot(speaker, ref position, ref __s, ref __t);
+    }
+
+
+    /**
+    @param timeShown - null to estimate based on text length; negative to denote 'indefinataly'
+    */
+    public static SpeechBubble Say(this GameObject speaker, string text,
+        float? timeShown = null,
+        Vector3? speechPosition = null,
+        SpeechBubble.Side tipSide = SpeechBubble.Side.Left,
+        float tipPositionOnSide = 0f)
+    {
+        { // Get the position without poluting the namespace
+            Speaker speakerComponent = speaker.GetComponent<Speaker>();
+
+            if (speakerComponent != null)
+                useSpeechPivot(speakerComponent, ref speechPosition);
         }
-        catch (System.NullReferenceException) //if not 'Speaker'
-        {
-            return Say(speaker, text, speaker.transform.position);
-        }
-    }
+        
+        //Handle default values
+        float duration = timeShown.HasValue ? timeShown.Value : text.EstimateReadTime();
+        Vector3 position = speechPosition.HasValue ? speechPosition.Value : speaker.transform.position;
 
-    public static SpeechBubble Say(this GameObject speaker, string text, Vector3 speechPosition)
-    {
-        return Say(speaker, text, speechPosition, SpeechBubble.Side.Left, 0f);
-    }
-
-    public static SpeechBubble Say(this GameObject speaker, string text, Vector3 speechPosition, SpeechBubble.Side tipSide, float tipPositionOnSide)
-    {
-        return Say(speaker, text, speechPosition, new SpeechBubble.Tip(tipPositionOnSide, tipSide));
-    }
-
-    public static SpeechBubble Say(this GameObject speaker, string text, Vector3 speechPosition, SpeechBubble.Tip tip)
-    {
         // Initialise the Speech Bubble
-        SpeechBubble speechBubble = Object.Instantiate(SpeechBubble.prefab).GetComponent<SpeechBubble>();
+        SpeechBubble speechBubble = GameObject.Instantiate(SpeechBubble.prefab).GetComponent<SpeechBubble>();
         speechBubble.SetText(text);
-        speechBubble.SetTip(tip);
+        speechBubble.SetTip(tipSide, tipPositionOnSide);
 
         // Add to a Canvas (the UI canvas in this case)
         speechBubble.transform.SetParent(GameObject.FindWithTag("Canvas").transform, false);
-        
+
         // Position the Speech Bubble on the UI canvas
-        Vector3 screenPosition = Camera.main.WorldToScreenPoint(speechPosition);
+        Vector3 screenPosition = Camera.main.WorldToScreenPoint(position);
         (speechBubble.transform as RectTransform).anchoredPosition = screenPosition;
+
+        // Invoke Hide after the desired time has passed
+        if (duration >= 0)
+            speechBubble.Invoke("Hide", duration);
 
         return speechBubble;
     }
+
+
+
+    private static float timePerChar = 0.25f;
+
+    public static float EstimateReadTime(this string text)
+    {
+        return 1f + text.Length * timePerChar;
+    }
+
 
     /*todo
     -(unnecessary) create an in-world canvas, rather than using the UI one 

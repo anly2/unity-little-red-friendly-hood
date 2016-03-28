@@ -19,6 +19,17 @@ public class SpeechBubble : MonoBehaviour {
     }
 
 
+    public void Hide()
+    {
+        Remove();
+    }
+
+    public void Remove()
+    {
+        Destroy(gameObject);
+    }
+
+
     /* Managing the speech Text */
 
     public void SetText(string text)

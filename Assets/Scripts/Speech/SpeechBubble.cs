@@ -6,9 +6,9 @@ public class SpeechBubble : MonoBehaviour {
 
     public static GameObject prefab = Resources.Load("Speech Bubble") as GameObject;
 
-    private RectTransform got_Background; //GameObject Transform
-    private Text goc_Text; //GameObject Component
-    private RectTransform got_Tip; //GameObject Transform
+    protected RectTransform got_Background; //GameObject Transform
+    protected Text goc_Text; //GameObject Component
+    protected RectTransform got_Tip; //GameObject Transform
 
     void Awake () {
         this.got_Background  = GetComponent<RectTransform>();
@@ -86,7 +86,7 @@ public class SpeechBubble : MonoBehaviour {
         SetTip(new Tip(position, side));
     }
 
-    public void SetTip(Tip tip)
+    public virtual void SetTip(Tip tip)
     {
         //Constant?
         Vector2 insets = new Vector2(1.5f, 1.5f); //the insets of the background sprite

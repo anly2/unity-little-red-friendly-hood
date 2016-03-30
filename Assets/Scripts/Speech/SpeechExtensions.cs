@@ -91,6 +91,9 @@ public static class SpeechExtensions {
         Vector3 screenPosition = Camera.main.WorldToScreenPoint(position);
         (speechBubble.transform as RectTransform).anchoredPosition = screenPosition;
 
+        //Anchor the Speech Bubble to the in-world Game Object
+        speechBubble.Anchor(speaker);
+
         // Invoke Hide after the desired time has passed
         if (duration >= 0)
             speechBubble.Invoke("Hide", duration);

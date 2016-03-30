@@ -10,6 +10,7 @@ public class SpeechBubble : MonoBehaviour {
     protected Text goc_Text; //GameObject Component
     protected RectTransform got_Tip; //GameObject Transform
 
+
     void Awake () {
         this.got_Background  = GetComponent<RectTransform>();
         this.goc_Text = transform.Find("Text").GetComponent<Text>();
@@ -186,4 +187,26 @@ public class SpeechBubble : MonoBehaviour {
     public Color textColor { get { return GetTextColor(); } set { SetTextColor(value); } }
 
     public Color foregroundColor { get { return GetTextColor(); } set { SetTextColor(value); } }
+
+
+    /* Anchoring to a World GameObject */
+
+    private Anchor _anchor = null;
+
+    public Anchor Anchor(GameObject anchoring)
+    {
+        if (this.anchor != null)
+            Destroy(this.anchor);
+
+        Anchor anchor = anchoring.AddComponent<Anchor>();
+        anchor.anchored = this.gameObject;
+        this._anchor = anchor;
+        return anchor;
+    }
+
+    public GameObject anchor
+    {
+        get { return _anchor.gameObject; }
+        set { Anchor(value); }
+    }
 }

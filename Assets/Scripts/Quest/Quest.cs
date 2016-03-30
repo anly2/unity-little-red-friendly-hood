@@ -45,7 +45,8 @@ public class Quest : MonoBehaviour {
 
     public State getState(string name)
     {
-        return states[name];
+        State s;
+        return (states.TryGetValue(name, out s)) ? s : null;
     }
 
     public Quest enter(string stateName)
@@ -108,6 +109,11 @@ public class Quest : MonoBehaviour {
 
     public virtual State state(string name)
     {
+        State s = getState(name);
+
+        if (s != null)
+            return s;
+
         return this.state().name(name);
     }
 
@@ -131,7 +137,7 @@ public class Quest : MonoBehaviour {
 
         /* Constructors */
 
-        public State(Quest quest)
+        internal State(Quest quest)
         {
             this.parent = quest;
             parent.states.Add(this.ToString(), this);
@@ -179,7 +185,9 @@ public class Quest : MonoBehaviour {
 
         public State enter()
         {
-            parent.activeState.leave();
+            if (parent.activeState != null)
+                parent.activeState.leave();
+
             parent.activeState = this;
 
             if (_before != null)
@@ -342,16 +350,16 @@ public class Quest : MonoBehaviour {
         }
 
 
-        public AbstractScene transition(State state)
+        public State transition(State state)
         {
             actions.Add(() => _().Then(() => state.enter()));
-            return this;
+            return state;
         }
 
-        public AbstractScene transition(string stateName)
+        public State transition(string stateName)
         {
             actions.Add(() => _().Then(() => getQuest().getState(stateName).enter()));
-            return this;
+            return state(stateName);
         }
 
         private IEnumerator _() { yield break; }
@@ -527,21 +535,6 @@ public class Quest : MonoBehaviour {
         }
 
 
-        /* Inherited from AbstractScene */
-
-        public ActorQuery transition(State state)
-        {
-            parent.transition(state);
-            return this;
-        }
-
-        public ActorQuery transition(string stateName)
-        {
-            parent.transition(stateName);
-            return this;
-        }
-
-
         /* Upwards chainability */
 
         public AbstractScene up()
@@ -588,6 +581,16 @@ public class Quest : MonoBehaviour {
         public virtual Conversation conversation(GameObject actor1, GameObject actor2)
         {
             return parent.conversation(actor1, actor2);
+        }
+        
+        public virtual State transition(State state)
+        {
+            return parent.transition(state);
+        }
+
+        public virtual State transition(string stateName)
+        {
+            return parent.transition(stateName);
         }
     }
 
@@ -710,22 +713,7 @@ public class Quest : MonoBehaviour {
                 base.move(destination, travelTime);
                 return this;
             }
-
-
-            /* Inherited from AbstractScene */
-
-            public new ActorQuery transition(State state)
-            {
-                base.transition(state);
-                return this;
-            }
-
-            public new ActorQuery transition(string stateName)
-            {
-                base.transition(stateName);
-                return this;
-            }
-
+            
 
             /* Upwards chainability */
 
@@ -821,20 +809,7 @@ public class Quest : MonoBehaviour {
             base.leave();
             return this;
         }
-
         
-        public new Conversation transition(State state)
-        {
-            base.transition(state);
-            return this;
-        }
-
-        public new Conversation transition(string stateName)
-        {
-            base.transition(stateName);
-            return this;
-        }
-
 
         /* Sub-Queries */
 
@@ -927,22 +902,7 @@ public class Quest : MonoBehaviour {
                 base.move(destination, travelTime);
                 return this;
             }
-
-
-            /* Inherited from AbstractScene */
-
-            public new ActorQuery transition(State state)
-            {
-                base.transition(state);
-                return this;
-            }
-
-            public new ActorQuery transition(string stateName)
-            {
-                base.transition(stateName);
-                return this;
-            }
-
+            
 
             /* Upwards chainability */
 
@@ -1026,20 +986,7 @@ public class Quest : MonoBehaviour {
             base.leave();
             return this;
         }
-
-
-        public new PlayerConversation transition(State state)
-        {
-            base.transition(state);
-            return this;
-        }
-
-        public new PlayerConversation transition(string stateName)
-        {
-            base.transition(stateName);
-            return this;
-        }
-
+        
 
         /* Override Superclass Sub-Queries */
 
@@ -1156,22 +1103,7 @@ public class Quest : MonoBehaviour {
                 base.move(destination, travelTime);
                 return this;
             }
-
-
-            /* Inherited from AbstractScene */
-
-            public new ActorQuery transition(State state)
-            {
-                base.transition(state);
-                return this;
-            }
-
-            public new ActorQuery transition(string stateName)
-            {
-                base.transition(stateName);
-                return this;
-            }
-
+            
 
             /* Upwards chainability */
 
@@ -1290,22 +1222,7 @@ public class Quest : MonoBehaviour {
                 base.move(destination, travelTime);
                 return this;
             }
-
-
-            /* Inherited from AbstractScene */
-
-            public new ActorQuery transition(State state)
-            {
-                base.transition(state);
-                return this;
-            }
-
-            public new ActorQuery transition(string stateName)
-            {
-                base.transition(stateName);
-                return this;
-            }
-
+            
 
             /* Sub-Queries */
 
@@ -1458,8 +1375,9 @@ public class Quest : MonoBehaviour {
         public static Activator WorldBegin = (activateCB) => {
             MonoBehaviour m = Instantiate(new GameObject()).AddComponent<MonoBehaviour>();
             m.StartCoroutine(
-                new WaitForEndOfFrame()
-                .Then(() => activateCB())
+                new WaitForSeconds(0)
+                .Then(() =>
+                activateCB())
                 .Then(() => Destroy(m)));
         };
     }

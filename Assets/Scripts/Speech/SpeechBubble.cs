@@ -195,7 +195,7 @@ public class SpeechBubble : MonoBehaviour {
 
     public Anchor Anchor(GameObject anchoring)
     {
-        if (this.anchor != null)
+        if (this._anchor != null)
             Destroy(this.anchor);
 
         Anchor anchor = anchoring.AddComponent<Anchor>();

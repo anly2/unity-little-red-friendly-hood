@@ -447,6 +447,25 @@ public class Quest : MonoBehaviour {
         }
 
 
+        public ActorQuery think(string text)
+        {
+            float duration = text.EstimateReadTime();
+            return think(text, duration);
+        }
+
+        public ActorQuery think(string text, float duration)
+        {
+            parent.actions.Add(() => _think(text, duration));
+            return this;
+        }
+
+        private IEnumerator _think(string text, float duration)
+        {
+            SpeechBubble speechBubble = _actor.Think(text, duration);
+            yield return new WaitForSeconds(duration);
+        }
+
+
         public ActorQuery delay(float duration)
         {
             parent.actions.Add(() => _delay(duration));
@@ -817,6 +836,19 @@ public class Quest : MonoBehaviour {
             }
 
 
+            public new ActorQuery think(string text)
+            {
+                base.think(text);
+                return this;
+            }
+
+            public new ActorQuery think(string text, float duration)
+            {
+                base.think(text, duration);
+                return this;
+            }
+
+
             public new ActorQuery delay(float duration)
             {
                 base.delay(duration);
@@ -1124,6 +1156,19 @@ public class Quest : MonoBehaviour {
             }
 
 
+            public new PlayerQuery think(string text)
+            {
+                base.think(text);
+                return this;
+            }
+
+            public new PlayerQuery think(string text, float duration)
+            {
+                base.think(text, duration);
+                return this;
+            }
+
+
             public new PlayerQuery delay(float duration)
             {
                 base.delay(duration);
@@ -1155,28 +1200,6 @@ public class Quest : MonoBehaviour {
                 base.move(destination, travelTime);
                 return this;
             }
-
-
-            /* Chainable Accessors */
-
-            public PlayerQuery think(string text)
-            {
-                float duration = text.EstimateReadTime();
-                return think(text, duration);
-            }
-
-            public PlayerQuery think(string text, float duration)
-            {
-                parent.actions.Add(() => _think(text, duration));
-                return this;
-            }
-
-            private IEnumerator _think(string text, float duration)
-            {
-                SpeechBubble speechBubble = _actor.Think(text, duration);
-                yield return new WaitForSeconds(duration);
-            }
-
 
 
             /* Sub-Queries */

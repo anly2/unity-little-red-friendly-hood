@@ -466,6 +466,11 @@ public class Quest : MonoBehaviour {
         }
 
 
+        public ActorQuery wait(float time)
+        {
+            return delay(time);
+        }
+
         public ActorQuery delay(float duration)
         {
             parent.actions.Add(() => _delay(duration));
@@ -478,9 +483,13 @@ public class Quest : MonoBehaviour {
         }
 
 
-        public ActorQuery act(Fragment action)
+        public ActorQuery act(Fragment action, float duration = 0f)
         {
             parent.actions.Add(() => _act(action));
+
+            if (duration > 0)
+                wait(duration);
+
             return this;
         }
 
@@ -502,11 +511,6 @@ public class Quest : MonoBehaviour {
             return this;
         }
 
-        public ActorQuery act(Fragment action, float duration)
-        {
-            return act(action).delay(duration);
-        }
-
 
         public ActorQuery move(Vector3 destination, float? travelTime = null)
         {
@@ -520,6 +524,21 @@ public class Quest : MonoBehaviour {
         private IEnumerator _move(Vector3 destination, float duration)
         {
             return _actor.MotionTo(destination, duration);
+        }
+
+
+        /* Inherited from AbstractScene */
+
+        public ActorQuery transition(State state)
+        {
+            parent.transition(state);
+            return this;
+        }
+
+        public ActorQuery transition(string stateName)
+        {
+            parent.transition(stateName);
+            return this;
         }
 
 
@@ -647,28 +666,41 @@ public class Quest : MonoBehaviour {
             }
 
 
+            public new ActorQuery think(string text)
+            {
+                base.think(text);
+                return this;
+            }
+
+            public new ActorQuery think(string text, float duration)
+            {
+                base.think(text, duration);
+                return this;
+            }
+
+
+            public new ActorQuery wait(float time)
+            {
+                base.wait(time);
+                return this;
+            }
+
             public new ActorQuery delay(float duration)
             {
                 base.delay(duration);
                 return this;
             }
 
-            public new ActorQuery act(Fragment action)
+
+            public new ActorQuery act(Fragment action, float duration = 0f)
             {
-                base.act(action);
+                base.act(action, duration);
                 return this;
             }
-
 
             public new ActorQuery delay(float delay, Fragment action)
             {
                 base.delay(delay, action);
-                return this;
-            }
-
-            public new ActorQuery act(Fragment action, float duration)
-            {
-                base.act(action, duration);
                 return this;
             }
 
@@ -678,7 +710,22 @@ public class Quest : MonoBehaviour {
                 base.move(destination, travelTime);
                 return this;
             }
-            
+
+
+            /* Inherited from AbstractScene */
+
+            public new ActorQuery transition(State state)
+            {
+                base.transition(state);
+                return this;
+            }
+
+            public new ActorQuery transition(string stateName)
+            {
+                base.transition(stateName);
+                return this;
+            }
+
 
             /* Upwards chainability */
 
@@ -849,18 +896,24 @@ public class Quest : MonoBehaviour {
             }
 
 
+            public new ActorQuery wait(float time)
+            {
+                base.wait(time);
+                return this;
+            }
+
             public new ActorQuery delay(float duration)
             {
                 base.delay(duration);
                 return this;
             }
 
-            public new ActorQuery act(Fragment action)
+
+            public new ActorQuery act(Fragment action, float duration = 0f)
             {
-                base.act(action);
+                base.act(action, duration);
                 return this;
             }
-
 
             public new ActorQuery delay(float delay, Fragment action)
             {
@@ -868,16 +921,25 @@ public class Quest : MonoBehaviour {
                 return this;
             }
 
-            public new ActorQuery act(Fragment action, float duration)
-            {
-                base.act(action, duration);
-                return this;
-            }
-
 
             public new ActorQuery move(Vector3 destination, float? travelTime = null)
             {
                 base.move(destination, travelTime);
+                return this;
+            }
+
+
+            /* Inherited from AbstractScene */
+
+            public new ActorQuery transition(State state)
+            {
+                base.transition(state);
+                return this;
+            }
+
+            public new ActorQuery transition(string stateName)
+            {
+                base.transition(stateName);
                 return this;
             }
 
@@ -1050,18 +1112,37 @@ public class Quest : MonoBehaviour {
             }
 
 
+            public new ActorQuery think(string text)
+            {
+                base.think(text);
+                return this;
+            }
+
+            public new ActorQuery think(string text, float duration)
+            {
+                base.think(text, duration);
+                return this;
+            }
+
+
+            public new ActorQuery wait(float time)
+            {
+                base.wait(time);
+                return this;
+            }
+
             public new ActorQuery delay(float duration)
             {
                 base.delay(duration);
                 return this;
             }
 
-            public new ActorQuery act(Fragment action)
+
+            public new ActorQuery act(Fragment action, float duration = 0f)
             {
-                base.act(action);
+                base.act(action, duration);
                 return this;
             }
-
 
             public new ActorQuery delay(float delay, Fragment action)
             {
@@ -1069,16 +1150,25 @@ public class Quest : MonoBehaviour {
                 return this;
             }
 
-            public new ActorQuery act(Fragment action, float duration)
-            {
-                base.act(action, duration);
-                return this;
-            }
-
 
             public new ActorQuery move(Vector3 destination, float? travelTime = null)
             {
                 base.move(destination, travelTime);
+                return this;
+            }
+
+
+            /* Inherited from AbstractScene */
+
+            public new ActorQuery transition(State state)
+            {
+                base.transition(state);
+                return this;
+            }
+
+            public new ActorQuery transition(string stateName)
+            {
+                base.transition(stateName);
                 return this;
             }
 
@@ -1169,18 +1259,24 @@ public class Quest : MonoBehaviour {
             }
 
 
+            public new PlayerQuery wait(float time)
+            {
+                base.wait(time);
+                return this;
+            }
+
             public new PlayerQuery delay(float duration)
             {
                 base.delay(duration);
                 return this;
             }
 
-            public new PlayerQuery act(Fragment action)
+
+            public new PlayerQuery act(Fragment action, float duration = 0f)
             {
-                base.act(action);
+                base.act(action, duration);
                 return this;
             }
-
 
             public new PlayerQuery delay(float delay, Fragment action)
             {
@@ -1188,16 +1284,25 @@ public class Quest : MonoBehaviour {
                 return this;
             }
 
-            public new PlayerQuery act(Fragment action, float duration)
-            {
-                base.act(action, duration);
-                return this;
-            }
-
 
             public new PlayerQuery move(Vector3 destination, float? travelTime = null)
             {
                 base.move(destination, travelTime);
+                return this;
+            }
+
+
+            /* Inherited from AbstractScene */
+
+            public new ActorQuery transition(State state)
+            {
+                base.transition(state);
+                return this;
+            }
+
+            public new ActorQuery transition(string stateName)
+            {
+                base.transition(stateName);
                 return this;
             }
 

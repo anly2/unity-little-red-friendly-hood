@@ -184,7 +184,22 @@ public class Quest : MonoBehaviour {
             if (_before != null)
                 _before(this);
 
+            getQuest().StartCoroutine(PlayScenes());
+
             return this;
+        }
+
+        IEnumerator PlayScenes()
+        {
+            foreach (AbstractScene scene in scenes)
+            {
+                if (scene.HasActivator)
+                    continue;
+
+                IEnumerator act = scene.Play();
+                while (act.MoveNext())
+                    yield return act.Current;
+            }
         }
 
         public State leave()
@@ -268,6 +283,11 @@ public class Quest : MonoBehaviour {
         }
         
 
+        /* Accessors */
+
+        public bool HasActivator { get { return activator != null; } }
+
+
         /* Chainable Accessors */
 
         public AbstractScene onEnter(Fragment action)
@@ -292,15 +312,15 @@ public class Quest : MonoBehaviour {
 
         public AbstractScene enter()
         {
-            if (_before != null)
-                _before(this);
-
-            getQuest().StartCoroutine(ExecuteActions());
+            getQuest().StartCoroutine(Play());
             return this;
         }
 
-        IEnumerator ExecuteActions()
+        public IEnumerator Play()
         {
+            if (_before != null)
+                _before(this);
+
             foreach (Action action in actions)
             {
                 IEnumerator act = action();
@@ -308,6 +328,8 @@ public class Quest : MonoBehaviour {
                 while (act.MoveNext())
                     yield return act.Current;
             }
+
+            leave();
         }
 
         public AbstractScene leave()

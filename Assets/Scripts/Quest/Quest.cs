@@ -11,7 +11,8 @@ public class Quest : MonoBehaviour {
     //private Activator activator;
     private State activeState;
     private State initialState; //the first State with no Activator; managed by the inner class State
-    private Dictionary<string, State> states; //managed by the inner class State
+    private Dictionary<string, State> states = new Dictionary<string, State>(); //managed by the inner class State
+
 
     /* Constructors */
 
@@ -339,6 +340,21 @@ public class Quest : MonoBehaviour {
 
             return this;
         }
+
+
+        public AbstractScene transition(State state)
+        {
+            actions.Add(() => _().Then(() => state.enter()));
+            return this;
+        }
+
+        public AbstractScene transition(string stateName)
+        {
+            actions.Add(() => _().Then(() => getQuest().getState(stateName).enter()));
+            return this;
+        }
+
+        private IEnumerator _() { yield break; }
 
 
         /* Upwards chainability */
@@ -740,6 +756,19 @@ public class Quest : MonoBehaviour {
             return this;
         }
 
+        
+        public new Conversation transition(State state)
+        {
+            base.transition(state);
+            return this;
+        }
+
+        public new Conversation transition(string stateName)
+        {
+            base.transition(stateName);
+            return this;
+        }
+
 
         /* Sub-Queries */
 
@@ -868,6 +897,53 @@ public class Quest : MonoBehaviour {
                 return new PlayerQuery(this, actor);
 
             return new ActorQuery(this, actor);
+        }
+
+
+        /* Override Chainable Accessors */
+
+        public new PlayerConversation onEnter(Fragment action)
+        {
+            base.onEnter(action);
+            return this;
+        }
+
+        public new PlayerConversation onLeave(Fragment action)
+        {
+            base.onLeave(action);
+            return this;
+        }
+
+        public new PlayerConversation activatedBy(Activator activator)
+        {
+            base.activatedBy(activator);
+            return this;
+        }
+
+
+        public new PlayerConversation enter()
+        {
+            base.enter();
+            return this;
+        }
+
+        public new PlayerConversation leave()
+        {
+            base.leave();
+            return this;
+        }
+
+
+        public new PlayerConversation transition(State state)
+        {
+            base.transition(state);
+            return this;
+        }
+
+        public new PlayerConversation transition(string stateName)
+        {
+            base.transition(stateName);
+            return this;
         }
 
 

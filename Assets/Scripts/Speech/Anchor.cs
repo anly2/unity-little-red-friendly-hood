@@ -16,8 +16,6 @@ public class Anchor : MonoBehaviour {
 
     private GameObject _anchored;
     private Vector3 lastPosition;
-    private Transformation transformation;
-    private Vector3 offset;
 
 
     public static Vector3 toUI(Vector3 position)

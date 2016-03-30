@@ -465,7 +465,22 @@ public class Quest : MonoBehaviour {
         {
             return act(action).delay(duration);
         }
-        
+
+
+        public ActorQuery move(Vector3 destination, float? travelTime = null)
+        {
+            float duration = travelTime.HasValue ? travelTime.Value :
+                _actor.EstimateTravelTime(destination);
+
+            parent.actions.Add(() => _move(destination, duration));
+            return this;
+        }
+
+        private IEnumerator _move(Vector3 destination, float duration)
+        {
+            return _actor.MotionTo(destination, duration);
+        }
+
 
         /* Upwards chainability */
 
@@ -616,7 +631,14 @@ public class Quest : MonoBehaviour {
                 return this;
             }
 
+
+            public new ActorQuery move(Vector3 destination, float? travelTime = null)
+            {
+                base.move(destination, travelTime);
+                return this;
+            }
             
+
             /* Upwards chainability */
 
             public new virtual Scene up()
@@ -786,6 +808,13 @@ public class Quest : MonoBehaviour {
             }
 
 
+            public new ActorQuery move(Vector3 destination, float? travelTime = null)
+            {
+                base.move(destination, travelTime);
+                return this;
+            }
+
+
             /* Upwards chainability */
 
             public new Conversation up()
@@ -929,6 +958,13 @@ public class Quest : MonoBehaviour {
             public new ActorQuery act(Fragment action, float duration)
             {
                 base.act(action, duration);
+                return this;
+            }
+
+
+            public new ActorQuery move(Vector3 destination, float? travelTime = null)
+            {
+                base.move(destination, travelTime);
                 return this;
             }
 

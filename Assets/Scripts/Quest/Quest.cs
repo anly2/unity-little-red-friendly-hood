@@ -397,8 +397,8 @@ public class Quest : MonoBehaviour {
     {
         public delegate void Fragment(ActorQuery actorQuery);
 
-        private AbstractScene parent;
-        private GameObject _actor;
+        protected AbstractScene parent;
+        protected GameObject _actor;
 
 
         /* Constructors */
@@ -425,9 +425,9 @@ public class Quest : MonoBehaviour {
         }
 
         private IEnumerator _say(string text, float duration)
-        { //## wish this could be anonymous...
-            SpeechBubble speechBubble = _actor.Say(text);
-            yield break;
+        {
+            SpeechBubble speechBubble = _actor.Say(text, duration);
+            yield return new WaitForSeconds(duration);
         }
 
 
@@ -458,7 +458,13 @@ public class Quest : MonoBehaviour {
 
         public ActorQuery delay(float delay, Fragment action)
         {
-            return this.delay(delay).act(action);
+            parent.actions.Add(() =>
+            {
+                return new WaitForSeconds(delay)
+                    .Then(() => action(this));
+            });
+
+            return this;
         }
 
         public ActorQuery act(Fragment action, float duration)
@@ -1066,6 +1072,35 @@ public class Quest : MonoBehaviour {
                 base.act(action, duration);
                 return this;
             }
+
+
+            public new PlayerQuery move(Vector3 destination, float? travelTime = null)
+            {
+                base.move(destination, travelTime);
+                return this;
+            }
+
+
+            /* Chainable Accessors */
+
+            public PlayerQuery think(string text)
+            {
+                float duration = text.EstimateReadTime();
+                return think(text, duration);
+            }
+
+            public PlayerQuery think(string text, float duration)
+            {
+                parent.actions.Add(() => _think(text, duration));
+                return this;
+            }
+
+            private IEnumerator _think(string text, float duration)
+            {
+                SpeechBubble speechBubble = _actor.Think(text, duration);
+                yield return new WaitForSeconds(duration);
+            }
+
 
 
             /* Sub-Queries */

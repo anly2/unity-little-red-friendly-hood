@@ -83,14 +83,6 @@ public static class SpeechExtensions {
 
 
 
-    private static float timePerChar = 0.25f;
-
-    public static float EstimateReadTime(this string text)
-    {
-        return 1f + text.Length * timePerChar;
-    }
-
-
     /*todo
     -(unnecessary) create an in-world canvas, rather than using the UI one 
     */

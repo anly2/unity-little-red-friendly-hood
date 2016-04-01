@@ -307,6 +307,11 @@ public static class SpeechExtensions {
 
     private static Vector3? InferSpeechPivot(this GameObject speaker, SpeechBubble.Side? side, float? positionOnSide)
     {
+        Speaker s = speaker.GetComponent<Speaker>();
+
+        if (s != null)
+            return GetSpeechPivot(speaker);
+
         Renderer r = speaker.GetComponent<Renderer>();
 
         if (r == null)

@@ -1388,11 +1388,9 @@ public class Quest : MonoBehaviour {
     public static class Activators
     {
         public static Activator WorldBegin = (activateCB) => {
-            MonoBehaviour m = Instantiate(new GameObject()).AddComponent<MonoBehaviour>();
-            m.StartCoroutine(
                 new WaitForSeconds(0)
                 .Then(() => activateCB())
-                .Then(() => Destroy(m)));
+                .Start();
         };
 
         public static Activator InRange(GameObject actor1, GameObject actor2, float range)

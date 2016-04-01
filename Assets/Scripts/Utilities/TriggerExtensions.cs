@@ -44,7 +44,7 @@ public static class TriggerExtensions
     public static void WhenInRange(this GameObject actor1, Vector3 position, float radius,
         VetoingAction action)
     {
-        GameObject location = GameObject.Instantiate(new GameObject());
+        GameObject location = new GameObject();
         location.name = "Location Marker";
         location.transform.position = position;
 
@@ -54,7 +54,7 @@ public static class TriggerExtensions
     public static void WhenInRange(this GameObject actor1, GameObject actor2, float radius,
         VetoingAction action)
     {
-        GameObject trigger = MonoBehaviour.Instantiate(new GameObject());
+        GameObject trigger = new GameObject();
         trigger.name = "Trigger: " + actor1.name + " within " + radius + " units";
         trigger.transform.parent = actor2.transform;
         trigger.transform.position = actor2.transform.position;

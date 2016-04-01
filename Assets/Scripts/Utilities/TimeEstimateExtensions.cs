@@ -9,7 +9,7 @@ public static class TimeEstimateExtensions {
     }
 
 
-    private static float timePerUnit = 1f;
+    private static float timePerUnit = 0.75f;
 
     public static float EstimateTravelTime(this GameObject actor, Vector3 destination, float? speed = null)
     {

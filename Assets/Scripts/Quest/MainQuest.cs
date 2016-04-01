@@ -41,13 +41,8 @@ public class MainQuest : Quest {
         state("S1")
             .scene()
                 .actor(wolf)
-                    .act((aq) =>
-                        aq.getQuest().StartCoroutine(
-                            wolf.MotionTo(
-                                Vector3.MoveTowards(
-                                    wolf.transform.position,
-                                    player.transform.position, 2f),
-                                1f)), 1f)
+                    .move(() => Vector3.MoveTowards(
+                        wolf.transform.position, player.transform.position, 2f))
                     .say("Hello");
     }
 }

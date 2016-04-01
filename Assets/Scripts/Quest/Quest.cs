@@ -538,9 +538,21 @@ public class Quest : MonoBehaviour {
 
         public ActorQuery move(Vector3 destination, float? travelTime = null)
         {
-            float duration = travelTime ?? _actor.EstimateTravelTime(destination);
+            return move(() => destination, travelTime);
+        }
 
-            parent.actions.Add(() => _move(destination, duration));
+        public ActorQuery move(GameObject target, float? travelTime = null)
+        {
+            return move(() => target.transform.position, travelTime);
+        }
+
+        public ActorQuery move(Func<Vector3> destinationSupplier, float? travelTime = null)
+        {
+            parent.actions.Add(() => {
+                Vector3 destination = destinationSupplier();
+                float duration = travelTime ?? _actor.EstimateTravelTime(destination);
+                return _move(destination, duration);
+            });
             return this;
         }
 
@@ -723,12 +735,24 @@ public class Quest : MonoBehaviour {
             }
 
 
+            public new ActorQuery move(GameObject target, float? travelTime = null)
+            {
+                base.move(target, travelTime);
+                return this;
+            }
+
             public new ActorQuery move(Vector3 destination, float? travelTime = null)
             {
                 base.move(destination, travelTime);
                 return this;
             }
-            
+
+            public new ActorQuery move(Func<Vector3> destinationSupplier, float? travelTime = null)
+            {
+                base.move(destinationSupplier, travelTime);
+                return this;
+            }
+
 
             /* Upwards chainability */
 
@@ -912,12 +936,24 @@ public class Quest : MonoBehaviour {
             }
 
 
+            public new ActorQuery move(GameObject target, float? travelTime = null)
+            {
+                base.move(target, travelTime);
+                return this;
+            }
+
             public new ActorQuery move(Vector3 destination, float? travelTime = null)
             {
                 base.move(destination, travelTime);
                 return this;
             }
-            
+
+            public new ActorQuery move(Func<Vector3> destinationSupplier, float? travelTime = null)
+            {
+                base.move(destinationSupplier, travelTime);
+                return this;
+            }
+
 
             /* Upwards chainability */
 
@@ -1113,12 +1149,24 @@ public class Quest : MonoBehaviour {
             }
 
 
+            public new ActorQuery move(GameObject target, float? travelTime = null)
+            {
+                base.move(target, travelTime);
+                return this;
+            }
+
             public new ActorQuery move(Vector3 destination, float? travelTime = null)
             {
                 base.move(destination, travelTime);
                 return this;
             }
-            
+
+            public new ActorQuery move(Func<Vector3> destinationSupplier, float? travelTime = null)
+            {
+                base.move(destinationSupplier, travelTime);
+                return this;
+            }
+
 
             /* Upwards chainability */
 
@@ -1232,9 +1280,21 @@ public class Quest : MonoBehaviour {
             }
 
 
+            public new PlayerQuery move(GameObject target, float? travelTime = null)
+            {
+                base.move(target, travelTime);
+                return this;
+            }
+
             public new PlayerQuery move(Vector3 destination, float? travelTime = null)
             {
                 base.move(destination, travelTime);
+                return this;
+            }
+
+            public new PlayerQuery move(Func<Vector3> destinationSupplier, float? travelTime = null)
+            {
+                base.move(destinationSupplier, travelTime);
                 return this;
             }
             

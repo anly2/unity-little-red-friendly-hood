@@ -1,8 +1,9 @@
 ﻿using UnityEngine;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 
-public delegate void ActivationDelegate();
+public delegate bool ActivationDelegate();
 public delegate void Activator(ActivationDelegate activateCB);
 
 public class Quest : MonoBehaviour {
@@ -147,6 +148,9 @@ public class Quest : MonoBehaviour {
         }
 
 
+        public bool IsActive { get { return parent.activeState == this; } }
+
+
         /* Chainable Accessors */
 
         public State name(string name)
@@ -178,7 +182,7 @@ public class Quest : MonoBehaviour {
         public State activatedBy(Activator activator)
         {
             this.activator = activator;
-            activator(() => this.enter());
+            activator(() => { this.enter(); return true; });
             return this;
         }
 
@@ -314,13 +318,25 @@ public class Quest : MonoBehaviour {
         public AbstractScene activatedBy(Activator activator)
         {
             this.activator = activator;
-            activator(() => this.enter());
+            activator(() =>
+            {
+                try {
+                    this.enter();
+                    return true;
+                }
+                catch (InvalidOperationException) {
+                    return false;
+                }
+            });
             return this;
         }
 
 
         public AbstractScene enter()
         {
+            if (!parent.IsActive)
+                throw new InvalidOperationException("The Quest State that this scene belongs to is not active!");
+
             getQuest().StartCoroutine(Play());
             return this;
         }
@@ -522,8 +538,7 @@ public class Quest : MonoBehaviour {
 
         public ActorQuery move(Vector3 destination, float? travelTime = null)
         {
-            float duration = travelTime.HasValue ? travelTime.Value :
-                _actor.EstimateTravelTime(destination);
+            float duration = travelTime ?? _actor.EstimateTravelTime(destination);
 
             parent.actions.Add(() => _move(destination, duration));
             return this;
@@ -1376,9 +1391,14 @@ public class Quest : MonoBehaviour {
             MonoBehaviour m = Instantiate(new GameObject()).AddComponent<MonoBehaviour>();
             m.StartCoroutine(
                 new WaitForSeconds(0)
-                .Then(() =>
-                activateCB())
+                .Then(() => activateCB())
                 .Then(() => Destroy(m)));
         };
+
+        public static Activator InRange(GameObject actor1, GameObject actor2, float range)
+        {
+            return (activationCB) => actor1.WhenInRange(actor2, range,
+                new TriggerExtensions.VetoingAction(activationCB));
+        }
     }
 }

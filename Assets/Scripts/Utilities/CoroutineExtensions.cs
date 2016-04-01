@@ -86,8 +86,30 @@ public static class CoroutineExtensions
         yield return self;
         yield return then();
     }
+
+
+    private static MonoBehaviour anonymousCoroutineContainer = null;
+
+    private static MonoBehaviour GetAnonymousCoroutineContainer()
+    {
+        if (anonymousCoroutineContainer != null)
+            return anonymousCoroutineContainer;
+
+        GameObject container = new GameObject();
+        container.name = "Anonymous Coroutine Container";
+
+        MonoBehaviour script = container.AddComponent<MonoBehaviour>();
+        anonymousCoroutineContainer = script;
+
+        return anonymousCoroutineContainer;
+    }
+
+    public static AttachedCoroutine Start(this IEnumerator coroutine)
+    {
+        return Start(coroutine, GetAnonymousCoroutineContainer());
+    }
     
-    
+
     public static AttachedCoroutine Start(this IEnumerator coroutine, MonoBehaviour script)
     {
         return new AttachedCoroutine(script.StartCoroutine(coroutine), script);

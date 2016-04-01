@@ -2,11 +2,10 @@
 using System.Collections;
 
 public static class TimeEstimateExtensions {
-    private static float timePerChar = 0.25f;
 
     public static float EstimateReadTime(this string text)
     {
-        return 1f + text.Length * timePerChar;
+        return Mathf.Max(2, 8 * Mathf.Log10(text.Length / 10));
     }
 
 

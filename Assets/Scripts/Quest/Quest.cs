@@ -839,6 +839,25 @@ public class Quest : MonoBehaviour {
             }
 
 
+            public new ActorQuery follow(GameObject actor, bool displaceTarget = true)
+            {
+                base.follow(actor, displaceTarget);
+                return this;
+            }
+
+            public new ActorQuery follow(GameObject actor, UnfollowActivator unfollowActivator, bool displaceTarget = true)
+            {
+                base.follow(actor, unfollowActivator, displaceTarget);
+                return this;
+            }
+
+            public new ActorQuery follow(GameObject actor, out UnfollowCallback unfollowCallback, bool displaceTarget = true)
+            {
+                base.follow(actor, out unfollowCallback, displaceTarget);
+                return this;
+            }
+
+
             /* Upwards chainability */
 
             public new virtual Scene up()
@@ -1036,6 +1055,25 @@ public class Quest : MonoBehaviour {
             public new ActorQuery move(Func<Vector3> destinationSupplier, float? travelTime = null)
             {
                 base.move(destinationSupplier, travelTime);
+                return this;
+            }
+
+
+            public new ActorQuery follow(GameObject actor, bool displaceTarget = true)
+            {
+                base.follow(actor, displaceTarget);
+                return this;
+            }
+
+            public new ActorQuery follow(GameObject actor, UnfollowActivator unfollowActivator, bool displaceTarget = true)
+            {
+                base.follow(actor, unfollowActivator, displaceTarget);
+                return this;
+            }
+
+            public new ActorQuery follow(GameObject actor, out UnfollowCallback unfollowCallback, bool displaceTarget = true)
+            {
+                base.follow(actor, out unfollowCallback, displaceTarget);
                 return this;
             }
 
@@ -1253,6 +1291,25 @@ public class Quest : MonoBehaviour {
             }
 
 
+            public new ActorQuery follow(GameObject actor, bool displaceTarget = true)
+            {
+                base.follow(actor, displaceTarget);
+                return this;
+            }
+
+            public new ActorQuery follow(GameObject actor, UnfollowActivator unfollowActivator, bool displaceTarget = true)
+            {
+                base.follow(actor, unfollowActivator, displaceTarget);
+                return this;
+            }
+
+            public new ActorQuery follow(GameObject actor, out UnfollowCallback unfollowCallback, bool displaceTarget = true)
+            {
+                base.follow(actor, out unfollowCallback, displaceTarget);
+                return this;
+            }
+
+
             /* Upwards chainability */
 
             public new PlayerConversation getConversation()
@@ -1382,7 +1439,26 @@ public class Quest : MonoBehaviour {
                 base.move(destinationSupplier, travelTime);
                 return this;
             }
-            
+
+
+            public new PlayerQuery follow(GameObject actor, bool displaceTarget = true)
+            {
+                base.follow(actor, displaceTarget);
+                return this;
+            }
+
+            public new PlayerQuery follow(GameObject actor, UnfollowActivator unfollowActivator, bool displaceTarget = true)
+            {
+                base.follow(actor, unfollowActivator, displaceTarget);
+                return this;
+            }
+
+            public new PlayerQuery follow(GameObject actor, out UnfollowCallback unfollowCallback, bool displaceTarget = true)
+            {
+                base.follow(actor, out unfollowCallback, displaceTarget);
+                return this;
+            }
+
 
             /* Sub-Queries */
 

@@ -562,6 +562,91 @@ public class Quest : MonoBehaviour {
         }
 
 
+        public delegate void UnfollowCallback();
+        public delegate void UnfollowActivator(UnfollowCallback unfollowCallback);
+
+        public ActorQuery follow(GameObject actor, bool displaceTarget = true)
+        {
+            UnfollowCallback unfollow;
+            follow(actor, out unfollow, displaceTarget);
+
+            return this;
+        }
+
+        public ActorQuery follow(GameObject actor, UnfollowActivator unfollowActivator, bool displaceTarget = true)
+        {
+            UnfollowCallback unfollowCB;
+            follow(actor, out unfollowCB, displaceTarget);
+
+            unfollowActivator(unfollowCB);
+
+            return this;
+        }
+
+        public ActorQuery follow(GameObject actor, out UnfollowCallback unfollowCallback, bool displaceTarget = true)
+        {
+            GameObject target = null;
+            Follower follower = null;
+
+            act(aq =>
+            {
+                target = new GameObject("Follower Target");
+                target.transform.position = actor.transform.position;
+                target.transform.parent = actor.transform;
+
+                follower = _actor.AddComponent<Follower>();
+                follower.target = target;
+
+
+                if (displaceTarget)
+                {
+                    float w = 0;
+
+                    Renderer r = _actor.GetComponent<Renderer>();
+                    if (r != null)
+                        w = r.bounds.size.x;
+
+                    Collider2D c2 = _actor.GetComponent<Collider2D>();
+                    if (c2 != null)
+                        w = c2.bounds.size.x;
+
+                    Collider c = _actor.GetComponent<Collider>();
+                    if (c != null)
+                        w = c.bounds.size.x;
+
+
+                    target.transform.Translate(new Vector3(w, 0, 0));
+                }
+            });
+
+            unfollowCallback = () =>
+            {
+                if (target == null)
+                    return;
+
+                Destroy(target);
+                Destroy(follower);
+            };
+
+            return this;
+        }
+
+        public class Follower : MonoBehaviour
+        {
+            public GameObject target;
+
+            void Update()
+            {
+                if (target == null)
+                    return;
+
+                this.gameObject.transform.position = Vector3.MoveTowards(
+                    transform.position, target.transform.position,
+                    gameObject.GetSpeed() * Time.deltaTime);
+            }
+        }
+
+
         /* Upwards chainability */
 
         public AbstractScene up()

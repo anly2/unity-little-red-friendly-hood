@@ -9,8 +9,6 @@ public static class TimeEstimateExtensions {
     }
 
 
-    private static float unitsPerSecond = 2f;
-
     public static float EstimateTravelTime(this GameObject actor, Vector3 destination, float? speed = null)
     {
         return actor.EstimateTravelTime(actor.transform.position, destination, speed);
@@ -22,13 +20,5 @@ public static class TimeEstimateExtensions {
         float distance = Vector3.Distance(position, destination);
 
         return (distance / _speed);
-    }
-
-    public static float GetSpeed(this GameObject actor)
-    {
-        // if has a special component
-        //      use the value defined on that component
-
-        return unitsPerSecond;
     }
 }

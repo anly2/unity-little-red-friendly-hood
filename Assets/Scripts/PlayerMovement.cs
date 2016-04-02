@@ -1,9 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class PlayerMovement : MonoBehaviour {
-
-    public float speed;
+public class PlayerMovement : Movement {
     
     private Rigidbody2D rb;
 

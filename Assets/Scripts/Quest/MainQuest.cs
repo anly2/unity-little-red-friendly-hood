@@ -41,8 +41,13 @@ public class MainQuest : Quest {
         state("S1")
             .scene()
                 .actor(wolf)
-                    .move(() => Vector3.MoveTowards(
-                        wolf.transform.position, player.transform.position, 2f))
-                    .say("Hello");
+                    .act(aq =>
+                    {
+                        player.SetSpeed(player.GetSpeed() / 2);
+                        wolf.SetSpeed(player.GetSpeed());
+                    })
+                    .follow(player)
+                    .say("Hello")
+                    .act(aq => player.SetSpeed(player.GetSpeed() * 2));
     }
 }

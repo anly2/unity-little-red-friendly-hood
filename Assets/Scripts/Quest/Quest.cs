@@ -602,10 +602,6 @@ public class Quest : MonoBehaviour {
                 {
                     float w = 0;
 
-                    Renderer r = _actor.GetComponent<Renderer>();
-                    if (r != null)
-                        w = r.bounds.size.x;
-
                     Collider2D c2 = _actor.GetComponent<Collider2D>();
                     if (c2 != null)
                         w = c2.bounds.size.x;
@@ -613,6 +609,10 @@ public class Quest : MonoBehaviour {
                     Collider c = _actor.GetComponent<Collider>();
                     if (c != null)
                         w = c.bounds.size.x;
+
+                    Renderer r = _actor.GetComponent<Renderer>();
+                    if (r != null)
+                        w = r.bounds.size.x;
 
 
                     target.transform.Translate(new Vector3(w, 0, 0));

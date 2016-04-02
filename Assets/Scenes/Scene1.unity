@@ -220,7 +220,21 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   speakerName: 
-  speechPivot: {x: -0.55, y: -0.55}
+  speechPivot: {x: -0.4, y: 0}
+--- !u!61 &299530708
+BoxCollider2D:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 299530703}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_Offset: {x: 0.03, y: -0.04}
+  serializedVersion: 2
+  m_Size: {x: 0.7, y: 0.85}
 --- !u!1 &517813710 stripped
 GameObject:
   m_PrefabParentObject: {fileID: 115338, guid: c9095b7e33c42a74fbf34a65fadae055, type: 2}
@@ -726,9 +740,43 @@ Prefab:
       propertyPath: m_Constraints
       value: 4
       objectReference: {fileID: 0}
+    - target: {fileID: 6120170, guid: c9095b7e33c42a74fbf34a65fadae055, type: 2}
+      propertyPath: m_Size.x
+      value: 0.7
+      objectReference: {fileID: 0}
+    - target: {fileID: 6120170, guid: c9095b7e33c42a74fbf34a65fadae055, type: 2}
+      propertyPath: m_Size.y
+      value: 0.85
+      objectReference: {fileID: 0}
+    - target: {fileID: 6120170, guid: c9095b7e33c42a74fbf34a65fadae055, type: 2}
+      propertyPath: m_Offset.y
+      value: -0.04
+      objectReference: {fileID: 0}
+    - target: {fileID: 6120170, guid: c9095b7e33c42a74fbf34a65fadae055, type: 2}
+      propertyPath: m_Offset.x
+      value: 0.03
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: c9095b7e33c42a74fbf34a65fadae055, type: 2}
   m_IsPrefabParent: 0
+--- !u!1 &1784450415 stripped
+GameObject:
+  m_PrefabParentObject: {fileID: 112412, guid: 9f71a1a5b354932419ebae77a4627c76, type: 2}
+  m_PrefabInternal: {fileID: 1965609259}
+--- !u!61 &1784450418
+BoxCollider2D:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1784450415}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_Offset: {x: 0, y: 0}
+  serializedVersion: 2
+  m_Size: {x: 0.1, y: 0.1}
 --- !u!1001 &1905996675
 Prefab:
   m_ObjectHideFlags: 0

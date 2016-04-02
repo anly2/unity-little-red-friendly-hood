@@ -26,14 +26,16 @@ public class MainQuest : Quest {
 
             .scene()
                 .actor(mother)
+                    .act(aq => player.SetSpeed(0.1f))
                     .wait(1.5f)
+                    .act(aq => player.SetSpeed(0.25f))
                     .say("Come, Little Red-Cap, here is a piece of cake and a bottle of wine; take them to your grandmother, she is ill and weak, and they will do her good.")
                     .say("Set out before it gets hot, and when you are going, walk nicely and quietly and do not run off the path, or you may fall and break the bottle, and then your grandmother will get nothing.")
                     .say("And when you go into her room, don't forget to say, \"Good morning\", and don't peep into every corner before you do it.")
                 .actor(player)
                     .say("I will take great care.")
-                .actor(mother)
-                    .act(aq => mother.FadeOut(0.5f))
+                    .act(aq => mother.FadeOut(0.5f).Then(() => mother.SetActive(false)).Start(), 0.5f)
+                    .act(aq => player.SetSpeed(1.5f))
             .scene()
                 .activatedBy(Activators.InRange(player, wolf, 4f))
                 .transition("S1");
@@ -44,7 +46,7 @@ public class MainQuest : Quest {
                     .act(aq =>
                     {
                         player.SetSpeed(player.GetSpeed() / 2);
-                        wolf.SetSpeed(player.GetSpeed());
+                        wolf.SetSpeed(player.GetSpeed() * 1.75f);
                     })
                     .follow(player)
                     .say("Hello")

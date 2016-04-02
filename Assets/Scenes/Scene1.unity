@@ -93,9 +93,9 @@ GameObject:
   serializedVersion: 4
   m_Component:
   - 4: {fileID: 229678836}
-  - 60: {fileID: 229678837}
+  - 68: {fileID: 229678837}
   m_Layer: 0
-  m_Name: NavMesh
+  m_Name: Forest bounds
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -113,8 +113,8 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1237966090}
   m_RootOrder: 1
---- !u!60 &229678837
-PolygonCollider2D:
+--- !u!68 &229678837
+EdgeCollider2D:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
@@ -126,34 +126,40 @@ PolygonCollider2D:
   m_UsedByEffector: 0
   m_Offset: {x: 0, y: 0}
   m_Points:
-    m_Paths:
-    - - {x: -3.8373642, y: 4.4986496}
-      - {x: -3.7308083, y: 5.2457047}
-      - {x: -5.436615, y: 5.086525}
-      - {x: -5.76334, y: -1.9229927}
-      - {x: 13.459137, y: -1.9741211}
-      - {x: 13.953558, y: -1.6695938}
-      - {x: 13.491798, y: -0.08916855}
-      - {x: 15.106758, y: 1.6709328}
-      - {x: 16.747028, y: 2.1254158}
-      - {x: 14.668819, y: -2.0587158}
-      - {x: -5.9395294, y: -2.07901}
-      - {x: -5.764759, y: 5.287178}
-      - {x: -4.0081367, y: 5.7483826}
-      - {x: -3.120472, y: 5.6027794}
-      - {x: -1.4134941, y: 4.6295624}
-      - {x: -0.11145401, y: 3.433319}
-      - {x: 1.6890259, y: 3.1176758}
-      - {x: 3.5739899, y: 2.9859467}
-      - {x: 5.556408, y: 2.829441}
-      - {x: 7.5593185, y: 1.583725}
-      - {x: 5.615818, y: 2.3960457}
-      - {x: 4.209896, y: 1.3828278}
-      - {x: 1.4443092, y: 2.5684052}
-      - {x: -0.23604584, y: 2.7609138}
-      - {x: -0.8168793, y: 2.9834366}
-      - {x: -1.4987221, y: 4.284958}
-      - {x: -3.4234695, y: 4.1037636}
+  - {x: 15.82585, y: 7.851864}
+  - {x: 15.028734, y: 4.2781944}
+  - {x: 13.541599, y: 3.7234116}
+  - {x: 12.758703, y: 4.0054626}
+  - {x: 12.939102, y: 2.5971413}
+  - {x: 11.926645, y: 1.9745789}
+  - {x: 11.170309, y: 2.1397095}
+  - {x: 10.906799, y: 1.5114708}
+  - {x: 10.376465, y: 1.8919067}
+  - {x: 9.294468, y: 1.5156517}
+  - {x: 6.614357, y: 1.5515251}
+  - {x: 5.544571, y: 2.1990662}
+  - {x: 4.1465607, y: 1.4490166}
+  - {x: 1.0428963, y: 2.814808}
+  - {x: -0.13756943, y: 2.848381}
+  - {x: -1.4193192, y: 4.3495903}
+  - {x: -3.550373, y: 4.2559853}
+  - {x: -3.743782, y: 5.3658295}
+  - {x: -5.9224052, y: 5.3091545}
+  - {x: -5.893753, y: -2.135376}
+  - {x: 14.345236, y: -2.0958176}
+  - {x: 13.492205, y: -0.9992447}
+  - {x: 13.551685, y: -0.22790909}
+  - {x: 15.017593, y: 1.5100555}
+  - {x: 15.570845, y: 1.6821251}
+  - {x: 16.261114, y: 1.1040993}
+  - {x: 16.272928, y: 2.0905533}
+  - {x: 17.688345, y: 4.1518173}
+  - {x: 18.32396, y: 4.224243}
+  - {x: 18.314535, y: 4.7565994}
+  - {x: 17.766426, y: 4.9107513}
+  - {x: 17.84697, y: 5.7866707}
+  - {x: 19.129992, y: 5.8879814}
+  - {x: 19.429996, y: 7.970726}
 --- !u!1001 &245328981
 Prefab:
   m_ObjectHideFlags: 0
@@ -321,6 +327,58 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9ee9145de54f4c1408150f5f30bbbe1b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!1 &723645867
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 4
+  m_Component:
+  - 4: {fileID: 723645868}
+  - 68: {fileID: 723645869}
+  m_Layer: 0
+  m_Name: House bounds
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &723645868
+Transform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 723645867}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -43, y: -47, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 1237966090}
+  m_RootOrder: 2
+--- !u!68 &723645869
+EdgeCollider2D:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 723645867}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_Offset: {x: 0, y: 0}
+  m_Points:
+  - {x: -1.8525658, y: 0.1079483}
+  - {x: -0.9964142, y: 0.42642212}
+  - {x: -1.016613, y: 1.0603828}
+  - {x: -0.999424, y: 1.2611694}
+  - {x: -1.3505783, y: 1.669899}
+  - {x: -1.5737953, y: 1.9575195}
+  - {x: -1.9914474, y: 1.9665184}
+  - {x: -2.3913498, y: 2.0853958}
+  - {x: -2.7712517, y: 1.3306046}
+  - {x: -2.7738495, y: 0.544014}
+  - {x: -1.885807, y: 0.15250778}
 --- !u!1001 &834097978
 Prefab:
   m_ObjectHideFlags: 0

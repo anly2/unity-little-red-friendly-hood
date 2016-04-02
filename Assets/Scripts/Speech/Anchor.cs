@@ -2,25 +2,31 @@
 using System.Collections;
 
 public class Anchor : MonoBehaviour {
-
-    delegate Vector3 Transformation(Vector3 point);
-
-
     public GameObject anchored {
         get { return _anchored; }
         set {
+            Canvas canvas = value.GetComponentInParent<Canvas>();
+            if (canvas == null || canvas.renderMode == RenderMode.WorldSpace)
+                cam = null;
+            else if (canvas.renderMode == RenderMode.ScreenSpaceCamera)
+                cam = canvas.worldCamera;
+            else if (canvas.renderMode == RenderMode.ScreenSpaceOverlay)
+                cam = Camera.main;
+
             _anchored = value;
-            lastPosition = transform.position;
+            lastPosition = toUI(transform.position);
         }
     }
 
+    private Camera cam;
     private GameObject _anchored;
     private Vector3 lastPosition;
+    private Vector3 offset;
 
 
-    public static Vector3 toUI(Vector3 position)
+    public Vector3 toUI(Vector3 position)
     {
-        return Camera.main.WorldToScreenPoint(position);
+        return (cam == null) ? position : cam.WorldToScreenPoint(position);
     }
 	
     public static bool isInWorld(GameObject gameObject)
@@ -31,23 +37,21 @@ public class Anchor : MonoBehaviour {
 
 	void Update () {
         if (anchored == null)
-        {
-            Destroy(this);
-            return;
-        }
-
-        Vector3 position = this.transform.position;
-
-        if (lastPosition == null)
-            lastPosition = position;
-
-        if (lastPosition == position)
             return;
 
-        Vector3 offset = toUI(position) - toUI(lastPosition);
+        Vector3 position = toUI(this.transform.position);
 
-        anchored.transform.position = anchored.transform.position + offset;
+        Vector3 delta = position - lastPosition;
 
+        anchored.transform.Translate(delta);
+
+        offset += delta;
         lastPosition = position;
 	}
+
+    public void UndoOffset()
+    {
+        anchored.transform.Translate(-offset);
+        offset = new Vector3(0, 0, 0);
+    }
 }

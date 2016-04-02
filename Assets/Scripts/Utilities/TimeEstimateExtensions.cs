@@ -9,7 +9,7 @@ public static class TimeEstimateExtensions {
     }
 
 
-    private static float timePerUnit = 0.75f;
+    private static float unitsPerSecond = 2f;
 
     public static float EstimateTravelTime(this GameObject actor, Vector3 destination, float? speed = null)
     {
@@ -18,10 +18,10 @@ public static class TimeEstimateExtensions {
 
     public static float EstimateTravelTime(this GameObject actor, Vector3 position, Vector3 destination, float? speed = null)
     {
-        float _speed = speed.HasValue ? speed.Value : actor.GetSpeed();
+        float _speed = speed ?? actor.GetSpeed();
         float distance = Vector3.Distance(position, destination);
 
-        return (distance * _speed);
+        return (distance / _speed);
     }
 
     public static float GetSpeed(this GameObject actor)
@@ -29,6 +29,6 @@ public static class TimeEstimateExtensions {
         // if has a special component
         //      use the value defined on that component
 
-        return timePerUnit;
+        return unitsPerSecond;
     }
 }

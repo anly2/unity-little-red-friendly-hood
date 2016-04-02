@@ -27,6 +27,9 @@ public class SpeechBubble : MonoBehaviour {
 
     public void Remove()
     {
+        if (_anchor != null)
+            Destroy(_anchor);
+
         Destroy(gameObject);
     }
 
@@ -196,7 +199,7 @@ public class SpeechBubble : MonoBehaviour {
     public Anchor Anchor(GameObject anchoring)
     {
         if (this._anchor != null)
-            Destroy(this.anchor);
+            Destroy(this._anchor);
 
         Anchor anchor = anchoring.AddComponent<Anchor>();
         anchor.anchored = this.gameObject;

@@ -101,6 +101,10 @@ public static class SpeechExtensions {
         ref Vector3? speechPivot, ref SpeechBubble.Side? sbTipSide, ref float? sbTipPositionOnSide,
         Vector2 bubbleSize = default(Vector2))
     {
+        Speaker s = speaker.GetComponent<Speaker>();
+        if (s != null)
+            speechPivot = GetSpeechPivot(speaker);
+
         List<InterestPoint> interestPoints = GetInterestPoints(speaker);
         List<Vector2> avoided  = GetAvoidedPoints(speaker,
             speechPivot ?? InferSpeechPivot(speaker, sbTipSide, sbTipPositionOnSide));
@@ -307,11 +311,6 @@ public static class SpeechExtensions {
 
     private static Vector3? InferSpeechPivot(this GameObject speaker, SpeechBubble.Side? side, float? positionOnSide)
     {
-        Speaker s = speaker.GetComponent<Speaker>();
-
-        if (s != null)
-            return GetSpeechPivot(speaker);
-
         Renderer r = speaker.GetComponent<Renderer>();
 
         if (r == null)

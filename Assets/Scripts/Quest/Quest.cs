@@ -647,6 +647,23 @@ public class Quest : MonoBehaviour {
         }
 
 
+        public ActorQuery unfollow(GameObject actor = null)
+        {
+            act(aq =>
+            {
+                Follower[] followers = _actor.GetComponents<Follower>();
+
+                foreach (Follower follower in followers)
+                    if (actor == null || follower.target.transform.IsChildOf(actor.transform))
+                    {
+                        Destroy(follower.target);
+                        Destroy(follower);
+                    }
+            });
+            return this;
+        }
+
+
         /* Upwards chainability */
 
         public AbstractScene up()
@@ -854,6 +871,13 @@ public class Quest : MonoBehaviour {
             public new ActorQuery follow(GameObject actor, out UnfollowCallback unfollowCallback, bool displaceTarget = true)
             {
                 base.follow(actor, out unfollowCallback, displaceTarget);
+                return this;
+            }
+
+
+            public new ActorQuery unfollow(GameObject actor = null)
+            {
+                base.unfollow(actor);
                 return this;
             }
 
@@ -1074,6 +1098,13 @@ public class Quest : MonoBehaviour {
             public new ActorQuery follow(GameObject actor, out UnfollowCallback unfollowCallback, bool displaceTarget = true)
             {
                 base.follow(actor, out unfollowCallback, displaceTarget);
+                return this;
+            }
+
+
+            public new ActorQuery unfollow(GameObject actor = null)
+            {
+                base.unfollow(actor);
                 return this;
             }
 
@@ -1310,6 +1341,13 @@ public class Quest : MonoBehaviour {
             }
 
 
+            public new ActorQuery unfollow(GameObject actor = null)
+            {
+                base.unfollow(actor);
+                return this;
+            }
+
+
             /* Upwards chainability */
 
             public new PlayerConversation getConversation()
@@ -1456,6 +1494,13 @@ public class Quest : MonoBehaviour {
             public new PlayerQuery follow(GameObject actor, out UnfollowCallback unfollowCallback, bool displaceTarget = true)
             {
                 base.follow(actor, out unfollowCallback, displaceTarget);
+                return this;
+            }
+
+
+            public new PlayerQuery unfollow(GameObject actor = null)
+            {
+                base.unfollow(actor);
                 return this;
             }
 

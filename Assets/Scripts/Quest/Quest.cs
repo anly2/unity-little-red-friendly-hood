@@ -594,25 +594,33 @@ public class Quest : MonoBehaviour {
                 target.transform.position = actor.transform.position;
                 target.transform.parent = actor.transform;
 
+                follower = _actor.AddComponent<Follower>();
+                follower.target = target;
+
+
+                Vector3 sizeT = GetBounds(actor).size;
+                float r = Mathf.Max(sizeT.x, sizeT.y);
+                actor.AddAura(r,
+                    o => follower.enabled = false,
+                    o => follower.enabled = true,
+                    _actor)
+                    .name = "Close-Enough Aura";
+
+
                 float slow = 0.5f;
-                target.AddAura(1f,
+                target.AddAura(1.5f * r,
                     o => o.gameObject.MultiplySpeed(slow),
                     o => o.gameObject.DivideSpeed(slow),
                     _actor)
                     .name = "Slow Aura";
 
-                var outerAura = target.AddAura(2f,
+                var outerAura = target.AddAura(2.5f * r,
                     o => o.gameObject.MultiplySpeed(slow),
                     o => o.gameObject.DivideSpeed(slow),
                     _actor);
                 outerAura.name = "Normal speed area";
                 if (!outerAura.isAffecting(_actor))
                     _actor.DivideSpeed(slow);
-
-
-
-                follower = _actor.AddComponent<Follower>();
-                follower.target = target;
 
 
                 if (displaceTarget)

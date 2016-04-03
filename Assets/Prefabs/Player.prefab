@@ -13,6 +13,7 @@ GameObject:
   - 50: {fileID: 5034154}
   - 61: {fileID: 6120170}
   - 114: {fileID: 11435956}
+  - 114: {fileID: 11424344}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -114,7 +115,7 @@ Rigidbody2D:
   m_Interpolate: 0
   m_SleepingMode: 1
   m_CollisionDetection: 0
-  m_Constraints: 0
+  m_Constraints: 4
 --- !u!61 &6120170
 BoxCollider2D:
   m_ObjectHideFlags: 1
@@ -126,9 +127,9 @@ BoxCollider2D:
   m_Material: {fileID: 0}
   m_IsTrigger: 0
   m_UsedByEffector: 0
-  m_Offset: {x: 0, y: 0}
+  m_Offset: {x: 0.03, y: -0.04}
   serializedVersion: 2
-  m_Size: {x: 1, y: 1}
+  m_Size: {x: 0.7, y: 0.85}
 --- !u!81 &8120774
 AudioListener:
   m_ObjectHideFlags: 1
@@ -160,6 +161,19 @@ Animator:
   m_WarningMessage: 
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
+--- !u!114 &11424344
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 115178}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 88fcdf1caa28d9e4e918c3e905f56e54, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  speechBorderOffset: {x: 0, y: 0, z: 0}
+  speechBorderSizeModifier: {x: 0.4, y: 0, z: 0}
 --- !u!114 &11435956
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -171,7 +185,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ee5ec07e7b55f0f44973e04eaebed6e6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 5
+  speed: 2
 --- !u!124 &12492028
 Behaviour:
   m_ObjectHideFlags: 1

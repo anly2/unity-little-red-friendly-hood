@@ -594,27 +594,16 @@ public class Quest : MonoBehaviour {
                 target.transform.position = actor.transform.position;
                 target.transform.parent = actor.transform;
 
+                target.AddComponent<Target>().attracted = _actor;
+
+
                 follower = _actor.AddComponent<Follower>();
                 follower.target = target;
 
 
                 if (displaceTarget)
                 {
-                    float w = 0;
-
-                    Collider2D c2 = _actor.GetComponent<Collider2D>();
-                    if (c2 != null)
-                        w = c2.bounds.size.x;
-
-                    Collider c = _actor.GetComponent<Collider>();
-                    if (c != null)
-                        w = c.bounds.size.x;
-
-                    Renderer r = _actor.GetComponent<Renderer>();
-                    if (r != null)
-                        w = r.bounds.size.x;
-
-
+                    float w = GetBounds(_actor).size.x;
                     target.transform.Translate(new Vector3(w, 0, 0));
                 }
             });
@@ -629,6 +618,64 @@ public class Quest : MonoBehaviour {
             };
 
             return this;
+        }
+
+        private static Bounds GetBounds(GameObject actor)
+        {
+            Renderer r = actor.GetComponent<Renderer>();
+            if (r != null)
+                return r.bounds;
+
+            Collider2D c2 = actor.GetComponent<Collider2D>();
+            if (c2 != null)
+                return c2.bounds;
+
+            Collider c = actor.GetComponent<Collider>();
+            if (c != null)
+                return c.bounds;
+
+            return new Bounds(actor.transform.position, new Vector3(0, 0));
+        }
+
+        public class Target : MonoBehaviour
+        {
+            public GameObject attracted;
+
+            [Tooltip("Slow percent")]
+            public float slow = 0.5f;
+
+            private CircleCollider2D aura;
+
+            void Awake()
+            {
+                aura = gameObject.AddComponent<CircleCollider2D>();
+                aura.isTrigger = true;
+            }
+
+            void Start()
+            {
+                Vector3 size = GetBounds(attracted).size;
+                aura.radius = 1f + Mathf.Max(size.x, size.y);
+                Debug.Log("INIT");
+            }
+
+            void OnTriggerEnter2D(Collider2D other)
+            {
+                if (other.gameObject == attracted)
+                {
+                    Debug.Log("SLOW " + attracted);
+                    attracted.SetSpeed(attracted.GetSpeed() * slow);
+                }
+            }
+
+            void OnTriggerExit2D(Collider2D other)
+            {
+                if (other.gameObject == attracted)
+                {
+                    Debug.Log("UNSLOW " + attracted);
+                    attracted.SetSpeed(attracted.GetSpeed() / slow);
+                }
+            }
         }
 
         public class Follower : MonoBehaviour

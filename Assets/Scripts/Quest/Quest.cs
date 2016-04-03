@@ -594,7 +594,6 @@ public class Quest : MonoBehaviour {
                 target.transform.position = actor.transform.position;
                 target.transform.parent = actor.transform;
 
-
                 float slow = 0.5f;
                 target.AddAura(1f,
                     o => o.gameObject.MultiplySpeed(slow),
@@ -618,8 +617,14 @@ public class Quest : MonoBehaviour {
 
                 if (displaceTarget)
                 {
+                    GameObject displaced = new GameObject("Displaced Follower Target");
+                    displaced.transform.position = target.transform.position;
+                    displaced.transform.parent = target.transform.parent;
+                    target.transform.parent = displaced.transform;
+
                     float w = GetBounds(_actor).size.x;
-                    target.transform.Translate(new Vector3(w, 0, 0));
+                    target.transform.Translate(new Vector3(0, w, 0));
+                    displaced.AddComponent<DisplacedTarget>();
                 }
             });
 
@@ -651,7 +656,7 @@ public class Quest : MonoBehaviour {
 
             return new Bounds(actor.transform.position, new Vector3(0, 0));
         }
-
+        
         public class Follower : MonoBehaviour
         {
             public GameObject target;
@@ -665,6 +670,49 @@ public class Quest : MonoBehaviour {
                     transform.position, target.transform.position,
                     gameObject.GetSpeed() * Time.deltaTime);
             }
+        }
+
+        public class DisplacedTarget : MonoBehaviour
+        {
+            private Vector3 lastPosition;
+            private float lastAngle;
+
+            void Start()
+            {
+                this.lastPosition = gameObject.transform.position;
+            }
+
+            void Update()
+            {
+                float threshold = 0.25f;
+                if (Vector3.Distance(lastPosition, transform.position) < threshold)
+                    return;
+
+                Vector3 dir = lastPosition - transform.position;
+                float angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
+                transform.rotation = Quaternion.AngleAxis(angle, Vector3.forward);
+
+                lastPosition = transform.position;
+                /*
+                //float angle = Vector3.Angle(lastPosition, transform.position);
+                transform.LookAt(lastPosition);
+                float angle = transform.rotation.x
+                    + transform.rotation.y;
+                lastPosition = transform.position;
+
+
+                if (Mathf.Abs(angle - lastAngle) <= 1)
+                    return;
+
+                Debug.Log(angle);
+                
+                //transform.rotation = Quaternion.LookRotation();
+                transform.RotateAround(transform.parent.position, Vector3.forward, angle);
+
+                lastAngle = angle;
+                //*/
+            }
+            //private float a = Vector3.Angle(lastPosition, Transform.position);
         }
 
 

@@ -85,6 +85,23 @@ NavMeshSettings:
     cellSize: 0.16666667
     manualCellSize: 0
   m_NavMeshData: {fileID: 0}
+--- !u!1 &92760726 stripped
+GameObject:
+  m_PrefabParentObject: {fileID: 115178, guid: c9095b7e33c42a74fbf34a65fadae055, type: 2}
+  m_PrefabInternal: {fileID: 1462336725}
+--- !u!114 &92760733
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 92760726}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 88fcdf1caa28d9e4e918c3e905f56e54, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  speechBorderOffset: {x: 0, y: 0, z: 0}
+  speechBorderSizeModifier: {x: 0.4, y: 0, z: 0}
 --- !u!1 &229678835
 GameObject:
   m_ObjectHideFlags: 0
@@ -225,8 +242,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 88fcdf1caa28d9e4e918c3e905f56e54, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speakerName: 
-  speechPivot: {x: -0.4, y: 0}
+  speechBorderOffset: {x: 0, y: 0, z: 0}
+  speechBorderSizeModifier: {x: 0.4, y: 0, z: 0}
 --- !u!61 &299530708
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -835,6 +852,19 @@ BoxCollider2D:
   m_Offset: {x: 0, y: 0}
   serializedVersion: 2
   m_Size: {x: 0.1, y: 0.1}
+--- !u!114 &1784450419
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1784450415}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 88fcdf1caa28d9e4e918c3e905f56e54, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  speechBorderOffset: {x: 0, y: 0, z: 0}
+  speechBorderSizeModifier: {x: 0.4, y: 0, z: 0}
 --- !u!1001 &1905996675
 Prefab:
   m_ObjectHideFlags: 0

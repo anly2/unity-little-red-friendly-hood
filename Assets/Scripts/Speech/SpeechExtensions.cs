@@ -101,10 +101,6 @@ public static class SpeechExtensions {
         ref Vector3? speechPivot, ref SpeechBubble.Side? sbTipSide, ref float? sbTipPositionOnSide,
         Vector2 bubbleSize = default(Vector2))
     {
-        Speaker s = speaker.GetComponent<Speaker>();
-        if (s != null)
-            speechPivot = GetSpeechPivot(speaker);
-
         List<InterestPoint> interestPoints = GetInterestPoints(speaker);
         List<Vector2> avoided  = GetAvoidedPoints(speaker,
             speechPivot ?? InferSpeechPivot(speaker, sbTipSide, sbTipPositionOnSide));
@@ -177,7 +173,7 @@ public static class SpeechExtensions {
         List<GameObject> actors = GetAllActors();
 
         foreach (GameObject actor in actors)
-            avoided.Add(ToUI(GetSpeechPivot(actor)));
+            avoided.Add(ToUI(GetSpeechBorder(actor).center));
 
 
         return avoided;
@@ -273,8 +269,7 @@ public static class SpeechExtensions {
     {
         List<InterestPoint> interestPoints = new List<InterestPoint>();
 
-        Renderer r = speaker.GetComponent<Renderer>();
-        Bounds bounds = r.bounds;
+        Bounds bounds = GetSpeechBorder(speaker);
 
         foreach (SpeechBubble.Side side in Enum.GetValues(typeof(SpeechBubble.Side)))
         {
@@ -286,27 +281,23 @@ public static class SpeechExtensions {
     }
 
 
-    private static Vector3 GetSpeechPivot(this GameObject speaker)
+    private static Bounds GetSpeechBorder(this GameObject speaker)
     {
         Speaker s = speaker.GetComponent<Speaker>();
         Renderer r = speaker.GetComponent<Renderer>();
         
         if (r == null)
-            return speaker.transform.position;
+            return new Bounds(speaker.transform.position, new Vector3(0,0));
 
         if (s == null)
-            return r.bounds.center;
-        
-
-        Vector3 pivot = s.speechPivot;
-
-        pivot.x *= r.bounds.extents.x;
-        pivot.y *= r.bounds.extents.y;
-
-        pivot += r.bounds.center;
+            return r.bounds;
 
 
-        return pivot;
+        Bounds b = r.bounds;
+        b.center += s.speechBorderOffset;
+        b.extents = Vector3.Scale(b.extents, s.speechBorderSizeModifier);
+
+        return b;
     }
 
     private static Vector3? InferSpeechPivot(this GameObject speaker, SpeechBubble.Side? side, float? positionOnSide)

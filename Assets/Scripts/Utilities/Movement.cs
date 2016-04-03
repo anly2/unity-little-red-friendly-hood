@@ -31,4 +31,14 @@ public static class SpeedExtensions
 
         m.speed = speed;
     }
+
+    public static void MultiplySpeed(this GameObject actor, float factor)
+    {
+        SetSpeed(actor, GetSpeed(actor) * factor);
+    }
+
+    public static void DivideSpeed(this GameObject actor, float factor)
+    {
+        SetSpeed(actor, GetSpeed(actor) / factor);
+    }
 }

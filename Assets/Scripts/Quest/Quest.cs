@@ -594,7 +594,22 @@ public class Quest : MonoBehaviour {
                 target.transform.position = actor.transform.position;
                 target.transform.parent = actor.transform;
 
-                target.AddComponent<Target>().attracted = _actor;
+
+                float slow = 0.5f;
+                target.AddAura(1f,
+                    o => o.gameObject.MultiplySpeed(slow),
+                    o => o.gameObject.DivideSpeed(slow),
+                    _actor)
+                    .name = "Slow Aura";
+
+                var outerAura = target.AddAura(2f,
+                    o => o.gameObject.MultiplySpeed(slow),
+                    o => o.gameObject.DivideSpeed(slow),
+                    _actor);
+                outerAura.name = "Normal speed area";
+                if (!outerAura.isAffecting(_actor))
+                    _actor.DivideSpeed(slow);
+
 
 
                 follower = _actor.AddComponent<Follower>();
@@ -635,47 +650,6 @@ public class Quest : MonoBehaviour {
                 return c.bounds;
 
             return new Bounds(actor.transform.position, new Vector3(0, 0));
-        }
-
-        public class Target : MonoBehaviour
-        {
-            public GameObject attracted;
-
-            [Tooltip("Slow percent")]
-            public float slow = 0.5f;
-
-            private CircleCollider2D aura;
-
-            void Awake()
-            {
-                aura = gameObject.AddComponent<CircleCollider2D>();
-                aura.isTrigger = true;
-            }
-
-            void Start()
-            {
-                Vector3 size = GetBounds(attracted).size;
-                aura.radius = 1f + Mathf.Max(size.x, size.y);
-                Debug.Log("INIT");
-            }
-
-            void OnTriggerEnter2D(Collider2D other)
-            {
-                if (other.gameObject == attracted)
-                {
-                    Debug.Log("SLOW " + attracted);
-                    attracted.SetSpeed(attracted.GetSpeed() * slow);
-                }
-            }
-
-            void OnTriggerExit2D(Collider2D other)
-            {
-                if (other.gameObject == attracted)
-                {
-                    Debug.Log("UNSLOW " + attracted);
-                    attracted.SetSpeed(attracted.GetSpeed() / slow);
-                }
-            }
         }
 
         public class Follower : MonoBehaviour

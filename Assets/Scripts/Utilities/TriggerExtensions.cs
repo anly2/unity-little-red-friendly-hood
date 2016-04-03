@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
-using System.Collections;
+using System;
+using System.Linq;
 
 
 public static class TriggerExtensions
@@ -54,36 +55,79 @@ public static class TriggerExtensions
     public static void WhenInRange(this GameObject actor1, GameObject actor2, float radius,
         VetoingAction action)
     {
-        GameObject trigger = new GameObject();
-        trigger.name = "Trigger: " + actor1.name + " within " + radius + " units";
-        trigger.transform.parent = actor2.transform;
-        trigger.transform.position = actor2.transform.position;
+        Aura aura = null;
+        aura = actor2.AddAura(radius,
+            (o) => { if (action()) MonoBehaviour.Destroy(aura.gameObject); },
+            null, actor1);
+        aura.gameObject.name = "Trigger: " + actor1.name + " within " + radius + " units";
+    }
 
-        CircleCollider2D collider = trigger.AddComponent<CircleCollider2D>();
+
+    public static Aura AddAura(this GameObject actor, float radius,
+        Action<Collider2D> onEnter, Action<Collider2D> onExit,
+        params GameObject[] affectedActors)
+    {
+        return AddAura(actor, radius, onEnter, onExit,
+            (o) => affectedActors.Contains(o.gameObject));
+    }
+
+    public static Aura AddAura(this GameObject actor, float radius,
+        Action<Collider2D> onEnter, Action<Collider2D> onExit,
+        Aura.ImmunityCheck shouldAffect = null)
+    {
+        GameObject aura = new GameObject("Aura");
+        aura.transform.position = actor.transform.position;
+        aura.transform.parent = actor.transform;
+
+        CircleCollider2D collider = aura.AddComponent<CircleCollider2D>();
         collider.isTrigger = true;
         collider.radius = radius;
 
-        OnEnterScript script = trigger.AddComponent<OnEnterScript>();
-        script.action = (o) =>
-        {
-            if (o.gameObject != actor1)
-                return;
+        Aura script = aura.AddComponent<Aura>();
+        script.onEnter = onEnter;
+        script.onExit = onExit;
+        script.shouldAffect = shouldAffect;
 
-            if (action())
-                MonoBehaviour.Destroy(trigger);
-        };
+        return script;
     }
 
-    private class OnEnterScript : MonoBehaviour
+    public class Aura : MonoBehaviour
     {
-        public delegate void Action(Collider2D other);
+        public Action<Collider2D> onEnter = null;
+        public Action<Collider2D> onExit = null;
 
-        public Action action = null;
+        public delegate bool ImmunityCheck(Collider2D actorCollider);
+        public ImmunityCheck shouldAffect = null;
+
 
         void OnTriggerEnter2D(Collider2D other)
         {
-            if (action != null)
-                action(other);
+            if (onEnter == null)
+                return;
+
+            if (shouldAffect == null || shouldAffect(other))
+                onEnter(other);
+        }
+
+        void OnTriggerExit2D(Collider2D other)
+        {
+            if (onExit == null)
+                return;
+
+            if (shouldAffect == null || shouldAffect(other))
+                onExit(other);
+        }
+
+        public bool isAffecting(GameObject actor)
+        {
+            Collider2D a = GetComponent<Collider2D>();
+
+            foreach (Collider2D c in actor.GetComponents<Collider2D>())
+                if (shouldAffect == null || shouldAffect(c))
+                    if (a.IsTouching(c))
+                        return true;
+
+            return false;
         }
     }
 }

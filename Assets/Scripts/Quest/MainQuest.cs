@@ -16,6 +16,8 @@ public class MainQuest : Quest {
         GameObject mother = GameObject.Find("Mother");
         GameObject wolf = GameObject.Find("Wolf");
 
+        int friendship = 0;
+
 
         state("S0")
             .onEnter(s =>
@@ -45,11 +47,52 @@ public class MainQuest : Quest {
                 .actor(wolf)
                     .act(aq =>
                     {
-                        wolf.SetSpeed(player.GetSpeed());
-                        player.SetSpeed(player.GetSpeed() / 2);
+                        float s = player.GetSpeed();
+                        player.SetSpeed(s / 2);
                     })
                     .follow(player)
-                    .say("Hello")
-                    .act(aq => player.SetSpeed(player.GetSpeed() * 2));
+                    .wait(2f)
+                    .delay(8f, aq => player.MultiplySpeed(2))
+
+            .conversation().with(wolf)
+                .they("Good day, Little Red-Cap")
+                .player("Thank you kindly, wolf.")
+                .they("Whither away so early, Little Red-Cap?")
+                .player().choice()
+                    .option("To my grandmother's.", "S2")
+                    .option("To the Huntsman's.",
+                        c => Die("Your caution roused the wolf and he ate you.",
+                            "Little Red Ridding Hood $ Who was cautious perhaps too much."));
+
+        state("S2")
+            .conversation().with(wolf)
+                .they("What have you got in that basket?")
+                .player("Cake and wine; yesterday was baking-day, so poor sick grandmother is to have something good, to make her stronger.")
+                .they("It does smell delicious.")
+                .player().choice()
+                    .option("Thank you.", "S4")
+                    .option("Thank you! Would you like some?",
+                        c => { friendship++; c.state("S3").enter(); });
+
+        state("S3")
+            .conversation().with(wolf)
+                .they().act(aq =>
+                {
+                    var sb = wolf.Say("I would love a bite of you");
+                    new WaitForSeconds(0.5f)
+                        .Then(() => sb.text = "I would love a bite of your cake")
+                        .Start(aq.getQuest());
+                }, 4f)
+                .player("Here is some.")
+                .transition("S4");
+
+        state("DEAD")
+            .scene().completeQuest();
+    }
+
+    protected void Die(string message, params string[] tombstones)
+    {
+        enter("DEAD");
+        Debug.LogError("DEAD: " + message);
     }
 }

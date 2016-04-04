@@ -1651,6 +1651,20 @@ public class Quest : MonoBehaviour {
 
                 private PlayerQuery parent;
                 private List<Option> options = new List<Option>();
+                private float expireTime = -1;
+                private Action expireAction = null;
+
+                public struct Option
+                {
+                    public readonly string text;
+                    public readonly Action action;
+
+                    internal Option(string text, Action action)
+                    {
+                        this.text = text;
+                        this.action = action;
+                    }
+                }
 
 
                 /* Constructors */
@@ -1660,6 +1674,11 @@ public class Quest : MonoBehaviour {
                     this.parent = playerQuery;
                     parent.parent.actions.Add(_choice);
                 }
+
+
+                /* Accessors */
+
+                public bool isTimed { get { return expireAction != null; } }
 
 
                 /* Chainable Accessors */
@@ -1682,16 +1701,25 @@ public class Quest : MonoBehaviour {
                 }
 
 
-                public struct Option
+                public Choice timed(float time, Fragment action)
                 {
-                    public readonly string text;
-                    public readonly Action action;
+                    expireTime = time;
+                    expireAction = () => action(this);
 
-                    internal Option(string text, Action action)
-                    {
-                        this.text = text;
-                        this.action = action;
-                    }
+                    return this;
+                }
+
+                public Choice timed(float time, string stateName)
+                {
+                    return timed(time, getQuest().getState(stateName));
+                }
+
+                public Choice timed(float time, State state)
+                {
+                    expireTime = time;
+                    expireAction = () => state.enter();
+
+                    return this;
                 }
 
 
@@ -1702,25 +1730,55 @@ public class Quest : MonoBehaviour {
                     GameObject canvas = GameObject.FindWithTag("Canvas");
                     GameObject pile = canvas.transform.Find("Pile").gameObject;
 
+                    bool completed = false;
+                    GameObject timeout = null;
+                    AttachedCoroutine? timeoutCoroutine = null;
+
+                    if (isTimed)
+                    {
+                        timeout = Instantiate(Resources.Load("Timeout")) as GameObject;
+                        timeout.transform.SetParent(pile.transform, false);
+
+                        var s = timeout.transform;
+                        timeoutCoroutine = new Tween(expireTime, p => {
+                            var v = s.localScale;
+                            v.x = 1 - p;
+                            s.localScale = v;
+                        })
+                        .Then(() => {
+                            expireAction();
+                            completed = true;
+                        })
+                        .Start(getQuest());
+                    }
+
+
                     GameObject row = Instantiate(Resources.Load("Choice row")) as GameObject;
-                    row.transform.parent = pile.transform;
+                    row.transform.SetParent(pile.transform, false);
 
                     GameObject uiOption = Resources.Load("Choice option") as GameObject;
 
                     foreach (Option option in options)
                     {
                         GameObject v = Instantiate(uiOption);
-                        v.transform.parent = row.transform;
+                        v.transform.SetParent(row.transform, false);
 
                         v.GetComponentInChildren<Text>().text = option.text;
-                        v.GetComponent<Button>().onClick.AddListener(() => option.action());
+
+                        var c = v.GetComponent<Button>().onClick;
+                        c.AddListener(() => option.action());
+                        c.AddListener(() => completed = true);
                     }
 
-                    //#!
-                    //draw
-                    //start timer
-                    //wait forever
-                    //or until timer triggers
+                    while (!completed)
+                        yield return null;
+
+                    if (timeoutCoroutine.HasValue)
+                        timeoutCoroutine.Value.Stop();
+
+                    Destroy(timeout);
+                    Destroy(row);
+
                     yield break;
                 }
 
@@ -1818,6 +1876,8 @@ public class Quest : MonoBehaviour {
 
     public static class Activators
     {
+        public static Activator Nothing = (activateCB) => { };
+
         public static Activator WorldBegin = (activateCB) => {
                 new WaitForSeconds(0)
                 .Then(() => activateCB())

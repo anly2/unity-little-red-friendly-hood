@@ -11,6 +11,7 @@ public class Quest : MonoBehaviour {
     private string _name;
     private string _description;
     //private Activator activator;
+    private bool completed;
     private State activeState;
     private State initialState; //the first State with no Activator; managed by the inner class State
     private Dictionary<string, State> states = new Dictionary<string, State>(); //managed by the inner class State
@@ -59,7 +60,7 @@ public class Quest : MonoBehaviour {
     public bool active {
         get
         {
-            return activeState != null;
+            return activeState != null && !completed;
         }
         set {
             if (value)
@@ -74,6 +75,11 @@ public class Quest : MonoBehaviour {
     {
         State s;
         return (states.TryGetValue(name, out s)) ? s : null;
+    }
+
+    public void complete()
+    {
+        this.completed = true;
     }
 
 
@@ -245,13 +251,19 @@ public class Quest : MonoBehaviour {
         public State activatedBy(Activator activator)
         {
             this.activator = activator;
-            activator(() => { this.enter(); return true; });
+            activator(() => {
+                if (parent.completed) return false;
+                this.enter(); return true;
+            });
             return this;
         }
 
 
         public State enter()
         {
+            if (parent.completed)
+                throw new InvalidOperationException("Cannot change Quest State on a completed quest.");
+
             if (parent.activeState != null)
                 parent.activeState.leave();
 
@@ -441,6 +453,15 @@ public class Quest : MonoBehaviour {
             return state(stateName);
         }
 
+        
+        public Quest completeQuest()
+        {
+            Quest q = getQuest();
+            actions.Add(() => _().Then(() => q.complete()));
+            return q;
+        }
+
+
         private IEnumerator _() { yield break; }
 
 
@@ -600,8 +621,9 @@ public class Quest : MonoBehaviour {
         {
             parent.actions.Add(() =>
             {
-                return new WaitForSeconds(delay)
-                    .Then(() => action(this));
+                return _act(a =>
+                    new WaitForSeconds(delay)
+                    .Then(() => action(this)));
             });
 
             return this;
@@ -1481,7 +1503,7 @@ public class Quest : MonoBehaviour {
 
             public new PlayerConversation getConversation()
             {
-                return getConversation() as PlayerConversation;
+                return base.getConversation() as PlayerConversation;
             }
 
 
@@ -1691,7 +1713,9 @@ public class Quest : MonoBehaviour {
 
                 public Choice option(string text, string nextStateName)
                 {
-                    return option(text, getQuest().getState(nextStateName));
+                    options.Add(new Option(text,
+                        () => getQuest().getState(nextStateName).enter()));
+                    return this;
                 }
 
                 public Choice option(string text, State nextState)
@@ -1757,7 +1781,6 @@ public class Quest : MonoBehaviour {
                     row.transform.SetParent(pile.transform, false);
 
                     GameObject uiOption = Resources.Load("Choice option") as GameObject;
-
                     foreach (Option option in options)
                     {
                         GameObject v = Instantiate(uiOption);
@@ -1766,7 +1789,7 @@ public class Quest : MonoBehaviour {
                         v.GetComponentInChildren<Text>().text = option.text;
 
                         var c = v.GetComponent<Button>().onClick;
-                        c.AddListener(() => option.action());
+                        c.AddListener(new UnityEngine.Events.UnityAction(option.action));
                         c.AddListener(() => completed = true);
                     }
 
@@ -1776,7 +1799,9 @@ public class Quest : MonoBehaviour {
                     if (timeoutCoroutine.HasValue)
                         timeoutCoroutine.Value.Stop();
 
-                    Destroy(timeout);
+                    if (timeout != null)
+                        Destroy(timeout);
+
                     Destroy(row);
 
                     yield break;

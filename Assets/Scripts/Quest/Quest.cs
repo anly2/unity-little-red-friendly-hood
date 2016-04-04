@@ -38,28 +38,41 @@ public class Quest : MonoBehaviour {
         return this._name;
     }
 
+    public new string name()
+    {
+        return this.getName();
+    }
+
+
     public string getDescription()
     {
         return this._description;
     }
 
+    public string description()
+    {
+        return this.getDescription();
+    }
+
+
+    public bool active {
+        get
+        {
+            return activeState != null;
+        }
+        set {
+            if (value)
+                activate();
+            else
+                if (activeState != null)
+                    activeState.leave();
+        }
+    }
 
     public State getState(string name)
     {
         State s;
         return (states.TryGetValue(name, out s)) ? s : null;
-    }
-
-    public Quest enter(string stateName)
-    {
-        getState(stateName).enter();
-        return this;
-    }
-
-    public Quest enter(State state)
-    {
-        state.enter();
-        return this;
     }
 
 
@@ -97,6 +110,19 @@ public class Quest : MonoBehaviour {
     {
         //this.activator = activator;
         activator(() => this.activate());
+        return this;
+    }
+
+
+    public Quest enter(string stateName)
+    {
+        getState(stateName).enter();
+        return this;
+    }
+
+    public Quest enter(State state)
+    {
+        state.enter();
         return this;
     }
 
@@ -148,7 +174,43 @@ public class Quest : MonoBehaviour {
         }
 
 
-        public bool IsActive { get { return parent.activeState == this; } }
+        /* Accessors */
+
+        public string getName()
+        {
+            return this._name;
+        }
+
+        public string name()
+        {
+            return this.getName();
+        }
+
+
+        public string getDescription()
+        {
+            return this._description;
+        }
+
+        public string description()
+        {
+            return this.getDescription();
+        }
+
+
+        public bool active {
+            get
+            {
+                return parent.activeState == this;
+            }
+            set
+            {
+                if (value)
+                    enter();
+                else
+                    leave();
+            }
+        }
 
 
         /* Chainable Accessors */
@@ -334,7 +396,7 @@ public class Quest : MonoBehaviour {
 
         public AbstractScene enter()
         {
-            if (!parent.IsActive)
+            if (!parent.active)
                 throw new InvalidOperationException("The Quest State that this scene belongs to is not active!");
 
             getQuest().StartCoroutine(Play());
@@ -437,8 +499,9 @@ public class Quest : MonoBehaviour {
     {
         public delegate void Fragment(ActorQuery actorQuery);
 
+        public GameObject actor { get; protected set; }
+
         protected AbstractScene parent;
-        protected GameObject _actor;
 
 
         /* Constructors */
@@ -446,7 +509,15 @@ public class Quest : MonoBehaviour {
         internal ActorQuery(AbstractScene scene, GameObject actor)
         {
             this.parent = scene;
-            this._actor = actor;
+            this.actor = actor;
+        }
+
+
+        /* Accessors */
+
+        public GameObject getActor()
+        {
+            return this.actor;
         }
 
 
@@ -466,7 +537,7 @@ public class Quest : MonoBehaviour {
 
         private IEnumerator _say(string text, float duration)
         {
-            SpeechBubble speechBubble = _actor.Say(text, duration);
+            actor.Say(text, duration);
             yield return new WaitForSeconds(duration);
         }
 
@@ -485,7 +556,7 @@ public class Quest : MonoBehaviour {
 
         private IEnumerator _think(string text, float duration)
         {
-            SpeechBubble speechBubble = _actor.Think(text, duration);
+            actor.Think(text, duration);
             yield return new WaitForSeconds(duration);
         }
 
@@ -550,7 +621,7 @@ public class Quest : MonoBehaviour {
         {
             parent.actions.Add(() => {
                 Vector3 destination = destinationSupplier();
-                float duration = travelTime ?? _actor.EstimateTravelTime(destination);
+                float duration = travelTime ?? actor.EstimateTravelTime(destination);
                 return _move(destination, duration);
             });
             return this;
@@ -558,7 +629,7 @@ public class Quest : MonoBehaviour {
 
         private IEnumerator _move(Vector3 destination, float duration)
         {
-            return _actor.MotionTo(destination, duration);
+            return actor.MotionTo(destination, duration);
         }
 
 
@@ -594,7 +665,7 @@ public class Quest : MonoBehaviour {
                 target.transform.position = actor.transform.position;
                 target.transform.parent = actor.transform;
 
-                follower = _actor.AddComponent<Follower>();
+                follower = this.actor.AddComponent<Follower>();
                 follower.target = target;
 
 
@@ -603,7 +674,7 @@ public class Quest : MonoBehaviour {
                 actor.AddAura(r,
                     o => follower.enabled = false,
                     o => follower.enabled = true,
-                    _actor)
+                    this.actor)
                     .name = "Close-Enough Aura";
 
 
@@ -611,16 +682,16 @@ public class Quest : MonoBehaviour {
                 target.AddAura(1.5f * r,
                     o => o.gameObject.MultiplySpeed(slow),
                     o => o.gameObject.DivideSpeed(slow),
-                    _actor)
+                    this.actor)
                     .name = "Slow Aura";
 
                 var outerAura = target.AddAura(2.5f * r,
                     o => o.gameObject.MultiplySpeed(slow),
                     o => o.gameObject.DivideSpeed(slow),
-                    _actor);
+                    this.actor);
                 outerAura.name = "Normal speed area";
-                if (!outerAura.isAffecting(_actor))
-                    _actor.DivideSpeed(slow);
+                if (!outerAura.isAffecting(this.actor))
+                    this.actor.DivideSpeed(slow);
 
 
                 if (displaceTarget)
@@ -630,7 +701,7 @@ public class Quest : MonoBehaviour {
                     displaced.transform.parent = target.transform.parent;
                     target.transform.parent = displaced.transform;
 
-                    float w = GetBounds(_actor).size.x;
+                    float w = GetBounds(this.actor).size.x;
                     target.transform.Translate(new Vector3(0, w, 0));
                     displaced.AddComponent<DisplacedTarget>();
                 }
@@ -683,7 +754,6 @@ public class Quest : MonoBehaviour {
         public class DisplacedTarget : MonoBehaviour
         {
             private Vector3 lastPosition;
-            private float lastAngle;
 
             void Start()
             {
@@ -701,26 +771,7 @@ public class Quest : MonoBehaviour {
                 transform.rotation = Quaternion.AngleAxis(angle, Vector3.forward);
 
                 lastPosition = transform.position;
-                /*
-                //float angle = Vector3.Angle(lastPosition, transform.position);
-                transform.LookAt(lastPosition);
-                float angle = transform.rotation.x
-                    + transform.rotation.y;
-                lastPosition = transform.position;
-
-
-                if (Mathf.Abs(angle - lastAngle) <= 1)
-                    return;
-
-                Debug.Log(angle);
-                
-                //transform.rotation = Quaternion.LookRotation();
-                transform.RotateAround(transform.parent.position, Vector3.forward, angle);
-
-                lastAngle = angle;
-                //*/
             }
-            //private float a = Vector3.Angle(lastPosition, Transform.position);
         }
 
 
@@ -728,7 +779,7 @@ public class Quest : MonoBehaviour {
         {
             act(aq =>
             {
-                Follower[] followers = _actor.GetComponents<Follower>();
+                Follower[] followers = this.actor.GetComponents<Follower>();
 
                 foreach (Follower follower in followers)
                     if (actor == null || follower.target.transform.IsChildOf(actor.transform))
@@ -972,7 +1023,7 @@ public class Quest : MonoBehaviour {
             }
 
 
-            public virtual ActorQuery actor(GameObject actor)
+            public new virtual ActorQuery actor(GameObject actor)
             {
                 return getScene().actor(actor);
             }

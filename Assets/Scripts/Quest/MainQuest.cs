@@ -45,8 +45,8 @@ public class MainQuest : Quest {
                 .actor(wolf)
                     .act(aq =>
                     {
+                        wolf.SetSpeed(player.GetSpeed());
                         player.SetSpeed(player.GetSpeed() / 2);
-                        wolf.SetSpeed(player.GetSpeed() * 1.75f);
                     })
                     .follow(player)
                     .say("Hello")

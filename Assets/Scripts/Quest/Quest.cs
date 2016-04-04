@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -1657,6 +1658,7 @@ public class Quest : MonoBehaviour {
                 internal Choice(PlayerQuery playerQuery)
                 {
                     this.parent = playerQuery;
+                    parent.parent.actions.Add(_choice);
                 }
 
 
@@ -1690,6 +1692,36 @@ public class Quest : MonoBehaviour {
                         this.text = text;
                         this.action = action;
                     }
+                }
+
+
+                /* Main functionality */
+
+                private IEnumerator _choice()
+                {
+                    GameObject canvas = GameObject.FindWithTag("Canvas");
+                    GameObject pile = canvas.transform.Find("Pile").gameObject;
+
+                    GameObject row = Instantiate(Resources.Load("Choice row")) as GameObject;
+                    row.transform.parent = pile.transform;
+
+                    GameObject uiOption = Resources.Load("Choice option") as GameObject;
+
+                    foreach (Option option in options)
+                    {
+                        GameObject v = Instantiate(uiOption);
+                        v.transform.parent = row.transform;
+
+                        v.GetComponentInChildren<Text>().text = option.text;
+                        v.GetComponent<Button>().onClick.AddListener(() => option.action());
+                    }
+
+                    //#!
+                    //draw
+                    //start timer
+                    //wait forever
+                    //or until timer triggers
+                    yield break;
                 }
 
 
@@ -1729,6 +1761,11 @@ public class Quest : MonoBehaviour {
                 public virtual State state(string name)
                 {
                     return parent.state(name);
+                }
+
+                public virtual Scene scene()
+                {
+                    return parent.scene();
                 }
 
                 public virtual UnspecifiedConversation conversation()

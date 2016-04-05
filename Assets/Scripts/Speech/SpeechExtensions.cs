@@ -74,11 +74,13 @@ public static class SpeechExtensions {
 
         // Initialise the Speech Bubble
         SpeechBubble speechBubble = GameObject.Instantiate(bubblePrefab).GetComponent<SpeechBubble>();
+        speechBubble.name = speechBubble.name.Replace("(Clone)", "");
+
         speechBubble.SetText(text);
         speechBubble.SetTip(tipSide.Value, tipPositionOnSide.Value);
 
         // Add to a Canvas (the UI canvas in this case)
-        speechBubble.transform.SetParent(GameObject.FindWithTag("Canvas").transform, false);
+        speechBubble.transform.SetParent(DialogueUI.canvas.transform, false);
 
         // Position the Speech Bubble on the UI canvas
         Vector2 screenPosition = Camera.main.WorldToScreenPoint(position);

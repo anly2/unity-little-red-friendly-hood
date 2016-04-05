@@ -47,12 +47,16 @@ public class MainQuest : Quest {
                 .actor(wolf)
                     .act(aq =>
                     {
-                        float s = player.GetSpeed();
-                        player.SetSpeed(s / 2);
+                        float s = player.GetSpeed() / 2;
+                        wolf.SetSpeed(s);
+                        player.SetSpeed(s);
                     })
                     .follow(player)
                     .wait(2f)
-                    .delay(8f, aq => player.MultiplySpeed(2))
+                    .delay(3f, aq => {
+                        player.MultiplySpeed(2);
+                        wolf.MultiplySpeed(2);
+                    })
 
             .conversation().with(wolf)
                 .they("Good day, Little Red-Cap")

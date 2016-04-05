@@ -623,7 +623,8 @@ public class Quest : MonoBehaviour {
             {
                 return _act(a =>
                     new WaitForSeconds(delay)
-                    .Then(() => action(this)));
+                    .Then(() => action(this))
+                    .Start(getQuest()));
             });
 
             return this;
@@ -1673,8 +1674,11 @@ public class Quest : MonoBehaviour {
 
                 private PlayerQuery parent;
                 private List<Option> options = new List<Option>();
+
                 private float expireTime = -1;
                 private Action expireAction = null;
+                private bool expireSecretly = false;
+
 
                 public struct Option
                 {
@@ -1725,25 +1729,47 @@ public class Quest : MonoBehaviour {
                 }
 
 
-                public Choice timed(float time, Fragment action)
+                public Choice timed(float time, Fragment action, bool secretly = false)
                 {
                     expireTime = time;
                     expireAction = () => action(this);
+                    expireSecretly = secretly;
 
                     return this;
                 }
 
-                public Choice timed(float time, string stateName)
+                public Choice timed(float time, string stateName, bool secretly = false)
                 {
-                    return timed(time, getQuest().getState(stateName));
+                    expireTime = time;
+                    expireAction = () => getQuest().getState(stateName).enter();
+                    expireSecretly = secretly;
+
+                    return this;
                 }
 
-                public Choice timed(float time, State state)
+                public Choice timed(float time, State state, bool secretly = false)
                 {
                     expireTime = time;
                     expireAction = () => state.enter();
+                    expireSecretly = secretly;
 
                     return this;
+                }
+
+
+                public Choice timedSecretly(float time, Fragment action)
+                {
+                    return timed(time, action, true);
+                }
+
+                public Choice timedSecretly(float time, string stateName)
+                {
+                    return timed(time, stateName, true);
+                }
+
+                public Choice timedSecretly(float time, State state)
+                {
+                    return timed(time, state, true);
                 }
 
 
@@ -1751,8 +1777,8 @@ public class Quest : MonoBehaviour {
 
                 private IEnumerator _choice()
                 {
-                    GameObject canvas = GameObject.FindWithTag("Canvas");
-                    GameObject pile = canvas.transform.Find("Pile").gameObject;
+                    GameObject pile = DialogueUI.AddChildIfNotExist(
+                        DialogueUI.canvas, "Choice/Panel", "Choice Panel");
 
                     bool completed = false;
                     GameObject timeout = null;
@@ -1760,30 +1786,47 @@ public class Quest : MonoBehaviour {
 
                     if (isTimed)
                     {
-                        timeout = Instantiate(Resources.Load("Timeout")) as GameObject;
-                        timeout.transform.SetParent(pile.transform, false);
+                        if (!expireSecretly)
+                        {
+                            timeout = DialogueUI.AddChildIfNotExist(
+                                pile, "Choice/Timeout", "Choice Timeout");
 
-                        var s = timeout.transform;
-                        timeoutCoroutine = new Tween(expireTime, p => {
-                            var v = s.localScale;
-                            v.x = 1 - p;
-                            s.localScale = v;
-                        })
-                        .Then(() => {
-                            expireAction();
-                            completed = true;
-                        })
-                        .Start(getQuest());
+                            var s = timeout.transform;
+                            timeoutCoroutine = new Tween(expireTime, p =>
+                            {
+                                var v = s.localScale;
+                                v.x = 1 - p;
+                                s.localScale = v;
+                            })
+                            .Then(() =>
+                            {
+                                expireAction();
+                                completed = true;
+                            })
+                            .Start(getQuest());
+                        }
+                        else
+                        {
+                            timeoutCoroutine = new WaitForSeconds(expireTime)
+                                .Then(() =>
+                                {
+                                    expireAction();
+                                    completed = true;
+                                })
+                                .Start(getQuest());
+                        }
                     }
 
 
-                    GameObject row = Instantiate(Resources.Load("Choice row")) as GameObject;
-                    row.transform.SetParent(pile.transform, false);
+                    GameObject row = DialogueUI.AddChildIfNotExist(
+                        pile, "Choice/Row", "Choice Row");
 
-                    GameObject uiOption = Resources.Load("Choice option") as GameObject;
+                    GameObject uiOption = DialogueUI.Load("Choice/Option");
+                    int i = 0;
                     foreach (Option option in options)
                     {
                         GameObject v = Instantiate(uiOption);
+                        v.name = "Option " + (i++);
                         v.transform.SetParent(row.transform, false);
 
                         v.GetComponentInChildren<Text>().text = option.text;

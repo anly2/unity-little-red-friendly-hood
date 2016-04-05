@@ -4,7 +4,7 @@ using System.Collections;
 
 public class SpeechBubble : MonoBehaviour {
 
-    public static GameObject prefab = Resources.Load("Speech Bubble") as GameObject;
+    public static GameObject prefab = DialogueUI.Load("Speech Bubble");
 
     protected RectTransform got_Background; //GameObject Transform
     protected Text goc_Text; //GameObject Component

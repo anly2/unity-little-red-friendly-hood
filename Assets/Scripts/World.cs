@@ -4,6 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.IO;
+using UnityEngine.SceneManagement;
 
 public class World : MonoBehaviour {
 
@@ -76,7 +77,7 @@ public class World : MonoBehaviour {
             if (data == null)
                 return;
 
-            Recreate(data as List<WorldAction>);
+            Load(data as List<WorldAction>);
 
             file.Close();
         }
@@ -87,6 +88,43 @@ public class World : MonoBehaviour {
     string GetSaveFilePath()
     {
         return Application.persistentDataPath + "/" + saveFilePath;
+    }
+
+
+    /* Reloading the World */
+
+    public void Reload(string sceneName = null, float speed = 100) //#!DEBUG
+    {
+        List<WorldAction> actions = new List<WorldAction>(history);
+        history.Clear();
+        Load(actions, sceneName, speed);
+    }
+
+    public void Load(List<WorldAction> actions, string sceneName = null, float speed = 100)
+    {
+        speed = Mathf.Clamp(speed, 0, 100);
+
+        SceneManager.LoadScene(sceneName ?? SceneManager.GetActiveScene().name);
+
+        WaitForSceneToLoad()
+            .Then(() => Recreate(actions, speed))
+            .Start(this);
+    }
+
+
+    private int justLoadedLevel = -1;
+
+    private IEnumerator WaitForSceneToLoad(int level = -1)
+    {
+        while (justLoadedLevel < 0 || (level != -1 && level != justLoadedLevel))
+            yield return null;
+
+        justLoadedLevel = -1;
+    }
+
+    void OnLevelWasLoaded(int level)
+    {
+        justLoadedLevel = level;
     }
 
 

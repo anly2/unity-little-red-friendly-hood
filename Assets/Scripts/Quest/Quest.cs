@@ -83,6 +83,13 @@ public class Quest : MonoBehaviour {
     }
 
 
+    protected virtual void LogMovement()
+    {
+        GameObject player = GameObject.FindWithTag("Player");
+        World.I.LogMovement(player, player.transform.position);
+    }
+
+
     /* Chainable Accessors */
 
     public new Quest name(string name)
@@ -268,6 +275,7 @@ public class Quest : MonoBehaviour {
                 parent.activeState.leave();
 
             parent.activeState = this;
+            getQuest().LogMovement();
 
             if (_before != null)
                 _before(this);
@@ -412,6 +420,7 @@ public class Quest : MonoBehaviour {
             if (!parent.active)
                 throw new InvalidOperationException("The Quest State that this scene belongs to is not active!");
 
+            getQuest().LogMovement();
             getQuest().StartCoroutine(Play());
             return this;
         }

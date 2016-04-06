@@ -17,7 +17,9 @@ public class QuickWorld : MonoBehaviour {
 
     void Reload()
     {
-        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
-        World.I.Invoke("Recreate", 0.1f); //Allow the Scene to reload
+        GameObject player = GameObject.FindWithTag("Player");
+        World.I.LogMovement(player, player.transform.position);
+
+        World.I.Reload();
     }
 }

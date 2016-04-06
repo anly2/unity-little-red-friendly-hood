@@ -277,6 +277,9 @@ public class Quest : MonoBehaviour {
             parent.activeState = this;
             getQuest().LogMovement();
 
+            foreach (AbstractScene scene in scenes)
+                scene.installActivator();
+
             if (_before != null)
                 _before(this);
 
@@ -401,6 +404,14 @@ public class Quest : MonoBehaviour {
         public AbstractScene activatedBy(Activator activator)
         {
             this.activator = activator;
+            return this;
+        }
+
+        internal virtual void installActivator() {
+            //called when parent state is entered
+            if (activator == null)
+                return;
+
             activator(() =>
             {
                 try {
@@ -411,7 +422,6 @@ public class Quest : MonoBehaviour {
                     return false;
                 }
             });
-            return this;
         }
 
 

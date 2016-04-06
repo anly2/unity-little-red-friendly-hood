@@ -1863,12 +1863,27 @@ public class Quest : MonoBehaviour {
                     if (option < -1 || option > options.Count)
                         throw new InvalidOperationException("Invalid choice option index.");
 
-                    if (option == -1)
+                    if (option == -1) {
                         expireAction();
+                        predeterminedChoice = -2;
+                    }
                     else
-                        options[option].action();
+                    {
+                        Option o = options[option];
 
-                    predeterminedChoice = -2;
+                        float duration = o.text.EstimateReadTime();
+                        GameObject.FindWithTag("Player").Say(o.text, duration);
+
+                        new WaitForSeconds(duration)
+                            .Then(() =>
+                            {
+                                o.action();
+                                predeterminedChoice = -2;
+                            })
+                            .Start(getQuest());
+                    }
+
+                    _chosen(option)();
                 }
 
                 private UnityEngine.Events.UnityAction _chosen(int option)

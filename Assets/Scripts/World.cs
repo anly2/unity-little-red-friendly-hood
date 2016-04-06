@@ -113,8 +113,13 @@ public class World : MonoBehaviour {
 
     private IEnumerator PerformActions(List<WorldAction> actions)
     {
+        PlayerMovement playerControl = GameObject.FindWithTag("Player").GetComponent<PlayerMovement>();
+        playerControl.enabled = false;
+
         foreach (WorldAction action in actions.ToArray())
             yield return action.act();
+
+        playerControl.enabled = true;
     }
 
 

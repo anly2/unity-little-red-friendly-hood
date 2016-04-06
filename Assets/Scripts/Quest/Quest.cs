@@ -1775,8 +1775,16 @@ public class Quest : MonoBehaviour {
 
                 /* Main functionality */
 
+                private static int predeterminedChoice = -2; //nothing chosen; -1 is for timed-out
+
                 private IEnumerator _choice()
                 {
+                    if (predeterminedChoice > -2)
+                    {
+                        _choose(predeterminedChoice);
+                        yield break;
+                    }
+
                     GameObject pile = DialogueUI.AddChildIfNotExist(
                         DialogueUI.canvas, "Choice/Panel", "Choice Panel");
 
@@ -1786,6 +1794,13 @@ public class Quest : MonoBehaviour {
 
                     if (isTimed)
                     {
+                        CoroutineExtensions.Action expire = () =>
+                        {
+                            expireAction();
+                            _chosen(-1)();
+                            completed = true;
+                        };
+
                         if (!expireSecretly)
                         {
                             timeout = DialogueUI.AddChildIfNotExist(
@@ -1798,21 +1813,13 @@ public class Quest : MonoBehaviour {
                                 v.x = 1 - p;
                                 s.localScale = v;
                             })
-                            .Then(() =>
-                            {
-                                expireAction();
-                                completed = true;
-                            })
+                            .Then(expire)
                             .Start(getQuest());
                         }
                         else
                         {
                             timeoutCoroutine = new WaitForSeconds(expireTime)
-                                .Then(() =>
-                                {
-                                    expireAction();
-                                    completed = true;
-                                })
+                                .Then(expire)
                                 .Start(getQuest());
                         }
                     }
@@ -1833,6 +1840,7 @@ public class Quest : MonoBehaviour {
 
                         var c = v.GetComponent<Button>().onClick;
                         c.AddListener(new UnityEngine.Events.UnityAction(option.action));
+                        c.AddListener(_chosen(i-1));
                         c.AddListener(() => completed = true);
                     }
 
@@ -1848,6 +1856,43 @@ public class Quest : MonoBehaviour {
                     Destroy(row);
 
                     yield break;
+                }
+
+                private void _choose(int option)
+                {
+                    if (option < -1 || option > options.Count)
+                        throw new InvalidOperationException("Invalid choice option index.");
+
+                    if (option == -1)
+                        expireAction();
+                    else
+                        options[option].action();
+
+                    predeterminedChoice = -2;
+                }
+
+                private UnityEngine.Events.UnityAction _chosen(int option)
+                {
+                    return () => World.I.LogAction(new ChoiceWorldAction(option));
+                }
+
+                [Serializable]
+                private class ChoiceWorldAction : WorldAction
+                {
+                    private int chosen;
+
+                    public ChoiceWorldAction(int chosen)
+                    {
+                        this.chosen = chosen;
+                    }
+
+                    public override IEnumerator act()
+                    {
+                        predeterminedChoice = chosen;
+
+                        while (predeterminedChoice != -2)
+                            yield return null;
+                    }
                 }
 
 

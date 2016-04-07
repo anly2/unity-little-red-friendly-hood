@@ -1804,7 +1804,7 @@ public class Quest : MonoBehaviour {
                         yield break;
                     }
 
-                    GameObject pile = DialogueUI.AddChildIfNotExist(
+                    GameObject pile = DialogueUI.GetOrAddChild(
                         DialogueUI.canvas, "Choice/Panel", "Choice Panel");
 
                     bool completed = false;
@@ -1822,7 +1822,7 @@ public class Quest : MonoBehaviour {
 
                         if (!expireSecretly)
                         {
-                            timeout = DialogueUI.AddChildIfNotExist(
+                            timeout = DialogueUI.GetOrAddChild(
                                 pile, "Choice/Timeout", "Choice Timeout");
 
                             var s = timeout.transform;
@@ -1844,7 +1844,7 @@ public class Quest : MonoBehaviour {
                     }
 
 
-                    GameObject row = DialogueUI.AddChildIfNotExist(
+                    GameObject row = DialogueUI.GetOrAddChild(
                         pile, "Choice/Row", "Choice Row");
 
                     GameObject uiOption = DialogueUI.Load("Choice/Option");

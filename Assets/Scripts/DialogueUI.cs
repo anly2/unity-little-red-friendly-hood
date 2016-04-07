@@ -61,13 +61,13 @@ public static class DialogueUI {
     }
 
 
-    public static GameObject AddChildIfNotExist(this GameObject parent, string resourceURI,
+    public static GameObject GetOrAddChild(this GameObject parent, string resourceURI,
         string childName = null)
     {
-        return AddChildIfNotExist(parent.transform, resourceURI, childName);
+        return GetOrAddChild(parent.transform, resourceURI, childName);
     }
 
-    public static GameObject AddChildIfNotExist(this Transform parent, string resourceURI,
+    public static GameObject GetOrAddChild(this Transform parent, string resourceURI,
         string childName = null)
     {
         if (childName == null)

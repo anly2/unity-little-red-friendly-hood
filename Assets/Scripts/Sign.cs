@@ -9,7 +9,7 @@ public class Sign : MonoBehaviour {
 
     private SpeechBubble popup;
 
-    void Awake() {
+    void Start() {
         initPopup();
         initAura();
     }
@@ -42,7 +42,7 @@ public class Sign : MonoBehaviour {
     void initAura()
     {
         Bounds bounds = GetBounds(gameObject);
-        float radius = Mathf.Max(0.5f, bounds.extents.x, bounds.extents.y) + 0.25f;
+        float radius = Mathf.Max(0.25f, bounds.extents.x, bounds.extents.y) + 0.1f;
 
         var aura = gameObject.AddAura(radius,
             o => ShowPopup(),

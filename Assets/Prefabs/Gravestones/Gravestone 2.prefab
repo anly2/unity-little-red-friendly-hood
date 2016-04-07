@@ -63,6 +63,7 @@ GameObject:
   - 4: {fileID: 498902}
   - 212: {fileID: 21217534}
   - 114: {fileID: 11420534}
+  - 58: {fileID: 5838488}
   m_Layer: 0
   m_Name: Gravestone 2
   m_TagString: Untagged
@@ -83,6 +84,20 @@ Transform:
   - {fileID: 22451588}
   m_Father: {fileID: 0}
   m_RootOrder: 0
+--- !u!58 &5838488
+CircleCollider2D:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 177482}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_Offset: {x: 0, y: 0.2}
+  serializedVersion: 2
+  m_Radius: 0.2
 --- !u!114 &11401428
 MonoBehaviour:
   m_ObjectHideFlags: 1

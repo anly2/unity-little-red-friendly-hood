@@ -3,9 +3,16 @@ using System.Collections;
 
 public class MainQuest : Quest {
 
+    public Cemetery cemetery;
     private GameObject player;
 
-	void Start()
+
+    void Start()
+    {
+        Build();
+    }
+
+    void Build()
     {
         name("Main");
         description("The Quest defining the main plot of the game.");
@@ -66,7 +73,7 @@ public class MainQuest : Quest {
                     .option("To my grandmother's.", "S2")
                     .option("To the Huntsman's.",
                         c => Die("Your caution roused the wolf and he ate you.",
-                            "Little Red Ridding Hood $ Who was cautious perhaps too much."));
+                            "Little Red Ridding Hood %1 Who was cautious perhaps too much."));
 
         state("S2")
             .conversation().with(wolf)
@@ -83,7 +90,7 @@ public class MainQuest : Quest {
                 .they().act(aq =>
                 {
                     var sb = wolf.Say("I would love a bite of you");
-                    new WaitForSeconds(0.5f)
+                    new WaitForSeconds(0.75f)
                         .Then(() => sb.text = "I would love a bite of your cake")
                         .Start(aq.getQuest());
                 }, 4f)
@@ -94,9 +101,29 @@ public class MainQuest : Quest {
             .scene().completeQuest();
     }
 
-    protected void Die(string message, params string[] tombstones)
+    protected void Die(string message, params string[] gravestones)
     {
         enter("DEAD");
+
+        foreach (string engraving in gravestones)
+            cemetery.AddGrave(FormatEngraving(engraving));
+
         Debug.LogError("DEAD: " + message);
     }
+
+
+    string FormatEngraving(string engraving)
+    {
+        int worldDate = age + Random.Range((int)60, 100);
+        age = worldDate;
+
+        int lrrhAge = worldDate - Random.Range((int) 10, 15);
+        int grannyAge = worldDate - Random.Range((int) 50, 60);
+        return "<b>" + engraving
+            .Replace("%1", "</b>\n<size=14>" + lrrhAge + " - " + worldDate + " AD</size>\n<i>")
+            .Replace("%2", "</b>\n<size=14>" + grannyAge + " - " + worldDate + " AD</size>\n<i>")
+            + "</i>";
+    }
+
+    private int age = 100; //#! to be stored presistently
 }

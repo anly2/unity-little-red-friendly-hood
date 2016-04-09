@@ -1,10 +1,9 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
+using System;
 
 public class SpeechBubble : MonoBehaviour {
-
-    public static GameObject prefab = DialogueUI.Load("Speech Bubble");
 
     protected RectTransform got_Background; //GameObject Transform
     protected Text goc_Text; //GameObject Component

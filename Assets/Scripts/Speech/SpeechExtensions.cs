@@ -39,7 +39,7 @@ public static class SpeechExtensions {
         SpeechBubble.Side? tipSide = null,
         float? tipPositionOnSide = null)
     {
-        return ShowSpeechBubble(speaker, SpeechBubble.prefab, text,
+        return ShowSpeechBubble(speaker, DialogueUI.Load("Speech Bubble"), text,
             timeShown, speechPosition, tipSide, tipPositionOnSide);
     }
 
@@ -52,7 +52,7 @@ public static class SpeechExtensions {
         SpeechBubble.Side? tipSide = null,
         float? tipPositionOnSide = null)
     {
-        return ShowSpeechBubble(speaker, ThoughtBubble.prefab, text,
+        return ShowSpeechBubble(speaker, DialogueUI.Load("Thought Bubble"), text,
             timeShown, speechPosition, tipSide, tipPositionOnSide);
     }
     

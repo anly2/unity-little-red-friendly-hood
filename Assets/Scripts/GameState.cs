@@ -6,7 +6,7 @@ using System.IO;
 using System;
 using System.Runtime.Serialization;
 
-public class WorldState : MonoBehaviour {
+public class GameState : MonoBehaviour {
 
     private static Dictionary<string, Data> wholeState = new Dictionary<string, Data>();
 
@@ -208,8 +208,8 @@ public class Data : Dictionary<string, object>
 
 public interface Stateful
 {
-    void Save(Data data, WorldState context);
-    void Load(Data data, WorldState context);
+    void Save(Data data, GameState context);
+    void Load(Data data, GameState context);
     string GetStatefulID(); //## not hard to imagine a collision or a malicious value, but hey...
 }
 
@@ -217,6 +217,6 @@ public static class StatefulExtensions
 {
     public static Data GetData(this Stateful component)
     {
-        return WorldState.GetData(component);
+        return GameState.GetData(component);
     }
 }

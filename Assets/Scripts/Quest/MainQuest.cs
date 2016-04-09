@@ -139,7 +139,7 @@ public class MainQuest : Quest {
 
     /* Saving and Loading */
 
-    public override void Save(Data data, WorldState context)
+    public override void Save(Data data, GameState context)
     {
         base.Save(data, context);
 
@@ -155,7 +155,7 @@ public class MainQuest : Quest {
         //data["position of huntsman"] = huntsman.transform.position.serializable(); //not yet implemented
     }
 
-    public override void Load(Data data, WorldState context)
+    public override void Load(Data data, GameState context)
     {
         base.Load(data, context);
 

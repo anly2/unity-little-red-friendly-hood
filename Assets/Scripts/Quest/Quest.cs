@@ -35,7 +35,7 @@ public class Quest : MonoBehaviour, Stateful {
 
     /* Statefulness management */
 
-    public virtual void Save(Data data, WorldState context)
+    public virtual void Save(Data data, GameState context)
     {
         if (activeState != null)
             data["activeState"] = activeState.getName();
@@ -44,7 +44,7 @@ public class Quest : MonoBehaviour, Stateful {
             data["completed"] = "true";
     }
 
-    public virtual void Load(Data data, WorldState context)
+    public virtual void Load(Data data, GameState context)
     {
         string stateName;
         if (!data.TryGet("activeState", out stateName))

@@ -123,18 +123,16 @@ public class MainQuest : Quest {
 
     string FormatEngraving(string engraving)
     {
-        int worldDate = age + Random.Range((int)60, 100);
-        age = worldDate;
+        int currentYear = cemetery.currentYear + Random.Range((int)60, 100);
+        cemetery.currentYear = currentYear;
 
-        int lrrhAge = worldDate - Random.Range((int) 10, 15);
-        int grannyAge = worldDate - Random.Range((int) 50, 60);
+        int lrrhAge = currentYear - Random.Range((int) 10, 15);
+        int grannyAge = currentYear - Random.Range((int) 50, 60);
         return "<b>" + engraving
-            .Replace("%1", "</b>\n<size=14>" + lrrhAge + " - " + worldDate + " AD</size>\n<i>")
-            .Replace("%2", "</b>\n<size=14>" + grannyAge + " - " + worldDate + " AD</size>\n<i>")
+            .Replace("%1", "</b>\n<size=14>" + lrrhAge + " - " + currentYear + " AD</size>\n<i>")
+            .Replace("%2", "</b>\n<size=14>" + grannyAge + " - " + currentYear + " AD</size>\n<i>")
             + "</i>";
     }
-
-    private int age = 100; //#! to be stored presistently
 
 
     /* Saving and Loading */

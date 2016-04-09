@@ -11,12 +11,15 @@ public class Cemetery : MonoBehaviour {
     public List<Transform> graveSlots = new List<Transform>();
     public List<GameObject> graveObjects = new List<GameObject>();
 
+    public int currentYear = 100;
+
     private GraveRingBuffer graves;
 
     
     void Start()
     {
-        Populate(Load());
+        Load();
+        Populate();
     }
 
     void OnDestroy()
@@ -25,18 +28,30 @@ public class Cemetery : MonoBehaviour {
     }
 
     
+    [Serializable]
+    private struct Info
+    {
+        public int currentYear;
+        public GraveRingBuffer graves;
+
+        public Info(GraveRingBuffer graves, int currentYear)
+        {
+            this.currentYear = currentYear;
+            this.graves = graves;
+        }
+    }
 
     void Save()
     {
         BinaryFormatter bf = new BinaryFormatter();
         FileStream file = File.Open(GetSaveFilePath(), FileMode.OpenOrCreate);
 
-        bf.Serialize(file, graves);
+        bf.Serialize(file, new Info(graves, currentYear));
 
         file.Close();
     }
 
-    GraveRingBuffer Load()
+    void Load()
     {
         try
         {
@@ -45,16 +60,20 @@ public class Cemetery : MonoBehaviour {
 
             object data = bf.Deserialize(file);
 
-            if (data == null)
+            if (data == null || !(data is Info))
                 throw new FileNotFoundException();
 
             file.Close();
 
-            return data as GraveRingBuffer;
-        }
-        catch (FileNotFoundException) { }
 
-        return new GraveRingBuffer(graveSlots.Count);
+            Info info = (Info) data;
+
+            this.currentYear = info.currentYear;
+            this.graves = info.graves;
+        }
+        catch (FileNotFoundException) {
+            this.graves = new GraveRingBuffer(graveSlots.Count);
+        }
     }
 
     string GetSaveFilePath()
@@ -63,11 +82,9 @@ public class Cemetery : MonoBehaviour {
     }
 
 
-    GameObject[] Populate(GraveRingBuffer source)
+    GameObject[] Populate()
     {
-        this.graves = source;
-
-        int l = source.Count;
+        int l = graves.Count;
         GameObject[] result = new GameObject[l];
 
         int i = 0;

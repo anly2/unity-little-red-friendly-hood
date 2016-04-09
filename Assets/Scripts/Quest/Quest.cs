@@ -7,7 +7,7 @@ using System.Collections.Generic;
 public delegate bool ActivationDelegate();
 public delegate void Activator(ActivationDelegate activateCB);
 
-public class Quest : MonoBehaviour {
+public class Quest : MonoBehaviour, Stateful {
     private string _name;
     private string _description;
     //private Activator activator;
@@ -30,6 +30,43 @@ public class Quest : MonoBehaviour {
     {
         this.name(name);
         this.description(description);
+    }
+
+
+    /* Statefulness management */
+
+    public void Save(Data data)
+    {
+        if (activeState != null)
+            data["activeState"] = activeState.getName();
+
+        if (completed)
+            data["completed"] = "true";
+    }
+
+    public void Load(Data data)
+    {
+        string stateName;
+        if (!data.TryGet("activeState", out stateName))
+            return;
+
+        State s = getState(stateName);
+
+        if (s == null)
+            return;
+
+        if (activeState == null)
+            initialState = s;
+        else
+            s.enter();
+
+        if (data.Contains("completed") && data.Get<string>("completed") == "true")
+            complete();
+    }
+
+    public string GetStatefulID()
+    {
+        return "Quest:" + _name;
     }
 
 

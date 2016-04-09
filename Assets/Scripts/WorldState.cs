@@ -65,7 +65,7 @@ public class WorldState : MonoBehaviour {
                     if (wholeState.ContainsKey(id))
                         wholeState[id].Merge(data);
 
-                    component.Load(data);
+                    component.Load(data, this);
                 }
             }));
 
@@ -89,7 +89,7 @@ public class WorldState : MonoBehaviour {
             if (!this.state.TryGetValue(id, out data))
                 data = new Data();
 
-            component.Save(data);
+            component.Save(data, this);
 
             this.state[id] = data;
 
@@ -208,8 +208,8 @@ public class Data : Dictionary<string, object>
 
 public interface Stateful
 {
-    void Save(Data data);
-    void Load(Data data);
+    void Save(Data data, WorldState context);
+    void Load(Data data, WorldState context);
     string GetStatefulID(); //## not hard to imagine a collision or a malicious value, but hey...
 }
 

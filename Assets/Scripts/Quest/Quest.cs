@@ -10,10 +10,10 @@ public delegate void Activator(ActivationDelegate activateCB);
 public class Quest : MonoBehaviour, Stateful {
     private string _name;
     private string _description;
-    //private Activator activator;
-    private bool completed;
-    private State activeState;
-    private State initialState; //the first State with no Activator; managed by the inner class State
+    //protected Activator activator;
+    protected bool completed;
+    protected State activeState;
+    protected State initialState; //the first State with no Activator; managed by the inner class State
     private Dictionary<string, State> states = new Dictionary<string, State>(); //managed by the inner class State
 
 
@@ -35,7 +35,7 @@ public class Quest : MonoBehaviour, Stateful {
 
     /* Statefulness management */
 
-    public void Save(Data data)
+    public virtual void Save(Data data, WorldState context)
     {
         if (activeState != null)
             data["activeState"] = activeState.getName();
@@ -44,7 +44,7 @@ public class Quest : MonoBehaviour, Stateful {
             data["completed"] = "true";
     }
 
-    public void Load(Data data)
+    public virtual void Load(Data data, WorldState context)
     {
         string stateName;
         if (!data.TryGet("activeState", out stateName))
@@ -64,7 +64,7 @@ public class Quest : MonoBehaviour, Stateful {
             complete();
     }
 
-    public string GetStatefulID()
+    public virtual string GetStatefulID()
     {
         return "Quest:" + _name;
     }

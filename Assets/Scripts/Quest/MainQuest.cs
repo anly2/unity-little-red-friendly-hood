@@ -3,8 +3,19 @@ using System.Collections;
 
 public class MainQuest : Quest {
 
+    [Header("Involved actors")]
+    public GameObject initialSpawn;
+    public GameObject player;
+    public GameObject mother;
+    public GameObject wolf;
+    public GameObject huntsman;
+
+    [Header("Map-specific areas")]
     public Cemetery cemetery;
-    private GameObject player;
+
+    //Private state//
+    private int friendshipWithWolf;
+    private bool hasReasonToThankWolf;
 
 
     void Start()
@@ -19,22 +30,17 @@ public class MainQuest : Quest {
         startsActive(true);
 
 
-        player = GameObject.FindWithTag("Player");
-        GameObject mother = GameObject.Find("Mother");
-        GameObject wolf = GameObject.Find("Wolf");
-
-        int friendship = 0;
-
-
-        state("S0")
+        state("S_INIT")
             .onEnter(s =>
             {
-                GameObject spawn = GameObject.FindWithTag("Respawn");
-                player.transform.position = spawn.transform.position;
-            })
+                player.transform.position = initialSpawn.transform.position;
+                enter("S0");
+            });
 
+        state("S0")
             .scene()
                 .actor(mother)
+                    .act(aq => mother.SetActive(true))
                     .act(aq => player.SetSpeed(0.1f))
                     .wait(1.5f)
                     .act(aq => player.SetSpeed(0.25f))
@@ -45,6 +51,9 @@ public class MainQuest : Quest {
                     .say("I will take great care.")
                     .act(aq => mother.FadeOut(0.5f).Then(() => mother.SetActive(false)).Start(), 0.5f)
                     .act(aq => player.SetSpeed(1.5f))
+                .transition("S0 Wander");
+
+        state("S0 Wander")
             .scene()
                 .activatedBy(Activators.InRange(player, wolf, 4f))
                 .transition("S1");
@@ -83,7 +92,7 @@ public class MainQuest : Quest {
                 .player().choice()
                     .option("Thank you.", "S4")
                     .option("Thank you! Would you like some?",
-                        c => { friendship++; c.state("S3").enter(); });
+                        c => { friendshipWithWolf++; c.state("S3").enter(); });
 
         state("S3")
             .conversation().with(wolf)
@@ -97,18 +106,18 @@ public class MainQuest : Quest {
                 .player("Here is some.")
                 .transition("S4");
 
-        state("DEAD")
-            .scene().completeQuest();
+        state("DEAD").scene()
+            .actor(null).act(aq => Debug.LogError("You died."))
+            .getScene().completeQuest();
     }
 
     protected void Die(string message, params string[] gravestones)
     {
-        enter("DEAD");
-
         foreach (string engraving in gravestones)
             cemetery.AddGrave(FormatEngraving(engraving));
 
-        Debug.LogError("DEAD: " + message);
+        Debug.Log(message);
+        enter("DEAD");
     }
 
 
@@ -126,4 +135,74 @@ public class MainQuest : Quest {
     }
 
     private int age = 100; //#! to be stored presistently
+
+
+    /* Saving and Loading */
+
+    public override void Save(Data data, WorldState context)
+    {
+        base.Save(data, context);
+
+        data["friendship with wolf"] = friendshipWithWolf;
+        data["has reason to thank wolf"] = hasReasonToThankWolf;
+
+        data["wolf is following player"] = WolfIsFollowing();
+        data["mother is active in scene"] = mother.activeInHierarchy;
+
+        data["position of player"] = player.transform.position.serializable();
+        data["position of wolf"] = wolf.transform.position.serializable();
+        //data["position of mother"] = mother.transform.position.serializable(); //obsolete in current plot
+        //data["position of huntsman"] = huntsman.transform.position.serializable(); //not yet implemented
+    }
+
+    public override void Load(Data data, WorldState context)
+    {
+        base.Load(data, context);
+
+        if (completed) return;
+
+
+        // Restore private state variables
+        friendshipWithWolf = data.Get("friendship with wolf", 0);
+        hasReasonToThankWolf = data.Get("has reason to thank wolf", false);
+
+
+        // Restore mother actor state
+        mother.SetActive(data.Get("mother is active in scene", false));
+
+        // Restore wolf's following behaviour
+        bool wolfShouldFollow = data.Get("wolf is following player", false);
+        bool wolfIsFollowing = WolfIsFollowing();
+
+        if (wolfIsFollowing != wolfShouldFollow)
+        {
+            var prevState = activeState;
+            activeState = null; //avoid triggering "onLeave"
+
+            var setupState = state().description("Setup state, to restore saved effects");
+            var setupScene = setupState.scene().activatedBy(nothing => { });
+
+            if (wolfShouldFollow)
+                setupScene.actor(wolf).follow(player);
+            else
+                setupScene.actor(wolf).unfollow();
+
+            setupState.enter();
+            setupScene.enter();
+
+            activeState = prevState; //avoid triggering "onEnter"
+        }
+
+
+        // Restore positions of actors
+        player.transform.position = data.Get("position of player", player.transform.position.serializable()).unwarp();
+        wolf.transform.position = data.Get("position of wolf", wolf.transform.position.serializable()).unwarp();
+        //mother.transform.position = data.Get("position of mother", mother.transform.position.serializable()).unwrap();
+        //huntsman.transform.position = data.Get("position of huntsman", huntsman.transform.position.serializable()).unwrap();
+    }
+
+    private bool WolfIsFollowing()
+    {
+        return (wolf.GetComponent<ActorQuery.Follower>() != null);
+    }
 }

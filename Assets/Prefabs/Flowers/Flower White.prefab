@@ -10,6 +10,7 @@ GameObject:
   - 4: {fileID: 403002}
   - 212: {fileID: 21275940}
   - 95: {fileID: 9581630}
+  - 58: {fileID: 5833142}
   m_Layer: 0
   m_Name: Flower White
   m_TagString: Untagged
@@ -29,6 +30,20 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
+--- !u!58 &5833142
+CircleCollider2D:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 179758}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_Offset: {x: 0, y: -0.025}
+  serializedVersion: 2
+  m_Radius: 0.4
 --- !u!95 &9581630
 Animator:
   serializedVersion: 3

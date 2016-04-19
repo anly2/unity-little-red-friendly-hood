@@ -10,6 +10,7 @@ GameObject:
   - 4: {fileID: 482132}
   - 212: {fileID: 21286180}
   - 95: {fileID: 9558816}
+  - 58: {fileID: 5829046}
   m_Layer: 0
   m_Name: Flower Red
   m_TagString: Untagged
@@ -29,6 +30,20 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
+--- !u!58 &5829046
+CircleCollider2D:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 198044}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_Offset: {x: 0, y: -0.025}
+  serializedVersion: 2
+  m_Radius: 0.4
 --- !u!95 &9558816
 Animator:
   serializedVersion: 3

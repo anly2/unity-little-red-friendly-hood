@@ -12,15 +12,20 @@ public class GameState : MonoBehaviour {
 
     public string stateFilePath = "worldState.dat";
 
+    [Tooltip("Whether to call Load() at Awake, and Save() at OnDestroy")]
+    public bool autoact = false;
+
     private Dictionary<string, Data> state;
     
 	void Awake() {
-        Load();
+        if (autoact)
+            Load();
 	}
 
     void OnDestroy()
     {
-        Save();
+        if (autoact)
+            Save();
     }
 
 
@@ -81,12 +86,15 @@ public class GameState : MonoBehaviour {
         BinaryFormatter bf = new BinaryFormatter();
         FileStream file = File.Open(stateFile, FileMode.OpenOrCreate);
 
+        if (state == null)
+            state = new Dictionary<string, Data>();
+
         foreach (Stateful component in GetStatefulComponents())
         {
             Data data;
             string id = component.GetStatefulID();
 
-            if (!this.state.TryGetValue(id, out data))
+            if (!state.TryGetValue(id, out data))
                 data = new Data();
 
             component.Save(data, this);

@@ -4,7 +4,20 @@ using System.IO;
 
 public class SaveManager : MonoBehaviour {
     
-    public static void Save(string name)
+    public static void Load(string saveName)
+    {
+        string filename = GetSavesFolder() + Path.GetFileNameWithoutExtension(saveName) + ".gsv";
+
+        if (!File.Exists(filename))
+            throw new FileNotFoundException();
+
+        GameState loader = new GameObject("Loader").AddComponent<GameState>();
+        loader.autoact = false;
+        loader.Load(filename);
+        Destroy(loader.gameObject);
+    }
+
+    public static void Save(string saveName)
     {
 
         string path = GetSavesFolder();
@@ -12,7 +25,7 @@ public class SaveManager : MonoBehaviour {
         if (!Directory.Exists(path))
             Directory.CreateDirectory(path);
 
-        string filename = path + "/" + name;
+        string filename = path + "/" + saveName;
 
         GameState saver = new GameObject("Saver").AddComponent<GameState>();
         saver.autoact = false;
@@ -21,6 +34,7 @@ public class SaveManager : MonoBehaviour {
 
         Application.CaptureScreenshot(filename + ".thumb");
     }
+
 
     public static GameSave[] GetSaves()
     {

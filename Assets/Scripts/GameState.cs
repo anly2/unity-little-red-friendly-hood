@@ -57,7 +57,7 @@ public class GameState : MonoBehaviour {
             if (state != null)
                 this.state = state as Dictionary<string, Data>;
 
-            StartCoroutine(new WaitForSeconds(0).Then(() =>
+            new WaitForSeconds(0).Then(() =>
             {
                 foreach (Stateful component in GetStatefulComponents())
                 {
@@ -72,7 +72,7 @@ public class GameState : MonoBehaviour {
 
                     component.Load(data, this);
                 }
-            }));
+            }).Start();
 
             file.Close();
         }

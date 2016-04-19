@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using System.Collections;
 
 public class MainQuest : Quest {
 
@@ -9,6 +8,14 @@ public class MainQuest : Quest {
     public GameObject mother;
     public GameObject wolf;
     public GameObject huntsman;
+
+    [Header("Wood Whisperers")]
+    public GameObject whisperer1;
+    public GameObject whisperer2;
+    public GameObject whisperer3;
+    public GameObject whisperer4;
+    public Color whisperBackgroundColor;
+    public Color whisperForegroundColor;
 
     [Header("Map-specific areas")]
     public Cemetery cemetery;
@@ -50,8 +57,41 @@ public class MainQuest : Quest {
                 .actor(player)
                     .say("I will take great care.")
                     .act(aq => mother.FadeOut(0.5f).Then(() => mother.SetActive(false)).Start(), 0.5f)
-                    .act(aq => player.SetSpeed(1.5f))
-                .transition("S0 Wander");
+                    .act(aq => player.SetSpeed(1.5f));
+
+
+        System.Action<GameObject, string> whisper = (whisperer, text) =>
+        {
+            SpeechBubble bubble = null;
+            var aura = whisperer.AddComponent<TriggerExtensions.Aura>();
+            aura.shouldAffect = a => a.tag == "Player";
+
+            aura.onEnter = o =>
+            {
+                bubble = whisperer.Say(text, null, whisperer.transform.position);
+                bubble.transform.SetAsLastSibling();
+                bubble.SetBackgroundColor(whisperBackgroundColor);
+                bubble.SetTextColor(whisperForegroundColor);
+            };
+            aura.onExit = o => {
+                if (bubble != null)
+                {
+                    Destroy(bubble.gameObject);
+                    Destroy(aura);
+                }
+            };
+        };
+
+        state("S0")
+            .scene().actor(null).act(aq =>
+            {
+                whisper(whisperer1, "Do not get anyone killed!");
+                whisper(whisperer2, "Or anything!");
+                whisper(whisperer3, "The woods see!");
+                whisper(whisperer4, "The woods remember!");
+            })
+            .transition("S0 Wander");
+
 
         state("S0 Wander")
             .scene()

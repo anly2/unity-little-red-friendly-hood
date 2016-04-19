@@ -104,7 +104,8 @@ public class World : MonoBehaviour {
     {
         speed = Mathf.Clamp(speed, 0, 100);
 
-        SceneManager.LoadScene(sceneName ?? SceneManager.GetActiveScene().name);
+        //SceneManager.LoadScene(sceneName ?? SceneManager.GetActiveScene().name);
+        Application.LoadLevel(Application.loadedLevel);
 
         WaitForSceneToLoad()
             .Then(() => Recreate(actions, speed))

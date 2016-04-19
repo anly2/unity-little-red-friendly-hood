@@ -163,7 +163,8 @@ public static class SpeechExtensions {
         // Avoid the opposite side of the speaker bounds, as delimited by the center
         if (pivot.HasValue)
         {
-            Bounds bounds = speaker.GetComponent<Renderer>().bounds;
+            Renderer r = speaker.GetComponent<Renderer>();
+            Bounds bounds = (r != null) ? r.bounds : new Bounds(pivot.Value, Vector3.one);
 
             Vector3 ptc = bounds.center - pivot.Value;
             Vector3 oposed = pivot.Value + 2 * ptc;

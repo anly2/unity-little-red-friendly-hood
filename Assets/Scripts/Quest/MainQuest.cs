@@ -68,17 +68,15 @@ public class MainQuest : Quest {
 
             aura.onEnter = o =>
             {
-                bubble = whisperer.Say(text, null, whisperer.transform.position);
+                bubble = whisperer.Say(text, -1, whisperer.transform.position);
                 bubble.transform.SetAsLastSibling();
                 bubble.SetBackgroundColor(whisperBackgroundColor);
                 bubble.SetTextColor(whisperForegroundColor);
             };
             aura.onExit = o => {
                 if (bubble != null)
-                {
                     Destroy(bubble.gameObject);
-                    Destroy(aura);
-                }
+                Destroy(aura);
             };
         };
 

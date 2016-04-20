@@ -5,7 +5,6 @@ using UnityEngine.UI;
 public class MessageAPI : MonoBehaviour {
 
 	public Text messageText;
-	public GameObject messageBox;
 	public GameObject fader;
 
 	void Awake () {
@@ -23,6 +22,5 @@ public class MessageAPI : MonoBehaviour {
 
 	private void toggleVisibility(bool tof) {
 		fader.SetActive (tof);
-		messageBox.SetActive (tof);
 	}
 }

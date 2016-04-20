@@ -5,6 +5,8 @@ public class PlayerMovement : Movement {
     
     private Rigidbody2D rb;
 
+	public bool unRestricted = true;
+
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
@@ -13,11 +15,13 @@ public class PlayerMovement : Movement {
 
     void Update ()
     {
-        float moveHorizontal = Input.GetAxis("Horizontal");
-        float moveVertical = Input.GetAxis("Vertical");
+		if (unRestricted) {
+			float moveHorizontal = Input.GetAxis ("Horizontal");
+			float moveVertical = Input.GetAxis ("Vertical");
 
-        Vector3 movement = new Vector3(moveHorizontal, moveVertical);
+			Vector3 movement = new Vector3 (moveHorizontal, moveVertical);
 
-        rb.velocity = movement * speed;
+			rb.velocity = movement * speed;
+		}
     }
 }

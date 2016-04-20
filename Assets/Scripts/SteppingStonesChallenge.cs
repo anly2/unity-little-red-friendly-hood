@@ -71,8 +71,7 @@ public class SteppingStonesChallenge : MonoBehaviour {
 			player.transform.position += (stonePosition-playerPosition);
 			PlayerStone (stone);
 		} else {
-			//Death
-			Debug.Log ("Player died");
+			//TODO die
 		}
 	}
 
@@ -90,8 +89,7 @@ public class SteppingStonesChallenge : MonoBehaviour {
 			ss3.SetActive(!flag);
 			ss5.SetActive(!flag);
 			if(currentStone != null) if (!currentStone.activeSelf) {
-				//Death
-				Debug.Log ("Player died");
+				//TODO die
 			}
 			yield return new WaitForSeconds (1);
 			ss1.SetActive(flag);
@@ -105,8 +103,7 @@ public class SteppingStonesChallenge : MonoBehaviour {
 			ss4.SetActive(!flag);
 			ss6.SetActive(!flag);
 			if(currentStone != null) if (!currentStone.activeSelf) {
-				//Death
-				Debug.Log ("Player died");
+				//TODO die
 			}
 			yield return new WaitForSeconds (1);
 		}

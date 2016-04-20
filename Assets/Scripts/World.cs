@@ -30,6 +30,8 @@ public class World : MonoBehaviour {
         DontDestroyOnLoad(this);
 
         Load();
+
+		Physics2D.IgnoreLayerCollision (0, 8);
     }
 
     void OnDestroy()

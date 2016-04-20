@@ -11,7 +11,7 @@ public class Step : MonoBehaviour {
 	}
 	
 	void OnTriggerEnter2D(Collider2D c) {
-		challenge.PlayerStone (ss);
+		if(ss.activeSelf) challenge.PlayerStone (ss);
 	}
 	
 }

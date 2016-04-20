@@ -2574,6 +2574,7 @@ MonoBehaviour:
   ss4: {fileID: 468096012}
   ss5: {fileID: 1641709598}
   ss6: {fileID: 1355864047}
+  msg: {fileID: 304988457}
   landing: {fileID: 478295922}
   player: {fileID: 1158618102}
   inPosition: 0

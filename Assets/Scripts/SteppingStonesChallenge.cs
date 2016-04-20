@@ -10,6 +10,8 @@ public class SteppingStonesChallenge : MonoBehaviour {
 	public GameObject ss5;
 	public GameObject ss6;
 
+	public GameObject msg;
+
 	public GameObject landing;
 	private PlayerMovement pm;
 
@@ -72,6 +74,7 @@ public class SteppingStonesChallenge : MonoBehaviour {
 			PlayerStone (stone);
 		} else {
 			//TODO die
+			StartCoroutine (Death());
 		}
 	}
 
@@ -90,6 +93,7 @@ public class SteppingStonesChallenge : MonoBehaviour {
 			ss5.SetActive(!flag);
 			if(currentStone != null) if (!currentStone.activeSelf) {
 				//TODO die
+				StartCoroutine (Death());
 			}
 			yield return new WaitForSeconds (1);
 			ss1.SetActive(flag);
@@ -104,6 +108,7 @@ public class SteppingStonesChallenge : MonoBehaviour {
 			ss6.SetActive(!flag);
 			if(currentStone != null) if (!currentStone.activeSelf) {
 				//TODO die
+				StartCoroutine (Death());
 			}
 			yield return new WaitForSeconds (1);
 		}
@@ -112,5 +117,21 @@ public class SteppingStonesChallenge : MonoBehaviour {
 
 	public void PlayerStone(GameObject stone) {
 		currentStone = stone;
+	}
+
+	IEnumerator Death () {
+		MessageAPI mapi = msg.GetComponent<MessageAPI> ();
+		mapi.showMessage ("You fell into the river and drowned");
+		yield return new WaitForSeconds (3);
+		Reload ();
+	}
+
+	void Reload()
+	{
+		StartCoroutine (Death());
+		GameObject player = GameObject.FindWithTag("Player");
+		World.I.LogMovement(player, player.transform.position);
+		
+		World.I.Reload();
 	}
 }

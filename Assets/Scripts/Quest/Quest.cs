@@ -748,14 +748,16 @@ public class Quest : MonoBehaviour, Stateful {
                 follower = this.actor.AddComponent<Follower>();
                 follower.target = target;
 
+                var targetRel = target.AddComponent<RelatedObjects>();
 
                 Vector3 sizeT = GetBounds(actor).size;
                 float r = Mathf.Max(sizeT.x, sizeT.y);
-                actor.AddAura(r,
+                var closeEnoughAura = actor.AddAura(r,
                     o => follower.enabled = false,
                     o => follower.enabled = true,
-                    this.actor)
-                    .name = "Close-Enough Aura";
+                    this.actor);
+                closeEnoughAura.name = "Close-Enough Aura";
+                targetRel.related.Add(closeEnoughAura.gameObject);
 
 
                 float slow = 0.5f;
@@ -780,6 +782,7 @@ public class Quest : MonoBehaviour, Stateful {
                     displaced.transform.position = target.transform.position;
                     displaced.transform.parent = target.transform.parent;
                     target.transform.parent = displaced.transform;
+                    targetRel.related.Add(displaced);
 
                     float w = GetBounds(this.actor).size.x;
                     target.transform.Translate(new Vector3(0, w, 0));
@@ -814,6 +817,18 @@ public class Quest : MonoBehaviour, Stateful {
                 return c.bounds;
 
             return new Bounds(actor.transform.position, new Vector3(0, 0));
+        }
+
+        private class RelatedObjects : MonoBehaviour
+        {
+            [HideInInspector]
+            public List<GameObject> related = new List<GameObject>();
+
+            void OnDestroy()
+            {
+                foreach (GameObject r in related)
+                    Destroy(r);
+            }
         }
         
         public class Follower : MonoBehaviour

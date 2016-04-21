@@ -20,6 +20,8 @@ public class MainQuest : Quest {
     [Header("Map-specific areas")]
     public Cemetery cemetery;
     public FlowerChallenge flowerChallenge;
+    public GameObject flowerPath;
+    public GameObject grandmasHouse;
 
     //Private state//
     private int friendshipWithWolf;
@@ -131,7 +133,7 @@ public class MainQuest : Quest {
                 .player().choice()
                     .option("Thank you.", "S4")
                     .option("Thank you! Would you like some?",
-                        c => { friendshipWithWolf++; c.state("S3").enter(); });
+                        c => { friendshipWithWolf++; enter("S3"); });
 
         state("S3")
             .conversation().with(wolf)
@@ -144,6 +146,74 @@ public class MainQuest : Quest {
                 }, 4f)
                 .player("Here is some.")
                 .transition("S4");
+
+        state("S4")
+            .conversation().with(wolf)
+                .they("Where does your grandmother live, Little Red-Cap?")
+                .player().choice()
+                    .option("Just past the Huntsman's house.",
+                        c => { friendshipWithWolf--; enter("S5"); })
+                    .option("A good quarter of a league farther on in the wood.", "S5")
+                    .option("A good quarter of a league farther on in the wood. Her house stands under the three large oak-trees, the nut-trees are just below; you surely must know it.",
+                        c => { friendshipWithWolf++; enter("S5"); });
+
+        state("S5")
+            .scene().onEnter(s =>
+            {
+                if (friendshipWithWolf < 0)
+                    Die("Your caution roused the wolf and he ate you.",
+                        "Little Red Ridding Hood %1 Who was a bit too cautious.");
+
+                if (friendshipWithWolf == 0)
+                    enter("SAmbush");
+
+                if (friendshipWithWolf > 0)
+                    enter("S6");
+            });
+
+        state("SAmbush")
+            .scene().onEnter(s =>
+            {
+                Debug.LogWarning("Wolf ambushes you on the way back");
+                Die("The wolf ambushed you on the way back");
+            });
+
+        state("S6")
+            .scene()
+            .activatedBy(Activators.Enters(player, flowerPath))
+            .onEnter(s =>
+            {
+                if (friendshipWithWolf > 1)
+                    enter("SF8");
+                else
+                    enter("S8");
+            });
+
+        state("S8")
+            .conversation().with(wolf)
+                .they("See, Little Red-Cap, how pretty the flowers are about here — why do you not look round?")
+                .they("I believe, too, that you do not hear how sweetly the little birds are singing.")
+                .they("You walk gravely along as if you were going to school, while everything else out here in the wood is merry.")
+                .player().think("Suppose I take grandmother a fresh nosegay; that would please her too. It is so early in the day that I shall still get there in good time.")
+            .scene()
+                .actor(wolf)
+                    .unfollow()
+                    .act(a => flowerChallenge.Begin(player))
+                    .act(a => wolf.SetSpeed(0.75f))
+                    .move(wolf.transform.position - new Vector3(3, 0))
+                    .act(a => wolf.FadeOut(2f).Start())
+                    .move(wolf.transform.position - new Vector3(3, 0), 2f)
+            .scene()
+                .activatedBy(Activators.Enters(player, grandmasHouse))
+                .onEnter(s =>
+                {
+                    Die("<s>Your grandma</s> The wolf \n ate you!",
+                        "Little Red Riding Hood %1 Who naively walked through the woods.",
+                        "Granny %2 Who became the treat for her guest the wolf.");
+                });
+
+        //state("S9")
+
 
         state("DEAD").scene()
             .actor(null).act(aq => Debug.LogError("You died."))

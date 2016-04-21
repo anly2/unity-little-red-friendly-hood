@@ -2073,5 +2073,23 @@ public class Quest : MonoBehaviour, Stateful {
             return (activationCB) => actor1.WhenInRange(actor2, range,
                 new TriggerExtensions.VetoingAction(activationCB));
         }
+
+        public static Activator Enters(GameObject actor, GameObject area)
+        {
+            return (activationCB) =>
+            {
+                Collider2D c = area.GetComponent<Collider2D>();
+                if (c == null || !c.isTrigger)
+                    Debug.LogWarning("There is no trigger collider attached the 'area' object.");
+
+                var aura = area.AddComponent<TriggerExtensions.Aura>();
+                aura.shouldAffect = o => actor.Equals(o.gameObject);
+                aura.onEnter = o =>
+                {
+                    activationCB();
+                    Destroy(aura);
+                };
+            };
+        }
     }
 }

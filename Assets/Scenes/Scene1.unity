@@ -1209,6 +1209,48 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1493435916}
   m_RootOrder: 0
+--- !u!1 &334182679
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 4
+  m_Component:
+  - 4: {fileID: 334182680}
+  - 58: {fileID: 334182681}
+  m_Layer: 0
+  m_Name: Side Glade
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &334182680
+Transform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 334182679}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 20, y: 23, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 1921146082}
+  m_RootOrder: 7
+--- !u!58 &334182681
+CircleCollider2D:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 334182679}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_UsedByEffector: 0
+  m_Offset: {x: 0, y: 0}
+  serializedVersion: 2
+  m_Radius: 2
 --- !u!1 &392267935 stripped
 GameObject:
   m_PrefabParentObject: {fileID: 141940, guid: 74d3cc62417c4c74db0fcc6cce0f29e1, type: 2}
@@ -1684,7 +1726,9 @@ MonoBehaviour:
   cemetery: {fileID: 1805990618}
   flowerChallenge: {fileID: 225592596}
   flowerPath: {fileID: 785877813}
-  grandmasHouse: {fileID: 0}
+  grandmasHouse: {fileID: 1076093568}
+  grandmaPath: {fileID: 1054265428}
+  sideGlade: {fileID: 334182679}
 --- !u!4 &735406423 stripped
 Transform:
   m_PrefabParentObject: {fileID: 465578, guid: 32b897ec60ce6cc48b1253a4015a9712, type: 2}
@@ -2067,6 +2111,48 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1766061605}
   m_RootOrder: 4
+--- !u!1 &1054265428
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 4
+  m_Component:
+  - 4: {fileID: 1054265429}
+  - 58: {fileID: 1054265430}
+  m_Layer: 0
+  m_Name: Path to Grandma
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1054265429
+Transform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1054265428}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 2.14, y: 23.34, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 1921146082}
+  m_RootOrder: 6
+--- !u!58 &1054265430
+CircleCollider2D:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1054265428}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_UsedByEffector: 0
+  m_Offset: {x: 0, y: 0}
+  serializedVersion: 2
+  m_Radius: 2.5
 --- !u!1 &1057171078
 GameObject:
   m_ObjectHideFlags: 0
@@ -2113,6 +2199,48 @@ CircleCollider2D:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1057171078}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_UsedByEffector: 0
+  m_Offset: {x: 0, y: 0}
+  serializedVersion: 2
+  m_Radius: 2
+--- !u!1 &1076093568
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 4
+  m_Component:
+  - 4: {fileID: 1076093569}
+  - 58: {fileID: 1076093570}
+  m_Layer: 0
+  m_Name: Grandma House
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1076093569
+Transform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1076093568}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 6.28, y: 32.04, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 1921146082}
+  m_RootOrder: 5
+--- !u!58 &1076093570
+CircleCollider2D:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1076093568}
   m_Enabled: 1
   m_Density: 1
   m_Material: {fileID: 0}
@@ -3346,6 +3474,9 @@ Transform:
   - {fileID: 153646483}
   - {fileID: 225592595}
   - {fileID: 245173982}
+  - {fileID: 1076093569}
+  - {fileID: 1054265429}
+  - {fileID: 334182680}
   m_Father: {fileID: 0}
   m_RootOrder: 3
 --- !u!1 &1942423768 stripped

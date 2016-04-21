@@ -22,6 +22,8 @@ public class MainQuest : Quest {
     public FlowerChallenge flowerChallenge;
     public GameObject flowerPath;
     public GameObject grandmasHouse;
+    public GameObject grandmaPath;
+    public GameObject sideGlade;
 
     //Private state//
     private int friendshipWithWolf;
@@ -200,9 +202,9 @@ public class MainQuest : Quest {
                     .unfollow()
                     .act(a => flowerChallenge.Begin(player))
                     .act(a => wolf.SetSpeed(0.75f))
-                    .move(wolf.transform.position - new Vector3(3, 0))
+                    .move(() => wolf.transform.position - new Vector3(1.5f, 0))
                     .act(a => wolf.FadeOut(2f).Start())
-                    .move(wolf.transform.position - new Vector3(3, 0), 2f)
+                    .move(() => wolf.transform.position - new Vector3(3, 0), 2f)
             .scene()
                 .activatedBy(Activators.Enters(player, grandmasHouse))
                 .onEnter(s =>
@@ -212,12 +214,68 @@ public class MainQuest : Quest {
                         "Granny %2 Who became the treat for her guest the wolf.");
                 });
 
-        //state("S9")
+        state("SF8")
+            .conversation().with(wolf)
+                .they("See, Little Red-Cap, how pretty the flowers are about here — would their freshness not please your grandmother?")
+                .they("I dare say, too, that I can gather the most refreshing of them all, before you do.")
+                .player().think("Suppose I take grandmother a fresh nosegay; that would please her too. It is so early in the day that I shall still get there in good time.")
+                .they()
+                    //.unfollow(player)
+                    //#! wolf AI for flower game
+                    .act(a => flowerChallenge.Begin(player, wolf))
+                    .act(a => hasReasonToThankWolf = true) //#! set by the outcome of the flower game
+            .scene()
+                .activatedBy(a => new WaitForSeconds(30f).Then(() => a()).Start()) //#! when challenge is complete
+                .transition("SF9");
+
+        state("SF9")
+            .scene() //#! the whole Huntsman scene
+            .transition("SFW11");
+
+        state("SFW11")
+            .conversation().with(wolf)
+                .they("Let me escort you to your grandma's, dear girl.")
+                .they().follow(player)
+            .scene()
+                .activatedBy(Activators.Enters(player, grandmaPath))
+                .onEnter(s => enter(hasReasonToThankWolf ? "SFWT12" : "SFW12"));
+
+        state("SFW12")
+            .conversation().with(wolf)
+                .they("I shall leave you now, dear. Goodbye!")
+                .player("Goodbye, wolf!")
+                .act(a =>
+                    End("Your day goes by peacefully. \n But your grandma gets eaten the next day.",
+                        "Grandmother %2 Who became the treat to her new neighbour the wolf."));
+
+        state("SFWT12")
+            .conversation().with(wolf)
+                .they("I shall leave you now, dear. Goodbye!")
+                .player("Allow me to thank you for the aid you have given me!")
+                .player("Let me treat you to some wine.")
+                .they("How lovely...")
+            .scene()
+                .actor(wolf)
+                    // .unfollow() //#! uncomment when dragging the wolf is implemented
+                    .act(a =>
+                    {
+                        Activators.Enters(wolf, sideGlade)(() =>
+                        {
+                            return true;
+                        });
+                    });
+
 
 
         state("DEAD").scene()
             .actor(null).act(aq => Debug.LogError("You died."))
             .getScene().completeQuest();
+    }
+
+
+    protected void End(string message, params string[] gravestones)
+    {
+        Die(message, gravestones);
     }
 
     protected void Die(string message, params string[] gravestones)

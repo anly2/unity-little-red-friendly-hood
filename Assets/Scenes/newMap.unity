@@ -473,11 +473,11 @@ MonoBehaviour:
   whisperBackgroundColor: {r: .0666666701, g: .121568628, b: .0666666701, a: 1}
   whisperForegroundColor: {r: .779411793, g: .779411793, b: .779411793, a: 1}
   cemetery: {fileID: 606677471}
-  flowerChallenge: {fileID: 0}
-  flowerPath: {fileID: 0}
-  grandmasHouse: {fileID: 0}
-  grandmaPath: {fileID: 0}
-  sideGlade: {fileID: 0}
+  flowerChallenge: {fileID: 2002674849}
+  flowerPath: {fileID: 1974006996}
+  grandmasHouse: {fileID: 543835228}
+  grandmaPath: {fileID: 1409388397}
+  sideGlade: {fileID: 1605189815}
 --- !u!1 &299235294
 GameObject:
   m_ObjectHideFlags: 0

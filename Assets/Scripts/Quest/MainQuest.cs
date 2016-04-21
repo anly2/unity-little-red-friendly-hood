@@ -19,6 +19,7 @@ public class MainQuest : Quest {
 
     [Header("Map-specific areas")]
     public Cemetery cemetery;
+    public FlowerChallenge flowerChallenge;
 
     //Private state//
     private int friendshipWithWolf;

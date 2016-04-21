@@ -2,6 +2,8 @@
 
 public class MainQuest : Quest {
 
+    public MessageAPI messageMenu;
+
     [Header("Involved actors")]
     public GameObject initialSpawn;
     public GameObject player;
@@ -268,7 +270,7 @@ public class MainQuest : Quest {
 
 
         state("DEAD").scene()
-            .actor(null).act(aq => Debug.LogError("You died."))
+            .actor(null).act(aq => player.SetSpeed(0))
             .getScene().completeQuest();
     }
 
@@ -276,6 +278,7 @@ public class MainQuest : Quest {
     protected void End(string message, params string[] gravestones)
     {
         Die(message, gravestones);
+        messageMenu.showMessage("<size=24>" + message + "</size>");
     }
 
     protected void Die(string message, params string[] gravestones)
@@ -283,7 +286,7 @@ public class MainQuest : Quest {
         foreach (string engraving in gravestones)
             cemetery.AddGrave(FormatEngraving(engraving));
 
-        Debug.Log(message);
+        messageMenu.showMessage("<b><color=#ff2222><size=34>You are dead!</size></color></b>\n<size=24>" + message + "</size>");
         enter("DEAD");
     }
 

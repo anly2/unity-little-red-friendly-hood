@@ -65,12 +65,15 @@ public class SteppingStonesChallenge : MonoBehaviour {
 		rb.isKinematic = true;
 	}
 
+    private AttachedCoroutine? jumpMotion = null;
+    private Vector3 centerOffset = new Vector3(0, 0.5f);
 	private void Jump(GameObject stone) {
 		if (stone.activeSelf) {
-			//Move player to stone
-			Vector3 stonePosition = stone.transform.position;
-			Vector3 playerPosition = player.transform.position;
-			player.transform.position += (stonePosition-playerPosition);
+            if (jumpMotion != null)
+                jumpMotion.Value.Stop();
+
+            jumpMotion = player.MotionTo(stone.transform.position + centerOffset, 0.5f).Start();
+
 			PlayerStone (stone);
 		} else {
 			//TODO die

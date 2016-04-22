@@ -128,10 +128,14 @@ public class SteppingStonesChallenge : MonoBehaviour {
 
 	void Reload()
 	{
-		StartCoroutine (Death());
-		GameObject player = GameObject.FindWithTag("Player");
-		World.I.LogMovement(player, player.transform.position);
-		
-		World.I.Reload();
+        //StartCoroutine (Death());
+        //GameObject player = GameObject.FindWithTag("Player");
+        //World.I.LogMovement(player, player.transform.position);
+
+        //World.I.Reload();
+        currentStone = null;
+        SaveManager.Load("stepping stones checkpoint");
+        MessageAPI mapi = msg.GetComponent<MessageAPI>();
+        mapi.hideMessage();
 	}
 }

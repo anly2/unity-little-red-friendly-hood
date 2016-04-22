@@ -10,12 +10,15 @@ public class StartChallenge : MonoBehaviour {
 	private SteppingStonesChallenge challenge;
 
 	void OnTriggerEnter2D(Collider2D c) {
-		if (c.gameObject.tag.Equals ("Player") == true) { 
-			player.Think("I think I can jump [Spacebar] between these stepping stones");
-			challenge = trigger.GetComponent<SteppingStonesChallenge> ();
-			pm = challenge.player.GetComponent<PlayerMovement> ();
-			challenge.inPosition = true;
-			pm.unRestricted = false;
-		}
+        if (!c.gameObject.tag.Equals("Player"))
+            return;
+
+        SaveManager.Save("stepping stones checkpoint");
+
+        player.Think("I think I can jump [Spacebar] between these stepping stones");
+		challenge = trigger.GetComponent<SteppingStonesChallenge> ();
+		pm = challenge.player.GetComponent<PlayerMovement> ();
+		challenge.inPosition = true;
+		pm.unRestricted = false;
 	}
 }

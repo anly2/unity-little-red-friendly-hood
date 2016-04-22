@@ -288,6 +288,8 @@ public class MainQuest : Quest {
 
         messageMenu.showMessage("<b><color=#ff2222><size=34>You are dead!</size></color></b>\n<size=24>" + message + "</size>");
         enter("DEAD");
+
+        new WaitForSeconds(3f).Then(() => Application.LoadLevel(Application.loadedLevel)).Start();
     }
 
 

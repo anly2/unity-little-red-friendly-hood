@@ -23,6 +23,10 @@ Submissions/
 # Unity3D Generated File On Crash Reports
 sysinfo.txt
 
+# Sublime Text
+# =========================
+*.sublime*
+
 # =========================
 # Operating System Files
 # =========================

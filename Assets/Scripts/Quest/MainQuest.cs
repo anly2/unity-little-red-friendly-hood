@@ -2,7 +2,8 @@
 
 public class MainQuest : Quest {
 
-    public MessageAPI messageMenu;
+    //#!!! TODO
+    //public MessageMenu messageMenu;
 
     [Header("Involved actors")]
     public GameObject initialSpawn;
@@ -278,7 +279,7 @@ public class MainQuest : Quest {
     protected void End(string message, params string[] gravestones)
     {
         Die(message, gravestones);
-        messageMenu.showMessage("<size=24>" + message + "</size>");
+        //messageMenu.showMessage("<size=24>" + message + "</size>");
     }
 
     protected void Die(string message, params string[] gravestones)
@@ -286,7 +287,7 @@ public class MainQuest : Quest {
         foreach (string engraving in gravestones)
             cemetery.AddGrave(FormatEngraving(engraving));
 
-        messageMenu.showMessage("<b><color=#ff2222><size=34>You are dead!</size></color></b>\n<size=24>" + message + "</size>");
+        //messageMenu.showMessage("<b><color=#ff2222><size=34>You are dead!</size></color></b>\n<size=24>" + message + "</size>");
         enter("DEAD");
 
         new WaitForSeconds(3f).Then(() => Application.LoadLevel(Application.loadedLevel)).Start();

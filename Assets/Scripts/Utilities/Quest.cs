@@ -120,13 +120,6 @@ public class Quest : MonoBehaviour, Stateful {
     }
 
 
-    protected virtual void LogMovement()
-    {
-        GameObject player = GameObject.FindWithTag("Player");
-        World.I.LogMovement(player, player.transform.position);
-    }
-
-
     /* Chainable Accessors */
 
     public new Quest name(string name)
@@ -312,7 +305,6 @@ public class Quest : MonoBehaviour, Stateful {
                 parent.activeState.leave();
 
             parent.activeState = this;
-            getQuest().LogMovement();
 
             foreach (AbstractScene scene in scenes)
                 scene.installActivator();
@@ -467,7 +459,6 @@ public class Quest : MonoBehaviour, Stateful {
             if (!parent.active)
                 throw new InvalidOperationException("The Quest State that this scene belongs to is not active!");
 
-            getQuest().LogMovement();
             getQuest().StartCoroutine(Play());
             return this;
         }
@@ -1868,7 +1859,6 @@ public class Quest : MonoBehaviour, Stateful {
                         CoroutineExtensions.Action expire = () =>
                         {
                             expireAction();
-                            _chosen(-1)();
                             completed = true;
                         };
 
@@ -1911,7 +1901,6 @@ public class Quest : MonoBehaviour, Stateful {
 
                         var c = v.GetComponent<Button>().onClick;
                         c.AddListener(new UnityEngine.Events.UnityAction(option.action));
-                        c.AddListener(_chosen(i-1));
                         c.AddListener(() => completed = true);
                     }
 
@@ -1952,32 +1941,6 @@ public class Quest : MonoBehaviour, Stateful {
                                 predeterminedChoice = -2;
                             })
                             .Start(getQuest());
-                    }
-
-                    _chosen(option)();
-                }
-
-                private UnityEngine.Events.UnityAction _chosen(int option)
-                {
-                    return () => World.I.LogAction(new ChoiceWorldAction(option));
-                }
-
-                [Serializable]
-                private class ChoiceWorldAction : WorldAction
-                {
-                    private int chosen;
-
-                    public ChoiceWorldAction(int chosen)
-                    {
-                        this.chosen = chosen;
-                    }
-
-                    public override IEnumerator act()
-                    {
-                        predeterminedChoice = chosen;
-
-                        while (predeterminedChoice != -2)
-                            yield return null;
                     }
                 }
 

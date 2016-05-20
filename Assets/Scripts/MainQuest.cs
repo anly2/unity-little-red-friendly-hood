@@ -65,7 +65,10 @@ public class MainQuest : Quest {
                 .actor(player)
                     .say("I will take great care.")
                     .act(aq => mother.FadeOut(0.5f).Then(() => mother.SetActive(false)).Start(), 0.5f)
-                    .act(aq => player.SetSpeed(1.5f));
+                    .act(aq => {
+                        float t = 1f, m = 0.25f, d = (t-m);
+                        new Tween(3f, p => player.SetSpeed(m + d * p)).Start();
+                    });
 
 
         System.Action<GameObject, string> whisper = (whisperer, text) =>
@@ -196,6 +199,7 @@ public class MainQuest : Quest {
 
         state("S8")
             .conversation().with(wolf)
+                .they().act(a => flowerChallenge.Begin(player)) //## logically not here, but should be here
                 .they("See, Little Red-Cap, how pretty the flowers are about here — why do you not look round?")
                 .they("I believe, too, that you do not hear how sweetly the little birds are singing.")
                 .they("You walk gravely along as if you were going to school, while everything else out here in the wood is merry.")
@@ -203,7 +207,7 @@ public class MainQuest : Quest {
             .scene()
                 .actor(wolf)
                     .unfollow()
-                    .act(a => flowerChallenge.Begin(player))
+                    //.act(a => flowerChallenge.Begin(player)) //## moved up
                     .act(a => wolf.SetSpeed(0.75f))
                     .move(() => wolf.transform.position - new Vector3(1.5f, 0))
                     .act(a => wolf.FadeOut(2f).Start())
@@ -219,13 +223,14 @@ public class MainQuest : Quest {
 
         state("SF8")
             .conversation().with(wolf)
+                .they().act(a => flowerChallenge.Begin(player, wolf))
                 .they("See, Little Red-Cap, how pretty the flowers are about here — would their freshness not please your grandmother?")
                 .they("I dare say, too, that I can gather the most refreshing of them all, before you do.")
                 .player().think("Suppose I take grandmother a fresh nosegay; that would please her too. It is so early in the day that I shall still get there in good time.")
                 .they()
                     //.unfollow(player)
                     //#! wolf AI for flower game
-                    .act(a => flowerChallenge.Begin(player, wolf))
+                    // .act(a => flowerChallenge.Begin(player, wolf)) //## moved up
                     .act(a => hasReasonToThankWolf = true) //#! set by the outcome of the flower game
             .scene()
                 .activatedBy(a => new WaitForSeconds(30f).Then(() => a()).Start()) //#! when challenge is complete

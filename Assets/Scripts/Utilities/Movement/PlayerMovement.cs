@@ -28,7 +28,7 @@ public class PlayerMovement : Movement {
 
         animator.SetBool("Moving", (moveHorizontal != 0 || moveVertical != 0));
 
-        if (rend != null)
+        if (rend != null && moveHorizontal != 0)
             rend.flipX = (moveHorizontal < 0);
 
 		Vector3 movement = new Vector3 (moveHorizontal, moveVertical);

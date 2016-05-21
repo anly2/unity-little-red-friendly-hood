@@ -225,6 +225,34 @@ Prefab:
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 57640eceb4377a44a82c6fb554f3c7aa, type: 2}
   m_IsPrefabParent: 0
+--- !u!1 &47289853
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 4
+  m_Component:
+  - 4: {fileID: 47289854}
+  m_Layer: 0
+  m_Name: Ledge Slot (2)
+  m_TagString: Untagged
+  m_Icon: {fileID: -5082302936091411984, guid: 0000000000000000d000000000000000, type: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 4294967295
+  m_IsActive: 1
+--- !u!4 &47289854
+Transform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 47289853}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 1.5, y: 2.75, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children:
+  - {fileID: 2080061295}
+  m_Father: {fileID: 1670239206}
+  m_RootOrder: 1
 --- !u!1 &71715469
 GameObject:
   m_ObjectHideFlags: 0
@@ -2384,6 +2412,48 @@ Transform:
   - {fileID: 875822932}
   m_Father: {fileID: 716978642}
   m_RootOrder: 1
+--- !u!1 &823785092
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 4
+  m_Component:
+  - 4: {fileID: 823785093}
+  - 58: {fileID: 823785094}
+  m_Layer: 0
+  m_Name: Ledge Part
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &823785093
+Transform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 823785092}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 1090500090}
+  m_RootOrder: 0
+--- !u!58 &823785094
+CircleCollider2D:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 823785092}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_Offset: {x: -0.5, y: -1}
+  serializedVersion: 2
+  m_Radius: 0.75
 --- !u!1 &827607621
 GameObject:
   m_ObjectHideFlags: 0
@@ -2908,6 +2978,34 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1645322307}
   m_RootOrder: 35
+--- !u!1 &1090500089
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 4
+  m_Component:
+  - 4: {fileID: 1090500090}
+  m_Layer: 0
+  m_Name: Ledge Slot (3)
+  m_TagString: Untagged
+  m_Icon: {fileID: -5082302936091411984, guid: 0000000000000000d000000000000000, type: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 4294967295
+  m_IsActive: 1
+--- !u!4 &1090500090
+Transform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1090500089}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 3, y: 2, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children:
+  - {fileID: 823785093}
+  m_Father: {fileID: 1670239206}
+  m_RootOrder: 2
 --- !u!1 &1091702262
 GameObject:
   m_ObjectHideFlags: 0
@@ -2935,6 +3033,34 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1645322307}
   m_RootOrder: 15
+--- !u!1 &1097850081
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 4
+  m_Component:
+  - 4: {fileID: 1097850082}
+  m_Layer: 0
+  m_Name: Ledge Slot (1)
+  m_TagString: Untagged
+  m_Icon: {fileID: -5082302936091411984, guid: 0000000000000000d000000000000000, type: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 4294967295
+  m_IsActive: 1
+--- !u!4 &1097850082
+Transform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1097850081}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 3.5, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children:
+  - {fileID: 2088955638}
+  m_Father: {fileID: 1670239206}
+  m_RootOrder: 0
 --- !u!1 &1134583705
 GameObject:
   m_ObjectHideFlags: 0
@@ -3225,6 +3351,7 @@ Transform:
   m_Children:
   - {fileID: 758708683}
   - {fileID: 1645322307}
+  - {fileID: 1670239206}
   m_Father: {fileID: 1212898542}
   m_RootOrder: 2
 --- !u!114 &1272682071
@@ -3276,6 +3403,9 @@ MonoBehaviour:
   - {fileID: 1199802450}
   - {fileID: 499639046}
   - {fileID: 1052759766}
+  - {fileID: 1097850082}
+  - {fileID: 47289854}
+  - {fileID: 1090500090}
   rockObjects:
   - {fileID: 173230, guid: 4bc33e2f07a407442affd3b2d68f4e5d, type: 2}
   neighbourThreshold: 2
@@ -4156,6 +4286,36 @@ Transform:
   - {fileID: 1052759766}
   m_Father: {fileID: 1272682070}
   m_RootOrder: 1
+--- !u!1 &1670239205
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 4
+  m_Component:
+  - 4: {fileID: 1670239206}
+  m_Layer: 0
+  m_Name: Ledge
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1670239206
+Transform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1670239205}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -39, y: -9, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children:
+  - {fileID: 1097850082}
+  - {fileID: 47289854}
+  - {fileID: 1090500090}
+  m_Father: {fileID: 1272682070}
+  m_RootOrder: 2
 --- !u!1001 &1690487982
 Prefab:
   m_ObjectHideFlags: 0
@@ -5251,6 +5411,90 @@ Transform:
   - {fileID: 619097548}
   m_Father: {fileID: 288924015}
   m_RootOrder: 1
+--- !u!1 &2080061294
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 4
+  m_Component:
+  - 4: {fileID: 2080061295}
+  - 58: {fileID: 2080061296}
+  m_Layer: 0
+  m_Name: Ledge Part
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2080061295
+Transform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 2080061294}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 47289854}
+  m_RootOrder: 0
+--- !u!58 &2080061296
+CircleCollider2D:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 2080061294}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_Offset: {x: -0.5, y: -1}
+  serializedVersion: 2
+  m_Radius: 0.75
+--- !u!1 &2088955637
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 4
+  m_Component:
+  - 4: {fileID: 2088955638}
+  - 58: {fileID: 2088955639}
+  m_Layer: 0
+  m_Name: Ledge Part
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2088955638
+Transform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 2088955637}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 1097850082}
+  m_RootOrder: 0
+--- !u!58 &2088955639
+CircleCollider2D:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 2088955637}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_Offset: {x: 0, y: -1}
+  serializedVersion: 2
+  m_Radius: 0.75
 --- !u!1 &2118446433
 GameObject:
   m_ObjectHideFlags: 0

@@ -89,6 +89,13 @@ public class SteppingStones : MonoBehaviour {
 
     IEnumerator InitStone(Node node)
     {
+        if (rockSlots[node.index].transform.childCount > 0)
+        {
+            node.stone = rockSlots[node.index].transform.GetChild(0).gameObject;
+            SetupStonePresence(node);
+            yield break;
+        }
+
         if (node.stone == null)
         {
             //Instantiate and position
@@ -96,23 +103,7 @@ public class SteppingStones : MonoBehaviour {
             node.stone.transform.parent = rockSlots[node.index];
             node.stone.transform.position = node.stone.transform.parent.position;
 
-            //Add a trigger collider and an aura for tracking purposes
-            node.stone.GetComponent<Collider2D>().isTrigger = true; //## Feels weird to do this but...
-            var aura = node.stone.AddComponent<TriggerExtensions.Aura>();
-            aura.shouldAffect = a => a.tag == "Player";
-            aura.onEnter = a =>
-            {
-                if (!IsStoneSubmerged(node))
-                {
-                    nodeUnderPlayer = node;
-                    node.neighbours[Random.Range(0, node.neighbours.Length)].chance = 1;
-                }
-            };
-            aura.onExit = a =>
-            {
-                if (nodeUnderPlayer != null && nodeUnderPlayer.index == node.index)
-                    nodeUnderPlayer = null;
-            };
+            SetupStonePresence(node);
         }
 
         GameObject stone = node.stone;
@@ -149,10 +140,32 @@ public class SteppingStones : MonoBehaviour {
         }
     }
 
+    private void SetupStonePresence(Node node)
+    {
+        //Add a trigger collider and an aura for tracking purposes
+        node.stone.GetComponent<Collider2D>().isTrigger = true; //## Feels weird to do this but...
+        var aura = node.stone.AddComponent<TriggerExtensions.Aura>();
+        aura.shouldAffect = a => a.tag == "Player";
+        aura.onEnter = a =>
+        {
+            if (!IsStoneSubmerged(node))
+            {
+                nodeUnderPlayer = node;
+                node.neighbours[Random.Range(0, node.neighbours.Length)].chance = 1;
+            }
+        };
+        aura.onExit = a =>
+        {
+            if (nodeUnderPlayer != null && nodeUnderPlayer.index == node.index)
+                nodeUnderPlayer = null;
+        };
+    }
+
     private bool IsStoneSubmerged(Node node)
     {
         return node.stone.GetOpacity() <= 0.1;
     }
+
 
     void JumpStart()
     {
@@ -178,7 +191,7 @@ public class SteppingStones : MonoBehaviour {
         GameObject player = GameObject.FindWithTag("Player");
 
         player.MotionTo(player.transform.position
-            + new Vector3(-2, 2, 0), drownCinematicDuration).Start();
+            + new Vector3(-2, 1, 0), drownCinematicDuration).Start();
 
         player.FadeOut(drownCinematicDuration)
             .Then(() => Die("You drowned!",

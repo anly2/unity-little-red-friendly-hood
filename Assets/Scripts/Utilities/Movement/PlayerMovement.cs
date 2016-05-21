@@ -10,6 +10,9 @@ public class PlayerMovement : Movement {
     private Animator animator;
     private SpriteRenderer rend;
 
+    private bool jumping = false;
+
+
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
@@ -26,15 +29,15 @@ public class PlayerMovement : Movement {
             return;
         }
 
-        if (Input.GetButtonDown("Jump"))
-        {
-            animator.SetTrigger("Jump");
 
-            JumpStart();
-            //JumpLand is called as an animation event
-        }
-        
-		float moveHorizontal = Input.GetAxis ("Horizontal");
+        if (jumping)
+            return;
+
+        if (Input.GetButtonDown("Jump"))
+            Jump();
+
+
+        float moveHorizontal = Input.GetAxis ("Horizontal");
 		float moveVertical = Input.GetAxis ("Vertical");
 
         animator.SetBool("Moving", (moveHorizontal != 0 || moveVertical != 0));
@@ -47,14 +50,24 @@ public class PlayerMovement : Movement {
     }
 
 
+    public void Jump()
+    {
+        animator.SetTrigger("Jump");
+
+        JumpStart();
+        //JumpLand is called as an animation event
+    }
+
     void JumpStart()
     {
+        jumping = true;
         foreach (var l in jumpListeners)
             l.SendMessage("JumpStart");
     }
 
     void JumpLand()
     {
+        jumping = false;
         foreach (var l in jumpListeners)
             l.SendMessage("JumpLand");
     }

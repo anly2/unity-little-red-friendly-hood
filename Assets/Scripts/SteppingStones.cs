@@ -140,6 +140,7 @@ public class SteppingStones : MonoBehaviour {
         }
     }
 
+
     private void SetupStonePresence(Node node)
     {
         //Add a trigger collider and an aura for tracking purposes
@@ -187,7 +188,10 @@ public class SteppingStones : MonoBehaviour {
     const float drownCinematicDuration = 1f;
     public void Drown()
     {
-        gameObject.SetActive(false);
+        //Effectively disable the challenge
+        jumping = true; //dont trigger more "Drown"
+        //StopAllCoroutines();
+
         GameObject player = GameObject.FindWithTag("Player");
 
         player.MotionTo(player.transform.position

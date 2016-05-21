@@ -4,6 +4,7 @@ using System.Collections;
 
 public class SteppingStones : MonoBehaviour {
 
+    public GameObject river;
     public List<Transform> rockSlots;
     public List<GameObject> rockObjects;
 
@@ -15,6 +16,8 @@ public class SteppingStones : MonoBehaviour {
     public float submergeTime = 1f;
 
 
+    private bool jumping = false;
+    private bool overRiver = false;
     private Node nodeUnderPlayer;
     private Node[] nodes;
 
@@ -31,8 +34,21 @@ public class SteppingStones : MonoBehaviour {
         Begin();
 	}
 
+    
 
     public void Begin() {
+        // Initialize river
+        var riverAura = river.AddComponent<TriggerExtensions.Aura>();
+        riverAura.shouldAffect = a => a.tag == "Player";
+        riverAura.onEnter = a =>
+        {
+            overRiver = true;
+            if (!jumping)
+                Drown();
+        };
+        riverAura.onExit = a => overRiver = false;
+
+
         // Initialize nodes
         nodes = new Node[rockSlots.Count];
 
@@ -75,9 +91,28 @@ public class SteppingStones : MonoBehaviour {
     {
         if (node.stone == null)
         {
+            //Instantiate and position
             node.stone = Instantiate(rockObjects[Random.Range(0, rockObjects.Count)]);
             node.stone.transform.parent = rockSlots[node.index];
             node.stone.transform.position = node.stone.transform.parent.position;
+
+            //Add a trigger collider and an aura for tracking purposes
+            node.stone.GetComponent<Collider2D>().isTrigger = true; //## Feels weird to do this but...
+            var aura = node.stone.AddComponent<TriggerExtensions.Aura>();
+            aura.shouldAffect = a => a.tag == "Player";
+            aura.onEnter = a =>
+            {
+                if (!IsStoneSubmerged(node))
+                {
+                    nodeUnderPlayer = node;
+                    node.neighbours[Random.Range(0, node.neighbours.Length)].chance = 1;
+                }
+            };
+            aura.onExit = a =>
+            {
+                if (nodeUnderPlayer != null && nodeUnderPlayer.index == node.index)
+                    nodeUnderPlayer = null;
+            };
         }
 
         GameObject stone = node.stone;
@@ -89,6 +124,8 @@ public class SteppingStones : MonoBehaviour {
             float p = Random.Range(0f, 1f);
             if (node.chance > p)
             {
+                node.chance = emergeChance; //reset any changes
+
                 stone.FadeIn(submergeTime).Start(this);
                 yield return new WaitForSeconds(submergeTime);
 
@@ -99,7 +136,12 @@ public class SteppingStones : MonoBehaviour {
                 yield return new WaitForSeconds(submergeTime);
 
                 if (nodeUnderPlayer != null && nodeUnderPlayer.index == node.index)
-                    Drown();
+                {
+                    nodeUnderPlayer = null;
+
+                    if (!jumping)
+                        Drown();
+                }
             }
 
             float ts = Random.Range(emergedDuration.min, emergedDuration.max);
@@ -107,10 +149,53 @@ public class SteppingStones : MonoBehaviour {
         }
     }
 
+    private bool IsStoneSubmerged(Node node)
+    {
+        return node.stone.GetOpacity() <= 0.1;
+    }
 
+    void JumpStart()
+    {
+        jumping = true;
+    }
+
+    void JumpLand()
+    {
+        jumping = false;
+
+        if (!overRiver)
+            return;
+        
+        if (nodeUnderPlayer == null)
+            Drown();
+    }
+
+
+    const float drownCinematicDuration = 1f;
     public void Drown()
     {
-        Debug.LogError("You have drowned");
+        gameObject.SetActive(false);
+        GameObject player = GameObject.FindWithTag("Player");
+
+        player.MotionTo(player.transform.position
+            + new Vector3(-2, 2, 0), drownCinematicDuration).Start();
+
+        player.FadeOut(drownCinematicDuration)
+            .Then(() => Die("You drowned!",
+                    "Little Red Riding Hood %1 Who was swept by the waters")
+            ).Start();
+    }
+    
+    protected void Die(string message, params string[] gravestones)
+    {
+        //foreach (string engraving in gravestones)
+        //    cemetery.AddGrave(FormatEngraving(engraving));
+
+        Debug.LogError("Dead: " + message);
+        //messageMenu.showMessage("<b><color=#ff2222><size=34>You are dead!</size></color></b>\n<size=24>" + message + "</size>");
+        //enter("DEAD");
+        
+        new WaitForSeconds(2f).Then(() => Application.LoadLevel(Application.loadedLevel)).Start();
     }
 }
 

@@ -13,7 +13,6 @@ public class DeathMenu : Menu {
             cemetary = GameObject.FindObjectOfType<Cemetery>();
     }
 
-
     
     public void Die(string message, params string[] gravestones)
     {
@@ -39,5 +38,25 @@ public class DeathMenu : Menu {
             return;
 
         cemetary.AddGrave(engraving);
+    }
+
+
+    public void Restart()
+    {
+        Application.LoadLevel(Application.loadedLevel);
+    }
+
+    public void Load()
+    {
+        base.Hide();
+
+        var m = Menus.Get<LoadMenu>();
+        m.referrer = this;
+        m.Show();
+    }
+
+    public void Exit()
+    {
+        Application.Quit();
     }
 }

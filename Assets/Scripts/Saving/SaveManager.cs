@@ -1,11 +1,22 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
 using System.IO;
+using UnityEngine.SceneManagement;
+using System.Collections;
 
-public class SaveManager : MonoBehaviour {
-    
-    public static void Load(string saveName)
+public class SaveManager
+{
+
+    // Save and Load functionality //
+
+    public static void Load(string saveName, bool reloadLevel = true)
     {
+        if (reloadLevel)
+        {
+            Reload(null, () => Load(saveName, false));
+            return;
+        }
+
         string filename = GetSavesFolder() + Path.GetFileNameWithoutExtension(saveName) + ".gsv";
 
         if (!File.Exists(filename))
@@ -14,7 +25,7 @@ public class SaveManager : MonoBehaviour {
         GameState loader = new GameObject("Loader").AddComponent<GameState>();
         loader.autoact = false;
         loader.Load(filename);
-        Destroy(loader.gameObject);
+        GameObject.Destroy(loader.gameObject);
     }
 
     public static void Save(string saveName)
@@ -30,15 +41,18 @@ public class SaveManager : MonoBehaviour {
         GameState saver = new GameObject("Saver").AddComponent<GameState>();
         saver.autoact = false;
         saver.Save(filename + ".gsv");
-        Destroy(saver.gameObject);
+        GameObject.Destroy(saver.gameObject);
 
         Application.CaptureScreenshot(filename + ".thumb");
     }
 
 
+    // Helper methods //
+
     public static GameSave[] GetSaves()
     {
-        try {
+        try
+        {
             string[] files = Directory.GetFiles(GetSavesFolder(), "*.gsv");
             GameSave[] saves = new GameSave[files.Length];
 
@@ -77,7 +91,8 @@ public class SaveManager : MonoBehaviour {
 
     public static Sprite LoadImage(string path)
     {
-        try {
+        try
+        {
             FileStream fs = new FileStream(path, FileMode.Open, FileAccess.Read);
             byte[] imageData = new byte[fs.Length];
             fs.Read(imageData, 0, (int)fs.Length);
@@ -90,5 +105,41 @@ public class SaveManager : MonoBehaviour {
         {
             return null;
         }
+    }
+
+
+    /* Reloading the World */
+
+    public static void Reload(string sceneName = null, System.Action whenDone = null)
+    {
+        var observerGO = new GameObject("Scene Change Observer");
+        GameObject.DontDestroyOnLoad(observerGO);
+        var observer = observerGO.AddComponent<SceneChangeObserver>();
+
+        SceneManager.LoadScene(sceneName ?? SceneManager.GetActiveScene().name);
+        //Application.LoadLevel(Application.loadedLevel);
+
+        observer.WaitForSceneToLoad()
+            .Then(() => { if (whenDone != null) whenDone(); })
+            .Then(() => GameObject.Destroy(observerGO))
+            .Start(observer);
+    }
+}
+
+public class SceneChangeObserver : MonoBehaviour
+{
+    private int justLoadedLevel = -1;
+
+    public IEnumerator WaitForSceneToLoad(int level = -1)
+    {
+        while (justLoadedLevel < 0 || (level != -1 && level != justLoadedLevel))
+            yield return null;
+
+        justLoadedLevel = -1;
+    }
+
+    void OnLevelWasLoaded(int level)
+    {
+        justLoadedLevel = level;
     }
 }

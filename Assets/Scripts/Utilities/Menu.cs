@@ -10,13 +10,13 @@ public class Menu : MonoBehaviour {
     }
 
 
-    public void Show()
+    public virtual void Show()
     {
         for (int i = 0; i < transform.childCount; i++)
             transform.GetChild(i).gameObject.SetActive(true);
     }
 
-    public void Hide()
+    public virtual void Hide()
     {
         for (int i = 0; i < transform.childCount; i++)
             transform.GetChild(i).gameObject.SetActive(false);

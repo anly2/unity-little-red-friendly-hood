@@ -7,6 +7,12 @@ public class MainMenu : Menu {
         SaveManager.Reload();
     }
 
+
+    public void Continue()
+    {
+        this.Hide();
+    }
+
     public void LoadLast()
     {
         //#!! checks

@@ -54,6 +54,10 @@ public class SaveManager
         try
         {
             string[] files = Directory.GetFiles(GetSavesFolder(), "*.gsv");
+
+            System.Array.Sort(files, (a, b) => // swapped a and b to get DESC
+                File.GetLastWriteTime(b).CompareTo(File.GetLastWriteTime(a)));
+
             GameSave[] saves = new GameSave[files.Length];
 
             for (int i = 0; i < saves.Length; i++)

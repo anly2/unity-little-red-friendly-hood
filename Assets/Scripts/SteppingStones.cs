@@ -198,21 +198,10 @@ public class SteppingStones : MonoBehaviour {
             + new Vector3(-2, 1, 0), drownCinematicDuration).Start();
 
         player.FadeOut(drownCinematicDuration)
-            .Then(() => Die("You drowned!",
-                    "Little Red Riding Hood %1 Who was swept by the waters")
-            ).Start();
-    }
-    
-    protected void Die(string message, params string[] gravestones)
-    {
-        //foreach (string engraving in gravestones)
-        //    cemetery.AddGrave(FormatEngraving(engraving));
-
-        Debug.LogError("Dead: " + message);
-        //messageMenu.showMessage("<b><color=#ff2222><size=34>You are dead!</size></color></b>\n<size=24>" + message + "</size>");
-        //enter("DEAD");
-        
-        new WaitForSeconds(2f).Then(() => Application.LoadLevel(Application.loadedLevel)).Start();
+            .Then(() => Menus.Get<DeathMenu>().Die(
+                    "<b><color=#ff2222><size=34>You drowned!</size></color></b>",
+                    "Little Red Riding Hood %1 Who was swept by the waters"))
+            .Start();
     }
 }
 

@@ -283,19 +283,21 @@ public class MainQuest : Quest {
 
     protected void End(string message, params string[] gravestones)
     {
-        Die(message, gravestones);
-        //messageMenu.showMessage("<size=24>" + message + "</size>");
+        Menus.Get<DeathMenu>().Die(
+            "<size=24>" + message + "</size>",
+            gravestones);
     }
 
     protected void Die(string message, params string[] gravestones)
     {
-        foreach (string engraving in gravestones)
-            cemetery.AddGrave(FormatEngraving(engraving));
+        for (int i = 0; i < gravestones.Length; i++)
+            gravestones[i] = FormatEngraving(gravestones[i]);
 
-        //messageMenu.showMessage("<b><color=#ff2222><size=34>You are dead!</size></color></b>\n<size=24>" + message + "</size>");
+        Menus.Get<DeathMenu>().Die(
+            "<b><color=#ff2222><size=34>You are dead!</size></color></b>\n<size=24>" + message + "</size>",
+            gravestones);
+
         enter("DEAD");
-
-        new WaitForSeconds(3f).Then(() => Application.LoadLevel(Application.loadedLevel)).Start();
     }
 
 

@@ -43,7 +43,7 @@ public class DeathMenu : Menu {
 
     public void Restart()
     {
-        Application.LoadLevel(Application.loadedLevel);
+        SaveManager.Reload();
     }
 
     public void Load()

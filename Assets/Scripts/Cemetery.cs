@@ -84,17 +84,25 @@ public class Cemetery : MonoBehaviour {
 
     GameObject[] Populate()
     {
-        int l = graves.Count;
-        GameObject[] result = new GameObject[l];
-
-        int i = 0;
-        foreach (Grave grave in graves.kernel)
+        try
         {
-            result[i] = CreateGrave(grave, i);
-            i++;
-        }
+            int l = graves.Count;
+            GameObject[] result = new GameObject[l];
 
-        return result;
+            int i = 0;
+            foreach (Grave grave in graves.kernel)
+            {
+                result[i] = CreateGrave(grave, i);
+                i++;
+            }
+
+            return result;
+        }
+        catch (NullReferenceException)
+        {
+            graves = new GraveRingBuffer(graveSlots.Count);
+            return new GameObject[0];
+        }
     }
 
     public GameObject AddGrave(string engraving)

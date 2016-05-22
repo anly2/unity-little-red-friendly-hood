@@ -10,9 +10,14 @@ public class LoadMenu : Menu {
     public GameObject saveList;
 
 
-    public override void Show()
+    public override void Show(bool doPause=true)
     {
-        base.Show();
+        base.Show(doPause);
+
+
+        foreach (Transform child in saveList.transform)
+            Destroy(child.gameObject);
+
 
         var saves = SaveManager.GetSaves();
         foreach (var save in saves)
@@ -26,9 +31,9 @@ public class LoadMenu : Menu {
         }
     }
 
-    public override void Hide()
+    public override void Hide(bool doUnpause = true)
     {
-        base.Hide();
+        base.Hide(doUnpause);
         referrer = null;
     }
 
@@ -37,8 +42,8 @@ public class LoadMenu : Menu {
     {
         if (referrer == null)
             return;
-
+        
+        base.Hide();
         referrer.Show();
-        Hide();
     }
 }

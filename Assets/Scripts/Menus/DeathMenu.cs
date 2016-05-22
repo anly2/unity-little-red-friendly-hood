@@ -4,13 +4,13 @@ using UnityEngine.UI;
 public class DeathMenu : Menu {
 
     public Text messageBox;
-    public Cemetery cemetary;
+    public Cemetery cemetery;
 
 
     void Start()
     {
-        if (cemetary == null)
-            cemetary = GameObject.FindObjectOfType<Cemetery>();
+        if (cemetery == null)
+            cemetery = GameObject.FindObjectOfType<Cemetery>();
     }
 
     
@@ -26,18 +26,35 @@ public class DeathMenu : Menu {
         base.Show();
     }
 
-    public void AddGraves(string[] gravestones)
+    public void AddGraves(string[] gravestones, bool doFormatEngravings = true)
     {
         foreach (string engraving in gravestones)
-            AddGrave(engraving);
+            AddGrave(engraving, doFormatEngravings);
     }
 
-    public void AddGrave(string engraving)
+
+    public void AddGrave(string engraving, bool doFormatEngraving = true)
     {
-        if (cemetary == null)
+        if (cemetery == null)
             return;
 
-        cemetary.AddGrave(engraving);
+        if (doFormatEngraving)
+            engraving = FormatEngraving(engraving);
+
+        cemetery.AddGrave(engraving);
+    }
+    
+    public string FormatEngraving(string engraving)
+    {
+        int currentYear = cemetery.currentYear + Random.Range((int)60, 100);
+        cemetery.currentYear = currentYear;
+
+        int lrrhAge = currentYear - Random.Range((int)10, 15);
+        int grannyAge = currentYear - Random.Range((int)50, 60);
+        return "<b>" + engraving
+            .Replace("%1", "</b>\n<size=14>" + lrrhAge + " - " + currentYear + " AD</size>\n<i>")
+            .Replace("%2", "</b>\n<size=14>" + grannyAge + " - " + currentYear + " AD</size>\n<i>")
+            + "</i>";
     }
 
 

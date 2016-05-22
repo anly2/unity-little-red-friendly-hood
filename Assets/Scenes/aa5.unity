@@ -3255,7 +3255,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   messageBox: {fileID: 862788835}
-  cemetary: {fileID: 1805990618}
+  cemetery: {fileID: 1805990618}
 --- !u!1 &641246500
 GameObject:
   m_ObjectHideFlags: 0

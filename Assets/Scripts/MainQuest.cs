@@ -2,9 +2,6 @@
 
 public class MainQuest : Quest {
 
-    //#!!! TODO
-    //public MessageMenu messageMenu;
-
     [Header("Involved actors")]
     public GameObject initialSpawn;
     public GameObject player;
@@ -283,35 +280,18 @@ public class MainQuest : Quest {
 
     protected void End(string message, params string[] gravestones)
     {
-        Menus.Get<DeathMenu>().Die(
-            "<size=24>" + message + "</size>",
-            gravestones);
+        Menus.Get<DeathMenu>().Die("<size=24>" + message + "</size>", gravestones);
+
+        enter("DEAD");
     }
 
     protected void Die(string message, params string[] gravestones)
     {
-        for (int i = 0; i < gravestones.Length; i++)
-            gravestones[i] = FormatEngraving(gravestones[i]);
-
         Menus.Get<DeathMenu>().Die(
             "<b><color=#ff2222><size=34>You are dead!</size></color></b>\n<size=24>" + message + "</size>",
             gravestones);
 
         enter("DEAD");
-    }
-
-
-    string FormatEngraving(string engraving)
-    {
-        int currentYear = cemetery.currentYear + Random.Range((int)60, 100);
-        cemetery.currentYear = currentYear;
-
-        int lrrhAge = currentYear - Random.Range((int) 10, 15);
-        int grannyAge = currentYear - Random.Range((int) 50, 60);
-        return "<b>" + engraving
-            .Replace("%1", "</b>\n<size=14>" + lrrhAge + " - " + currentYear + " AD</size>\n<i>")
-            .Replace("%2", "</b>\n<size=14>" + grannyAge + " - " + currentYear + " AD</size>\n<i>")
-            + "</i>";
     }
 
 

@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.IO;
 using UnityEngine.SceneManagement;
 using System.Collections;
+using System.Runtime.Serialization.Formatters.Binary;
+using System.Runtime.Serialization;
 
 public class SaveManager
 {
@@ -22,10 +24,30 @@ public class SaveManager
         if (!File.Exists(filename))
             throw new FileNotFoundException();
 
-        GameState loader = new GameObject("Loader").AddComponent<GameState>();
-        loader.autoact = false;
-        loader.Load(filename);
-        GameObject.Destroy(loader.gameObject);
+
+        BinaryFormatter bf = new BinaryFormatter();
+        FileStream file = File.Open(filename, FileMode.Open);
+
+        object rawState = bf.Deserialize(file);
+
+        if (rawState == null)
+            return;
+
+
+        var state = rawState as Dictionary<string, Data>;
+
+        foreach (Stateful component in GetStatefulComponents())
+        {
+            Data data;
+            string id = component.GetStatefulID();
+
+            if (!state.TryGetValue(id, out data))
+                data = new Data();
+
+            component.Load(data);
+        }
+
+        file.Close();
     }
 
     public static void Save(string saveName)
@@ -38,16 +60,46 @@ public class SaveManager
 
         string filename = path + "/" + saveName;
 
-        GameState saver = new GameObject("Saver").AddComponent<GameState>();
-        saver.autoact = false;
-        saver.Save(filename + ".gsv");
-        GameObject.Destroy(saver.gameObject);
+
+        BinaryFormatter bf = new BinaryFormatter();
+        FileStream file = File.Open(filename + ".gsv", FileMode.OpenOrCreate);
+
+        var state = new Dictionary<string, Data>();
+
+        foreach (Stateful component in GetStatefulComponents())
+        {
+            Data data;
+            string id = component.GetStatefulID();
+
+            if (!state.TryGetValue(id, out data))
+                data = new Data();
+
+            component.Save(data);
+            state[id] = data;
+        }
+
+        bf.Serialize(file, state);
+        file.Close();
+
 
         Application.CaptureScreenshot(filename + ".thumb");
     }
 
 
-    // Helper methods //
+    protected static Stateful[] GetStatefulComponents()
+    {
+        MonoBehaviour[] scripts = GameObject.FindObjectsOfType<MonoBehaviour>();
+        List<Stateful> components = new List<Stateful>();
+
+        foreach (MonoBehaviour script in scripts)
+            if (script is Stateful)
+                components.Add(script as Stateful);
+
+        return components.ToArray();
+    }
+
+
+    // Retrieving saves //
 
     public static GameSave[] GetSaves()
     {
@@ -87,6 +139,8 @@ public class SaveManager
         }
     }
 
+
+    // Helper methods //
 
     public static string GetSavesFolder()
     {
@@ -146,4 +200,101 @@ public class SceneChangeObserver : MonoBehaviour
     {
         justLoadedLevel = level;
     }
+}
+
+
+
+
+[System.Serializable]
+public class Data : Dictionary<string, object>
+{
+    public Data() : base() { }
+
+    protected Data(SerializationInfo info, StreamingContext context)
+        : base(info, context)
+    { }
+
+
+    public bool TryGet(string identifier, out object value)
+    {
+        value = null;
+        return base.TryGetValue(identifier, out value);
+    }
+
+    public bool TryGet<T>(string identifier, out T value)
+    {
+        value = default(T);
+
+        object val;
+        if (!TryGet(identifier, out val))
+            return false;
+
+        if (!(val is T))
+            return false;
+
+        value = (T)val;
+        return true;
+    }
+
+    public object Get(string identifier)
+    {
+        object data;
+        TryGet(identifier, out data);
+        return data;
+    }
+
+    public T Get<T>(string identifier, T defaultValue)
+    {
+        object data;
+        if (!TryGet(identifier, out data))
+            return defaultValue;
+
+        if (data is T)
+            return (T)data;
+
+        return defaultValue;
+    }
+
+    public T Get<T>(string identifier)
+        where T : class
+    {
+        return Get<T>(identifier, null);
+    }
+
+
+    public bool Put(string identifier, object value, out object existing)
+    {
+        bool existed = Contains(identifier);
+        existing = existed ? Get(identifier) : null;
+
+        base[identifier] = value;
+        return existed;
+    }
+
+    public object Put(string identifier, object value)
+    {
+        object existing;
+        Put(identifier, value, out existing);
+        return existing;
+    }
+
+
+    public bool Contains(string identifier)
+    {
+        return base.ContainsKey(identifier);
+    }
+
+
+    public void Merge(Data other)
+    {
+        foreach (KeyValuePair<string, object> p in other)
+            this[p.Key] = p.Value;
+    }
+}
+
+public interface Stateful
+{
+    void Save(Data data);
+    void Load(Data data);
+    string GetStatefulID(); //## not hard to imagine a collision or a malicious value, but hey...
 }

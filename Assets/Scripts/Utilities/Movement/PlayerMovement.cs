@@ -23,6 +23,9 @@ public class PlayerMovement : Movement {
 
     void Update ()
     {
+        if (Input.GetKeyDown(KeyCode.Escape))
+            Menus.Get<MainMenu>().Show();
+
         if (speed == 0)
         {
             animator.SetBool("Moving", false);

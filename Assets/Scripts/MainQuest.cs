@@ -25,6 +25,9 @@ public class MainQuest : Quest {
     public GameObject grandmaPath;
     public GameObject sideGlade;
 
+    [Header("Challenge parameters")]
+    public int flowerChallengeWinScore = 5;
+
     //Private state//
     private int friendshipWithWolf;
     private bool hasReasonToThankWolf;
@@ -225,12 +228,23 @@ public class MainQuest : Quest {
                 .they("I dare say, too, that I can gather the most refreshing of them all, before you do.")
                 .player().think("Suppose I take grandmother a fresh nosegay; that would please her too. It is so early in the day that I shall still get there in good time.")
                 .they()
-                    //.unfollow(player)
-                    //#! wolf AI for flower game
-                    // .act(a => flowerChallenge.Begin(player, wolf)) //## moved up
-                    .act(a => hasReasonToThankWolf = true) //#! set by the outcome of the flower game
+                    .unfollow()
+                    .act(a =>
+                    {
+                        wolf.SetSpeed(1.5f); //## rather fast
+                        wolf.AddComponent<WolfAI>().flowersToCollect = flowerChallengeWinScore;
+                    })
             .scene()
-                .activatedBy(a => new WaitForSeconds(30f).Then(() => a()).Start()) //#! when challenge is complete
+                .activatedBy(activate => flowerChallenge.AddObserver(() =>
+                {
+                    int sp = flowerChallenge.GetScore(player);
+                    int sw = flowerChallenge.GetScore(wolf);
+
+                    hasReasonToThankWolf = (sp < sw);
+
+                    if (sp >= flowerChallengeWinScore || sw >= flowerChallengeWinScore)
+                        activate();
+                }))
                 .transition("SF9");
 
         state("SF9")
@@ -239,8 +253,9 @@ public class MainQuest : Quest {
 
         state("SFW11")
             .conversation().with(wolf)
-                .they("Let me escort you to your grandma's, dear girl.")
                 .they().follow(player)
+                .they().wait(0.2f)
+                .they("Let me escort you to your grandma's, dear girl.")
             .scene()
                 .activatedBy(Activators.Enters(player, grandmaPath))
                 .onEnter(s => enter(hasReasonToThankWolf ? "SFWT12" : "SFW12"));

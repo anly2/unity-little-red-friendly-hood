@@ -3165,7 +3165,7 @@ GameObject:
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 4294967295
+  m_StaticEditorFlags: 0
   m_IsActive: 1
 --- !u!4 &630638381
 Transform:
@@ -3656,7 +3656,7 @@ GameObject:
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 4294967295
+  m_StaticEditorFlags: 0
   m_IsActive: 1
 --- !u!4 &716978642
 Transform:
@@ -3701,6 +3701,7 @@ MonoBehaviour:
   grandmasHouse: {fileID: 964131814}
   grandmaPath: {fileID: 1707393220}
   sideGlade: {fileID: 841861186}
+  flowerChallengeWinScore: 5
 --- !u!1 &718625787
 GameObject:
   m_ObjectHideFlags: 0
@@ -4864,7 +4865,7 @@ GameObject:
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 4294967295
+  m_StaticEditorFlags: 0
   m_IsActive: 1
 --- !u!4 &954788314
 Transform:
@@ -5152,6 +5153,14 @@ Prefab:
     - target: {fileID: 21201298, guid: b8c9a70c7d50d0e4ca4731ae5a8415ec, type: 2}
       propertyPath: m_SortingLayerID
       value: -1730024927
+      objectReference: {fileID: 0}
+    - target: {fileID: 11435280, guid: b8c9a70c7d50d0e4ca4731ae5a8415ec, type: 2}
+      propertyPath: runningThreshold
+      value: 1.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 11417702, guid: b8c9a70c7d50d0e4ca4731ae5a8415ec, type: 2}
+      propertyPath: speed
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: b8c9a70c7d50d0e4ca4731ae5a8415ec, type: 2}
@@ -7083,6 +7092,23 @@ GameObject:
 Transform:
   m_PrefabParentObject: {fileID: 461804, guid: b8c9a70c7d50d0e4ca4731ae5a8415ec, type: 2}
   m_PrefabInternal: {fileID: 1046915528}
+--- !u!50 &1493536562
+Rigidbody2D:
+  serializedVersion: 2
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1493536554}
+  m_UseAutoMass: 0
+  m_Mass: 1
+  m_LinearDrag: 0
+  m_AngularDrag: 0.05
+  m_GravityScale: 0
+  m_IsKinematic: 1
+  m_Interpolate: 0
+  m_SleepingMode: 1
+  m_CollisionDetection: 0
+  m_Constraints: 4
 --- !u!1 &1499226337
 GameObject:
   m_ObjectHideFlags: 0

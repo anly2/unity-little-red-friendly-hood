@@ -13,6 +13,7 @@ public class FlowerChallenge : MonoBehaviour {
     public TriggerExtensions.VetoingAction whenPickedUp;
 
     private Dictionary<GameObject, int> score = new Dictionary<GameObject, int>();
+    private List<System.Action> observers = new List<System.Action>();
 
 
     public void Begin(params GameObject[] participants)
@@ -44,6 +45,8 @@ public class FlowerChallenge : MonoBehaviour {
         {
             score[o.gameObject]++;
 
+            FlowerPickedUp();
+
             if (whenPickedUp == null || whenPickedUp())
                 AddFlowerOnRandom();
 
@@ -57,5 +60,27 @@ public class FlowerChallenge : MonoBehaviour {
     T Rand<T>(List<T> arr)
     {
         return arr[Random.Range(0, arr.Count)];
+    }
+
+
+    public void AddObserver(System.Action observer)
+    {
+        observers.Add(observer);
+    }
+
+    public int GetScore(GameObject participant)
+    {
+        int s;
+
+        if (!score.TryGetValue(participant, out s))
+            return -1;
+
+        return s;
+    }
+
+    void FlowerPickedUp()
+    {
+        foreach (var observer in observers)
+            observer();
     }
 }
